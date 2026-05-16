@@ -9,6 +9,23 @@
 > Rename this file to `phase_5_boardroom_canonical.md` at ship
 > time and link it from `plan/steps/01_build_plan.md`.
 
+> **/oversight 2026-05-16 inputs (apply on next /plan-a-phase
+> refresh):**
+>
+> 1. **DnD library:** pin `@dnd-kit/core` + `@dnd-kit/sortable`
+>    rather than native HTML5 (overrides the existing brief's
+>    "native HTML5" decision below). Reason: dnd-kit ships
+>    keyboard-equivalent semantics out of the box, which means
+>    phase 14's a11y sweep becomes a verification pass rather
+>    than a rewrite. Bundle cost accepted.
+> 2. **Refresh against design v1.** The design tree at `design/`
+>    now ships `boardroom-table.tsx` + draggable `persona-card.tsx`
+>    + `turn-bubble.tsx` primitives. The refreshed brief should
+>    reference these explicitly instead of working defaults.
+> 3. **Approach:** dry-run brief refresh first (separate commit
+>    `phases: brief for phase 5 — boardroom canonical`); code
+>    ships on the following /march tick.
+
 ## Routes / endpoints / CLI surface (locked in `bearings.md`)
 
 - `/app` — the authenticated boardroom session entry. Empty,
