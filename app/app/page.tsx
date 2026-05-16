@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
-import { requireUser } from '@/lib/supabase/auth'
+import { Heading } from '@/design/primitives/heading'
+import { Button } from '@/design/primitives/button'
 import { signOutAction } from '@/lib/auth/actions'
+import { requireUser } from '@/lib/supabase/auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,25 +15,25 @@ export default async function AppHomePage() {
   const user = await requireUser()
 
   return (
-    <section className="mx-auto max-w-3xl px-6 py-16 space-y-6">
-      <h1 className="font-sans text-3xl font-semibold tracking-tight">
-        Boardroom
-      </h1>
-      <p className="font-serif text-lg text-ink/80">
-        Signed in as{' '}
-        <span className="font-mono text-sm">{user.email}</span>.
+    <section className="mx-auto max-w-[760px] px-[var(--space-4)] sm:px-[var(--space-5)] md:px-[var(--space-7)] py-[var(--space-7)] md:py-[var(--space-8)]">
+      <p className="font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)] mb-[var(--space-4)]">
+        boardroom &nbsp;·&nbsp; session
       </p>
-      <p className="font-sans text-sm text-ink/60">
-        The drag-and-drop board ships in phase 5. This is the
-        authenticated landing — the session orchestrator follows.
+      <Heading level={1} className="mb-[var(--space-5)]">
+        Welcome to the boardroom.
+      </Heading>
+      <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] mb-[var(--space-6)]">
+        Signed in as{' '}
+        <span className="font-[var(--font-mono)] text-[var(--text-sm)] text-[color:var(--ink)]">
+          {user.email}
+        </span>
+        . The drag-and-drop board ships in phase 5; this is the
+        authenticated landing while the session orchestrator follows.
       </p>
       <form action={signOutAction}>
-        <button
-          type="submit"
-          className="inline-flex items-center justify-center rounded border border-ink/20 bg-paper px-4 py-2 font-sans text-sm hover:bg-ink/5"
-        >
+        <Button type="submit" variant="secondary">
           Sign out
-        </button>
+        </Button>
       </form>
     </section>
   )

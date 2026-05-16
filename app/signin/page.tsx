@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+import { Heading } from '@/design/primitives/heading'
+import { Button } from '@/design/primitives/button'
+import { Link } from '@/design/primitives/link'
 import { SignInForm } from './sign-in-form'
 
 export const dynamic = 'force-dynamic'
@@ -24,36 +27,48 @@ export default async function SignInPage({
   const sent = params.sent === '1'
 
   return (
-    <section className="mx-auto max-w-md px-6 py-16">
-      <h1 className="font-sans text-3xl font-semibold tracking-tight">
-        Sign in
-      </h1>
-      <p className="mt-2 font-sans text-sm text-ink/70">
-        We email a one-time sign-in link. No password to remember.
-      </p>
-
-      <div className="mt-8">
+    <div className="flex flex-col items-center px-[var(--space-5)] py-[var(--space-8)]">
+      <section
+        className="w-full max-w-[440px] bg-[color:var(--paper-raised)] border border-[color:var(--paper-edge)] rounded-[var(--radius-md)] shadow-[var(--shadow-lifted)] p-[var(--space-6)]"
+        aria-labelledby="signin-h"
+      >
         {sent ? (
-          <div className="space-y-3">
-            <p className="font-serif text-lg">Check your email.</p>
-            <p className="font-sans text-sm text-ink/70">
-              The link expires in 15 minutes. If it doesn&apos;t arrive,
-              check spam, or request a new one.
+          <>
+            <Heading level={2} id="signin-h" className="mb-[var(--space-3)]">
+              Check your inbox.
+            </Heading>
+            <p className="font-[var(--font-serif)] text-[var(--text-sm)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] mb-[var(--space-5)]">
+              We mailed a one-time sign-in link. Open it on this device.
+              If it doesn’t arrive within a minute, check spam or send a
+              new one.
             </p>
-            <p className="font-sans text-sm">
-              <a href="/signin" className="text-accent underline">
+            <Link href="/signin" className="block">
+              <Button variant="secondary" className="w-full">
                 Send another link
-              </a>
-            </p>
-          </div>
+              </Button>
+            </Link>
+          </>
         ) : (
-          <SignInForm
-            next={params.next}
-            error={params.error}
-            email={params.email}
-          />
+          <>
+            <Heading level={2} id="signin-h" className="mb-[var(--space-3)]">
+              Sign in
+            </Heading>
+            <p className="font-[var(--font-serif)] text-[var(--text-sm)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] mb-[var(--space-5)]">
+              Enter your email and we’ll send a one-time link. No password,
+              no follow-ups. The link expires in fifteen minutes.
+            </p>
+            <SignInForm
+              next={params.next}
+              error={params.error}
+              email={params.email}
+            />
+          </>
         )}
-      </div>
-    </section>
+      </section>
+
+      <p className="mt-[var(--space-6)] font-[var(--font-sans)] text-[var(--text-2xs)] text-[color:var(--ink-muted)]">
+        New here? <Link href="/about/personas">What boardroom is.</Link>
+      </p>
+    </div>
   )
 }

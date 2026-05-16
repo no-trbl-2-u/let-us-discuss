@@ -7,5 +7,7 @@ test('GET /app unauthenticated redirects to /signin with next', async ({
   expect(response).not.toBeNull()
   // After all redirects, we should land on /signin.
   expect(page.url()).toMatch(/\/signin\?next=%2Fapp/)
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/sign in/i)
+  await expect(
+    page.getByRole('heading', { level: 2, name: /sign in/i }),
+  ).toBeVisible()
 })

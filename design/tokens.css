@@ -1,0 +1,189 @@
+/* ============================================================================
+   boardroom — visual system tokens v1
+   ----------------------------------------------------------------------------
+   Paper + ink defaults. Single oxidized-red accent. Subdued.
+   Tailwind reads these via tailwind.config.ts (extend.colors etc.); components
+   reference the CSS variables directly when a Tailwind utility doesn't fit.
+   Wins over plan/bearings.md on visual conflict (per spec.md § Visual system).
+   ========================================================================= */
+
+@layer tokens {
+  :root {
+    /* --- color ----------------------------------------------------------- */
+
+    /* paper: warm cream — the table surface */
+    --paper:           oklch(96.5% 0.012 82);
+    --paper-raised:    oklch(98.2% 0.008 82);     /* card faces lifted off table */
+    --paper-sunken:    oklch(93.5% 0.014 80);     /* drop targets, wells */
+    --paper-edge:      oklch(89%   0.012 78);     /* hairlines, dividers */
+
+    /* ink: warm near-black — typography + iconography */
+    --ink:             oklch(22%   0.014 60);     /* body, headings */
+    --ink-strong:      oklch(14%   0.010 60);     /* h1, deepest emphasis */
+    --ink-muted:       oklch(45%   0.012 65);     /* secondary text, captions */
+    --ink-faint:       oklch(62%   0.010 70);     /* metadata, placeholders */
+
+    /* accent: oxidized red — fountain-pen + library-stamp register
+       Used sparingly. Loudest moments only: the user's pitch field,
+       the "staffed seat" mark, the primary CTA, the active turn cursor. */
+    --accent:          oklch(48%   0.135 32);
+    --accent-pressed:  oklch(40%   0.130 32);
+    --accent-ink:      oklch(96%   0.010 82);     /* foreground on accent */
+    --accent-tint:     oklch(92%   0.030 32);     /* wash for hover/selected backgrounds */
+
+    /* accent-2: deep slate — reserved for <5% of surfaces.
+       Used for the "session in progress" rail and the moderator turn-bubble. */
+    --accent-2:        oklch(38%   0.045 245);
+    --accent-2-tint:   oklch(92%   0.018 245);
+
+    /* muted: paper-tinted neutrals for chips, disabled, skeleton */
+    --muted:           oklch(86%   0.010 75);
+    --muted-ink:       oklch(48%   0.010 70);
+
+    /* signal */
+    --signal-positive: oklch(50%   0.105 148);
+    --signal-positive-tint: oklch(93% 0.030 148);
+    --signal-warning:  oklch(58%   0.135 62);
+    --signal-warning-tint:  oklch(94% 0.040 62);
+
+    /* focus ring — same hue as accent but lower chroma + halo'd */
+    --ring:            oklch(48%   0.135 32 / 0.55);
+    --ring-offset:     var(--paper);
+
+    /* --- type ------------------------------------------------------------ */
+
+    --font-serif: "Source Serif 4", "Source Serif Pro", Charter, "Iowan Old Style", Georgia, serif;
+    --font-sans:  "IBM Plex Sans", ui-sans-serif, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono:  "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+    /* scale — at least 6 stops. Headings tight, body generous. */
+    --text-3xs:   0.6875rem;  /* 11px  legal, micro-meta                */
+    --text-2xs:   0.75rem;    /* 12px  meta, monospace tags             */
+    --text-xs:    0.8125rem;  /* 13px  ui chips                         */
+    --text-sm:    0.9375rem;  /* 15px  ui labels, inputs                */
+    --text-base:  1.0625rem;  /* 17px  body — slightly larger for serif */
+    --text-md:    1.1875rem;  /* 19px  lead paragraph / h4              */
+    --text-lg:    1.4375rem;  /* 23px  h3                               */
+    --text-xl:    1.875rem;   /* 30px  h2                               */
+    --text-2xl:   2.5rem;     /* 40px  h1 default                       */
+    --text-3xl:   3.5rem;     /* 56px  marketing display                */
+
+    /* line-height: tight for headings, generous for body */
+    --leading-display: 1.04;
+    --leading-heading: 1.16;
+    --leading-snug:    1.32;
+    --leading-body:    1.62;
+    --leading-prose:   1.72;
+
+    /* tracking — serif body sits at 0; sans labels +0.005em; caps wider */
+    --tracking-tight:   -0.014em;
+    --tracking-normal:   0em;
+    --tracking-ui:       0.005em;
+    --tracking-caps:     0.08em;
+
+    /* weights */
+    --weight-regular:  400;
+    --weight-medium:   500;
+    --weight-semibold: 600;
+    --weight-bold:     700;
+
+    /* --- spacing — single ramp, 7 stops -------------------------------- */
+    --space-1:  0.25rem;   /* 4px  — hairline gaps inside chips         */
+    --space-2:  0.5rem;    /* 8px  — between label + control            */
+    --space-3:  0.75rem;   /* 12px — small clusters                     */
+    --space-4:  1rem;      /* 16px — default field gap                  */
+    --space-5:  1.5rem;    /* 24px — section interior padding           */
+    --space-6:  2.25rem;   /* 36px — between sections                   */
+    --space-7:  3.5rem;    /* 56px — page gutter, marketing rhythm      */
+    --space-8:  5.5rem;    /* 88px — display margin                     */
+
+    /* --- radius — paper, not glass ------------------------------------- */
+    --radius-none: 0px;
+    --radius-sm:   2px;    /* default chip / chip */
+    --radius-md:   4px;    /* cards, persona tiles, inputs */
+    --radius-lg:   8px;    /* the boardroom table itself, surface plates */
+
+    /* --- shadow — soft only -------------------------------------------- */
+    /* "card lifted off a table", lit from above-left. No diffuse halos. */
+    --shadow-resting: 0 1px 0 0 oklch(82% 0.010 78 / 0.6);
+    --shadow-lifted:
+      0 1px 1px oklch(20% 0.010 60 / 0.04),
+      0 2px 6px oklch(20% 0.010 60 / 0.06),
+      0 8px 16px oklch(20% 0.010 60 / 0.05);
+    --shadow-dragging:
+      0 2px 2px oklch(20% 0.010 60 / 0.08),
+      0 12px 22px oklch(20% 0.010 60 / 0.10),
+      0 28px 40px oklch(20% 0.010 60 / 0.08);
+
+    /* --- motion — drag-and-drop only ----------------------------------- */
+    --t-lift:   120ms;    /* pick-up, hover */
+    --t-settle: 240ms;    /* drop-into-seat snap */
+    --t-recede: 400ms;    /* turn-bubble fade-in, modal exit */
+
+    --ease-lift:   cubic-bezier(0.2, 0.7, 0.1, 1.0);    /* ease-out, slight cushion */
+    --ease-settle: cubic-bezier(0.34, 1.20, 0.64, 1.0); /* gentle overshoot */
+    --ease-recede: cubic-bezier(0.4, 0.0, 1.0, 1.0);    /* ease-in */
+  }
+
+  /* dark — respect prefers-color-scheme, but the brand stays paper-lamp.
+     Dark is "the same desk lamp, room dimmed". Same accent. */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:        oklch(18%  0.012 78);
+      --paper-raised: oklch(22%  0.012 78);
+      --paper-sunken: oklch(15%  0.012 78);
+      --paper-edge:   oklch(28%  0.012 78);
+      --ink:          oklch(92%  0.010 82);
+      --ink-strong:   oklch(98%  0.008 82);
+      --ink-muted:    oklch(72%  0.012 80);
+      --ink-faint:    oklch(56%  0.010 75);
+      --accent:       oklch(64%  0.140 32);
+      --accent-pressed: oklch(56% 0.135 32);
+      --accent-ink:   oklch(14%  0.010 60);
+      --accent-tint:  oklch(30%  0.060 32);
+      --accent-2:     oklch(70%  0.060 245);
+      --accent-2-tint: oklch(28% 0.030 245);
+      --muted:        oklch(32%  0.012 76);
+      --muted-ink:    oklch(72%  0.010 78);
+      --shadow-resting: 0 1px 0 0 oklch(8% 0.010 78 / 0.8);
+      --shadow-lifted:
+        0 1px 1px oklch(0% 0 0 / 0.35),
+        0 2px 6px oklch(0% 0 0 / 0.30),
+        0 8px 16px oklch(0% 0 0 / 0.25);
+      --shadow-dragging:
+        0 2px 2px oklch(0% 0 0 / 0.45),
+        0 12px 22px oklch(0% 0 0 / 0.40),
+        0 28px 40px oklch(0% 0 0 / 0.35);
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   base — applied once at <body>. Components don't redeclare these.
+   ------------------------------------------------------------------------- */
+
+html, body {
+  background: var(--paper);
+  color: var(--ink);
+}
+body {
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  font-feature-settings: "ss01", "kern";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The faint paper texture. Two thin tinted radials, low cost, no image asset.
+   If a future surface decides paper-flat is better, drop this rule. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(120% 80% at 20% 0%,  oklch(98% 0.012 82 / 0.6), transparent 60%),
+    radial-gradient(120% 80% at 80% 100%, oklch(94% 0.012 82 / 0.5), transparent 60%);
+}

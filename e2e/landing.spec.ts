@@ -13,14 +13,14 @@ test.describe('landing', () => {
 
     const h1 = page.locator('h1').first()
     await expect(h1).toBeVisible()
-    await expect(h1).toContainText('pitch')
+    await expect(h1).toContainText(/personas/i)
 
     expect(consoleErrors, consoleErrors.join('\n')).toEqual([])
   })
 
-  test('Try-it CTA is aria-disabled', async ({ page }) => {
+  test('Try-a-demo CTA is disabled until phase 6', async ({ page }) => {
     await page.goto('/')
-    const cta = page.getByRole('button', { name: /try it/i })
+    const cta = page.getByRole('button', { name: /try a demo session/i })
     await expect(cta).toHaveAttribute('aria-disabled', 'true')
   })
 

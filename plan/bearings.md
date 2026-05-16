@@ -203,16 +203,26 @@ boardroom-breakdown/
 
 ## The `design/` folder
 
-The user emits design exports asynchronously via
-`claude-design.prompt.md`. Authoritative reads:
+**Design v1 has landed (2026-05-16).** The authoritative system
+lives at:
 
-- `design/INDEX.md` — file → family map, if present.
-- `design/decisions.md` — design's own brief; **wins over
-  bearings on conflict**.
-- `design/tokens.css` — finalized design tokens, if present.
+- `design/INDEX.md` — one-page tour; the build agent's first stop.
+- `design/decisions.md` — the brief. **Wins over this file on
+  visual conflict.** Mood, token rationale, won't-do list.
+- `design/tokens.css` — color, type, spacing, radius, shadow,
+  motion tokens. Tailwind config extends from these.
+- `design/primitives/` — production components consumed via
+  `@/design/primitives/<name>`. Ten primitives total; the four
+  metaphor-carrying ones (`persona-card`, `boardroom-table`,
+  `turn-bubble`, `artifact-tile`) light up as phase 5+ ships.
+- `design/compositions/` — reference compositions; the live
+  routes implement the same shape against the data layer.
+  Excluded from typecheck (reference only).
 
-**The loop does not wait for design.** Ship from sibling +
-bearings working defaults until `design/` lands.
+Visual defaults below are superseded by `design/decisions.md`
+where they conflict (oxidized-red accent over a hedged
+red/blue; serif headings over sans; custom 7-stop spacing
+ramp over Tailwind defaults).
 
 ## Sub-agents
 
@@ -226,18 +236,21 @@ Defined under `.claude/agents/`. Spawn aggressively.
 
 ## Visual & tonal defaults
 
-(`design/` is authoritative when present. These working
-defaults apply only until the design session commits.)
+**Authoritative source: [`design/decisions.md`](../design/decisions.md).**
+The notes below summarize; the design file is the canonical brief.
 
 - **Mode:** light default; respect `prefers-color-scheme: dark`.
-- **Type families:** serif body (editorial gravitas), sans
-  headings + UI, mono only for code blocks. Final picks land in
-  `design/`.
-- **Palette / accent:** paper/ink defaults — warm cream paper,
-  near-black ink, single accent (a deep accent-blue or
-  oxidized-red — design decides). No gradients, no glass.
-- **Spacing scale:** to be derived from `design/tokens.css`.
-  Working default: Tailwind's default ramp.
+- **Type families:** Source Serif 4 for body + headings (editorial
+  gravitas), IBM Plex Sans for UI labels + eyebrows + nav, IBM
+  Plex Mono for token counts, kind labels, timestamps.
+- **Palette / accent:** warm cream paper, warm near-black ink,
+  **single oxidized-red accent** (fountain-pen / library-stamp
+  register; oklch ~48% / 32°). Deep slate `--accent-2` reserved
+  for <5% of surfaces (moderator turn-bubble, active-session
+  rail). No gradients, no glass/backdrop-blur.
+- **Spacing:** custom 7-stop ramp in `design/tokens.css`
+  (4 / 8 / 12 / 16 / 24 / 36 / 56 / 88px). Tailwind config
+  `extend.spacing` reads from those tokens.
 - **Voice (product surface, not personas):** *Knowledgeable
   colleague who's been-there. Plainspoken, terse, no marketing
   fluff. Explains its reasoning when it makes a judgment call.*

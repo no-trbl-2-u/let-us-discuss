@@ -1,25 +1,69 @@
 import type { Persona } from '@/lib/schemas/persona'
-import { PersonaRoleTag } from './persona-role-tag'
+import { cn } from '@/lib/cn'
+
+function monogramFor(name: string): string {
+  const parts = name.split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '··'
+  if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase()
+  return `${parts[0]![0] ?? ''}${parts[1]![0] ?? ''}`.toUpperCase()
+}
 
 export function PersonaCard({ persona }: { persona: Persona }) {
+  const isLead = persona.role === 'lead'
+
   return (
     <article
       id={persona.slug}
-      className="rounded-lg border border-ink/10 bg-ink/[0.02] p-6"
+      className={cn(
+        'relative bg-[color:var(--paper-raised)] text-[color:var(--ink)]',
+        'border border-[color:var(--paper-edge)] rounded-[var(--radius-md)]',
+        'shadow-[var(--shadow-resting)]',
+        'p-[var(--space-5)]',
+      )}
     >
-      <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h2 className="font-sans text-xl font-semibold tracking-tight">
-          {persona.name}
-        </h2>
-        <PersonaRoleTag role={persona.role} />
+      <header className="flex items-center gap-[var(--space-3)]">
+        <span
+          aria-hidden
+          className={cn(
+            'w-[44px] h-[44px] inline-flex items-center justify-center',
+            'bg-[color:var(--paper-sunken)] text-[color:var(--ink-strong)]',
+            'font-[var(--font-serif)] italic font-semibold text-[var(--text-md)]',
+            'rounded-[var(--radius-sm)]',
+            'shadow-[inset_0_1px_2px_oklch(0%_0_0_/_0.08),inset_0_-1px_0_oklch(100%_0_0_/_0.6)]',
+          )}
+        >
+          {monogramFor(persona.name)}
+        </span>
+        <div className="flex flex-col leading-tight">
+          <h2 className="font-[var(--font-serif)] font-semibold text-[var(--text-lg)] tracking-[var(--tracking-tight)] text-[color:var(--ink-strong)]">
+            {persona.name}
+          </h2>
+          <span className="font-[var(--font-sans)] text-[var(--text-2xs)] text-[color:var(--ink-muted)]">
+            <span
+              className={cn(
+                'inline-flex items-center rounded-[var(--radius-sm)] px-[var(--space-2)] py-[1px] mr-[var(--space-2)]',
+                'font-medium uppercase tracking-[var(--tracking-caps)]',
+                isLead
+                  ? 'bg-[color:var(--accent-tint)] text-[color:var(--accent)]'
+                  : 'bg-[color:var(--paper-sunken)] text-[color:var(--ink-muted)]',
+              )}
+            >
+              {persona.role}
+            </span>
+            <span className="italic">{persona.voice}</span>
+          </span>
+        </div>
       </header>
-      <p className="mt-2 font-serif italic text-ink/70">{persona.voice}</p>
-      <p className="mt-3 font-serif text-ink/90">{persona.summary}</p>
-      <details className="mt-4 group">
-        <summary className="cursor-pointer font-sans text-sm font-medium text-accent group-open:underline">
+
+      <p className="mt-[var(--space-4)] font-[var(--font-serif)] text-[var(--text-base)] leading-[var(--leading-prose)] text-[color:var(--ink)]">
+        {persona.summary}
+      </p>
+
+      <details className="mt-[var(--space-4)] group">
+        <summary className="cursor-pointer font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)] hover:text-[color:var(--ink)]">
           System prompt
         </summary>
-        <pre className="mt-3 max-h-[40rem] overflow-auto whitespace-pre-wrap rounded border border-ink/10 bg-paper p-4 font-mono text-xs leading-relaxed">
+        <pre className="mt-[var(--space-3)] max-h-[40rem] overflow-auto whitespace-pre-wrap rounded-[var(--radius-sm)] border border-[color:var(--paper-edge)] bg-[color:var(--paper-sunken)] p-[var(--space-4)] font-[var(--font-mono)] text-[var(--text-2xs)] leading-[var(--leading-snug)] text-[color:var(--ink)]">
           {persona.systemPrompt}
         </pre>
       </details>

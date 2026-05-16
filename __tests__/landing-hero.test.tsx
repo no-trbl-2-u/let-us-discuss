@@ -18,10 +18,17 @@ describe('LandingHero', () => {
     expect(screen.getByText(HERO_SUBHEAD)).toBeInTheDocument()
   })
 
-  it('renders the Try-it CTA as aria-disabled', () => {
+  it('renders the demo-session CTA as disabled until phase 6', () => {
     render(<LandingHero />)
-    const cta = screen.getByRole('button', { name: /try it/i })
+    const cta = screen.getByRole('button', { name: /try a demo session/i })
     expect(cta).toHaveAttribute('aria-disabled', 'true')
     expect(cta).toBeDisabled()
+  })
+
+  it('renders the "how a session runs" notes', () => {
+    render(<LandingHero />)
+    expect(screen.getByText(/staff the table/i)).toBeInTheDocument()
+    expect(screen.getByText(/hand over the pitch/i)).toBeInTheDocument()
+    expect(screen.getByText(/take the artifacts/i)).toBeInTheDocument()
   })
 })

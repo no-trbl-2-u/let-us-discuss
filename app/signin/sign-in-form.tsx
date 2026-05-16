@@ -1,5 +1,7 @@
-import { signInWithOtpAction } from '@/lib/auth/actions'
 import { redirect } from 'next/navigation'
+import { Button } from '@/design/primitives/button'
+import { Input } from '@/design/primitives/input'
+import { signInWithOtpAction } from '@/lib/auth/actions'
 
 export function SignInForm({
   next,
@@ -22,34 +24,22 @@ export function SignInForm({
   }
 
   return (
-    <form action={action} className="space-y-4">
-      {error ? (
-        <p
-          role="alert"
-          className="rounded border border-red-300 bg-red-50 p-3 font-sans text-sm text-red-800"
-        >
-          {error}
-        </p>
-      ) : null}
-      <label className="block space-y-2">
-        <span className="font-sans text-sm font-medium">Email</span>
-        <input
-          type="email"
-          name="email"
-          required
-          autoComplete="email"
-          defaultValue={email}
-          placeholder="you@example.com"
-          className="block w-full rounded border border-ink/20 bg-paper px-3 py-2 font-sans text-base focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40"
-        />
-      </label>
+    <form action={action} className="flex flex-col gap-[var(--space-5)]">
+      <Input
+        label="Email"
+        type="email"
+        name="email"
+        required
+        autoComplete="email"
+        defaultValue={email}
+        placeholder="you@studio.com"
+        helper="We never use this for anything else."
+        error={error}
+      />
       {next ? <input type="hidden" name="next" value={next} /> : null}
-      <button
-        type="submit"
-        className="inline-flex items-center justify-center rounded bg-accent px-5 py-2.5 font-sans text-sm font-medium text-paper hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-accent/40"
-      >
-        Send magic link
-      </button>
+      <Button type="submit" variant="primary" className="w-full">
+        Send the link
+      </Button>
     </form>
   )
 }

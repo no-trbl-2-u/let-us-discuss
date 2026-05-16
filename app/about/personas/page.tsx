@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Heading } from '@/design/primitives/heading'
 import { loadPersonas } from '@/lib/personas/load'
 import { PersonaCard } from '@/components/personas/persona-card'
 
@@ -26,22 +27,24 @@ export default function PersonasPage() {
   }
 
   return (
-    <section className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="font-sans text-3xl font-semibold tracking-tight">
+    <section className="mx-auto max-w-[760px] px-[var(--space-4)] sm:px-[var(--space-5)] md:px-[var(--space-7)] py-[var(--space-7)] md:py-[var(--space-8)]">
+      <p className="font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)] mb-[var(--space-4)]">
+        boardroom &nbsp;·&nbsp; the v1 shelf
+      </p>
+      <Heading level={1} className="mb-[var(--space-5)]">
         Personas
-      </h1>
-      <p className="mt-2 max-w-2xl font-serif text-lg text-ink/80">
-        A curated v1 library. User-created personas land post-v1.
-        Persona changes ship via PR — the table here is the
-        canonical view.
+      </Heading>
+      <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch] mb-[var(--space-7)]">
+        A curated v1 library. User-created personas land post-v1. Persona
+        changes ship via PR — the table here is the canonical view.
       </p>
 
       {personas.length === 0 ? (
-        <p className="mt-12 font-sans text-sm text-ink/70">
+        <p className="font-[var(--font-sans)] text-[var(--text-sm)] text-[color:var(--ink-muted)]">
           No personas yet — the v1 library ships in phase 4.
         </p>
       ) : (
-        <ul role="list" className="mt-10 space-y-6">
+        <ul role="list" className="flex flex-col gap-[var(--space-5)]">
           {personas.map((p) => (
             <li key={p.slug}>
               <PersonaCard persona={p} />

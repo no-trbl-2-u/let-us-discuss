@@ -1,44 +1,89 @@
+import { Heading } from '@/design/primitives/heading'
+import { Button } from '@/design/primitives/button'
+import { Link } from '@/design/primitives/link'
+
 export const HERO_HEADLINE =
-  'Turn a loose pitch into a concrete spec.'
+  'A short, opinionated meeting between AI personas — and you leave with a usable spec.'
 
 export const HERO_SUBHEAD =
-  'Drag a few AI personas to the table, hand them your idea, and walk out with a usable artifact — no prompt engineering required.'
+  "Drop a few personas onto the table, hand them your pitch, and let them confer. You answer one-word questions at the checkpoints. They do the thinking."
+
+const NOTES = [
+  {
+    n: 'i.',
+    t: 'Staff the table.',
+    b: 'Drag two to six personas from the shelf onto the boardroom. Each persona has a fixed voice and role — you don’t write prompts.',
+  },
+  {
+    n: 'ii.',
+    t: 'Hand over the pitch.',
+    b: 'Paste a paragraph. The leads circle once with one-sentence clarifying questions. “I don’t know” is a valid answer.',
+  },
+  {
+    n: 'iii.',
+    t: 'Take the artifacts.',
+    b: 'Personas confer, converge, and emit three files: a spec, an exec summary, and a list of out-of-scope call-outs.',
+  },
+] as const
 
 export function LandingHero() {
   return (
-    <section className="mx-auto max-w-5xl px-6 py-16 md:py-24">
-      <div className="grid gap-10 md:grid-cols-[2fr_1fr] md:items-center">
-        <div className="space-y-6">
-          <h1 className="font-sans text-4xl font-semibold tracking-tight md:text-5xl">
+    <div className="mx-auto max-w-[1040px] px-[var(--space-4)] sm:px-[var(--space-5)] md:px-[var(--space-7)] py-[var(--space-7)] md:py-[var(--space-8)]">
+      <section className="grid grid-cols-1 gap-[var(--space-6)] md:grid-cols-12 mb-[var(--space-8)]">
+        <div className="md:col-span-8">
+          <p className="font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)] mb-[var(--space-4)]">
+            boardroom &nbsp;·&nbsp; v1
+          </p>
+          <Heading level={1} className="mb-[var(--space-5)]">
             {HERO_HEADLINE}
-          </h1>
-          <p className="font-serif text-lg text-ink/80 md:text-xl">
+          </Heading>
+          <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch] mb-[var(--space-6)]">
             {HERO_SUBHEAD}
           </p>
-          <div className="flex flex-wrap items-center gap-4">
-            <button
+          <div className="flex flex-wrap items-center gap-[var(--space-4)]">
+            <Button
               type="button"
-              aria-disabled="true"
+              variant="primary"
               disabled
+              aria-disabled="true"
               title="Coming in v1 — sign up to be notified."
-              className="inline-flex cursor-not-allowed items-center rounded-md bg-accent/30 px-5 py-3 font-sans text-sm font-medium text-ink/60"
             >
-              Try it (coming soon)
-            </button>
-            <span className="font-sans text-sm text-ink/60">
-              v1 in build — substrate landed, gameplay shipping in phases.
-            </span>
+              Try a demo session
+            </Button>
+            <Link href="/about/personas" variant="default">
+              What is a boardroom session?
+            </Link>
           </div>
         </div>
-        <aside className="rounded-lg border border-ink/10 bg-ink/[0.02] p-6 font-sans text-sm text-ink/70">
-          <p className="mb-3 font-semibold text-ink/90">What this is</p>
-          <p>
-            A short, opinionated board-room conversation between AI personas.
-            You bring the pitch; they leave a spec, an executive summary, and
-            the open questions worth chasing.
-          </p>
-        </aside>
-      </div>
-    </section>
+      </section>
+
+      <section
+        aria-labelledby="how-it-works"
+        className="grid grid-cols-1 gap-[var(--space-6)] md:grid-cols-12"
+      >
+        <Heading
+          level={4}
+          eyebrow
+          as="h2"
+          id="how-it-works"
+          className="md:col-span-12"
+        >
+          How a session runs
+        </Heading>
+        {NOTES.map((note) => (
+          <article key={note.n} className="md:col-span-4">
+            <span className="font-[var(--font-serif)] italic text-[var(--text-md)] text-[color:var(--ink-faint)]">
+              {note.n}
+            </span>
+            <h3 className="mt-[var(--space-2)] mb-[var(--space-3)] font-[var(--font-serif)] font-semibold text-[var(--text-lg)] text-[color:var(--ink-strong)] leading-[var(--leading-heading)]">
+              {note.t}
+            </h3>
+            <p className="font-[var(--font-serif)] text-[var(--text-sm)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)]">
+              {note.b}
+            </p>
+          </article>
+        ))}
+      </section>
+    </div>
   )
 }
