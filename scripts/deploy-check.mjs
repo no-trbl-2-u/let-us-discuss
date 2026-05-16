@@ -24,7 +24,16 @@ if (fs.existsSync('.env')) {
   for (const line of fs.readFileSync('.env', 'utf-8').split(/\r?\n/)) {
     const m = line.match(/^\s*([A-Z][A-Z0-9_]*)\s*=\s*(.*?)\s*$/)
     if (m && !process.env[m[1]]) {
-      process.env[m[1]] = m[2].replace(/^["']|["']$/g, '')
+      let value = m[2]
+      // Strip an inline " # comment" tail (whitespace + #) — common
+      // when copying from .env.example, which has commented hints
+      // after each key. Don't strip when the value is fully quoted.
+      const isQuoted = /^(['"]).*\1$/.test(value)
+      if (!isQuoted) {
+        const hashIdx = value.search(/\s+#/)
+        if (hashIdx >= 0) value = value.slice(0, hashIdx)
+      }
+      process.env[m[1]] = value.trim().replace(/^["']|["']$/g, '')
     }
   }
 }
@@ -120,14 +129,18 @@ else if (PROVIDER === 'vercel') {
     const match = data.deployments?.find((d) => d.meta?.githubCommitSha === sha)
     if (!match) return { state: 'pending' }
     if (match.readyState === 'READY') return { state: 'ready', url: `https://${match.url}` }
+    const deployId = match.uid ?? match.id
     if (match.readyState === 'ERROR' || match.readyState === 'CANCELED') {
       return {
         state: 'error',
         message: match.errorMessage,
-        admin: `https://vercel.com/${match.ownerId}/${match.name}/${match.id}`,
+        admin: `https://vercel.com/${match.ownerId}/${match.name}/${deployId}`,
       }
     }
-    return { state: match.readyState.toLowerCase(), id: match.id.slice(0, 8) }
+    return {
+      state: match.readyState.toLowerCase(),
+      id: deployId ? String(deployId).slice(0, 8) : undefined,
+    }
   })
 }
 
