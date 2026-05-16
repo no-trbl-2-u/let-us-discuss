@@ -112,9 +112,29 @@ Otherwise fall through to Step 3.
 Open `plan/steps/01_build_plan.md`. If any `[ ]` row in the
 "Status (at-a-glance)" block:
 
-- Read `skills/ship-a-phase.md`.
-- Execute its procedure end-to-end.
-- Return.
+- **Stale-brief check.** Open the linked brief at
+  `plan/phases/phase_<N>_*.md`. If the brief contains an
+  `/oversight ... inputs` block at the top (a sign that a
+  human course-correction was filed against the existing
+  brief but the brief hasn't been refreshed yet), or the
+  brief's last-modified commit is older than a recent
+  `oversight:` commit that touched it:
+  - Read `skills/plan-a-phase.md`.
+  - Execute its §5 procedure end-to-end (refresh brief,
+    commit `phases: brief for phase <N> — <topic>`, push,
+    open phase mirror).
+  - Return. The next `/march` tick re-enters 3a, finds the
+    brief current, and dispatches to `/ship-a-phase`.
+- Otherwise:
+  - Read `skills/ship-a-phase.md`.
+  - Execute its procedure end-to-end.
+  - Return.
+
+Rationale: a stale brief sneaks bad decisions into shipped
+code. A `/plan-a-phase` detour costs one tick; a wrong-shape
+phase costs a revert. Ratified pattern after the 2026-05-16
+`/oversight` cycle that pinned dnd-kit and design-v1
+consumption against a brief that still said "native HTML5".
 
 #### 3b. Pending data?
 
