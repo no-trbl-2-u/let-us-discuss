@@ -176,4 +176,54 @@ Three lightweight controls, layered:
 
 ## Surface — hosting, visual system, voice, cadence
 
-*Pinned by Batch 3 of the pre-spec interview.*
+### Hosting
+
+- **Vercel.** Pairs cleanly with a Next.js full-stack TS app and
+  the Vercel AI SDK's streaming primitives. Production deploys
+  ride preview-deploy gates per nexus convention.
+- Supabase project lives outside Vercel; only env vars cross
+  the boundary.
+
+### Visual system
+
+- **Commissioned per-project.** v1 ships only after a
+  design-focused Claude session lands a `design/` tree
+  (`tokens.css`, `primitives/`, `compositions/`, `decisions.md`,
+  `INDEX.md`). The board-room metaphor is load-bearing for the
+  product — a generic shadcn theme would undersell the
+  drag-and-drop affordance.
+- Prompt for the design session lives at
+  `claude-design.prompt.md` (committed alongside this spec).
+- Per nexus rule: `design/` wins over `bearings.md` on visual
+  conflict.
+
+### Voice
+
+- **One sentence, baseline:** *Knowledgeable colleague who's
+  been-there. Plainspoken, terse, no marketing fluff. Explains
+  its reasoning when it makes a judgment call.*
+- This baseline governs the **product surface** (UI copy,
+  errors, empty states). Each **persona** in the board-room
+  library has its own voice on top of this baseline — the
+  baseline is what the *product itself* sounds like when it
+  isn't speaking as a persona.
+
+### Cadence
+
+- **No fixed cadence.** boardroom is not editorial; it doesn't
+  publish pages on a schedule. `/iterate` drains audit findings
+  as they surface. Volume is a function of audit depth, not a
+  calendar. Persona library and discussion-template changes
+  flow through normal PRs.
+
+---
+
+## See also
+
+- `plan/bearings.md` — standing decisions pinned for every
+  phase to read.
+- `claude-design.prompt.md` — paste-into-a-fresh-session prompt
+  that commissions the v1 visual system.
+- `NEXUS_LESSONS.md` — gaps noticed in the nexus playbook
+  during the pre-spec interview (for a later `/lessons-pr`
+  pass back).

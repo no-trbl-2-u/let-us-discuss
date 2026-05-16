@@ -59,9 +59,41 @@
   - Suspect → halt session, polite refusal, audit row in DB.
   - No human queue; no `/moderate` skill at v1.
 
-## Hosting, voice, cadence
+## Hosting
 
-- Pinned in Batch 3.
+- **Vercel.** Next.js app on Vercel; Supabase project external.
+  Preview-deploy gates per nexus convention. AI streaming uses
+  the Vercel AI SDK (or equivalent edge-runtime primitive).
+
+## Visual system
+
+- **Commissioned per-project.** v1 blocks on a `design/` tree
+  produced by a separate design-focused Claude session.
+- Authoritative location: `design/tokens.css` +
+  `design/decisions.md`. **`design/` wins over `bearings.md`
+  on conflict** (per
+  `../nexus/customization/visual-system.md`).
+- Commission prompt: `claude-design.prompt.md` (this repo).
+- Working defaults (apply only when `design/` absent):
+  - Mode: TBD by design session.
+  - Type families: TBD by design session.
+  - Single-accent palette; the board-room metaphor demands a
+    physical-table feel (paper/ink defaults until proven
+    otherwise).
+
+## Voice
+
+- **Baseline (product surface):** *Knowledgeable colleague
+  who's been-there. Plainspoken, terse, no marketing fluff.
+  Explains its reasoning when it makes a judgment call.*
+- Persona voices layer on top; the baseline governs the
+  product's own UI strings.
+
+## Cadence
+
+- No fixed cadence. `/iterate` drains audit findings as found.
+  Persona-library and discussion-template changes ship via
+  normal PR.
 
 ## Hard rules
 
