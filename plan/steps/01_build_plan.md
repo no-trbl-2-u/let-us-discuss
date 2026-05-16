@@ -22,10 +22,10 @@ commit that ships the phase.
 - [x] Phase 3 — Auth (magic-link sign-in, `/signin`,
       `/auth/callback`, session-aware server actions, anon vs.
       authed middleware) — `eb5e302`
-- [ ] Phase 4 — Persona + template substrate (markdown/JSON
+- [x] Phase 4 — Persona + template substrate (markdown/JSON
       under `personas/` and `templates/`, Zod schemas,
       `pnpm data:validate` green, persona library renders
-      read-only)
+      read-only) — `1db4a2f`
 - [ ] Phase 5 — Boardroom canonical surface (the drag-and-drop
       board, persona-card primitives, empty/active/in-progress
       states; **canonical sibling** — every later in-app
@@ -272,3 +272,8 @@ motion stops. Sweep for the "small thing wrong" findings that
   middleware.ts + /app/layout.tsx double-gate /app/*; lib/auth
   helpers + lib/supabase/auth.ts; Header retrofit; 72 unit tests +
   14 e2e green)
+- phase 4 — 1db4a2f — persona + template substrate (4 personas in
+  personas/ + 1 template; Zod schemas in lib/schemas; cached
+  loaders + lib/limits.ts; /about/personas read-only library;
+  scripts/validate-data.ts replaces the no-op stub via tsx;
+  gray-matter + tsx added)
