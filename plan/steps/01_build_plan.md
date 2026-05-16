@@ -35,10 +35,20 @@ commit that ships the phase.
 - [x] Phase 6 — Anonymous demo loop (`/try` — capped session,
       sessionStorage only, no DB write; happy-path end-to-end
       with one persona for the smoke test) — `38fb53f`
-- [ ] Phase 7 — Multi-persona conferring loop (lead-ring
-      clarifying questions; exec-summary checkpoint;
-      specialist round; final-artifact render). The product's
-      core gameplay; budget extra care.
+- [ ] Phase 7a — Sessions API scaffold + DB schema
+      (sessions/turns/artifacts migration with RLS;
+      /api/sessions route shell that returns
+      session.error code=not-implemented end-to-end; shared
+      SSE event types, repo helpers, budget tracker,
+      AnthropicConfigError factory; session-side reducer +
+      stream hook wired to the Start button; no LLM calls)
+- [ ] Phase 7b — Multi-persona conferring loop (Anthropic
+      orchestrator replaces the not-implemented return;
+      clarify → confer → exec-summary checkpoint →
+      specialists → artifact rounds; LiveTranscript +
+      ClarifyPrompt + ExecSummaryCard + ArtifactPreviewGrid
+      light up). The product's core gameplay; budget extra
+      care. Requires ANTHROPIC_API_KEY populated.
 - [ ] Phase 8 — Moderation gates (input + output pre-filter
       via OpenAI omni-moderation; halt-and-refuse UX;
       `flag_audit` table)

@@ -38,20 +38,28 @@
 - **/iterate skip:** this row is `[operator]` — `/iterate`
   should leave it pending and move on.
 
-### [operator] Populate CRITIQUE_SESSION_COOKIE for /critique
+### [operator] Populate SUPABASE_E2E_SESSION_COOKIE for /critique
 
-- **Source:** oversight 2026-05-16
-- **Score:** 2.5 (medium — only matters once /critique starts
-  walking the authed surface, which gates on phase 5 ship +
-  green deploy; the first /critique tick after phase 5 will
-  fall back to anonymous-only without this).
+- **Source:** oversight 2026-05-16 (renamed from
+  `CRITIQUE_SESSION_COOKIE` per oversight 2026-05-16 round 4 —
+  `plan/bearings.md` L42 declares the env var the reader
+  actually reads is `SUPABASE_E2E_SESSION_COOKIE`; the older
+  name in `.env.example` is a documentation drift that 7a /
+  the next operator pass should clean up).
+- **Score:** 3.0 (was 2.5 — bumped because /critique pass 1
+  already proved this is a real blocker; the authed reader
+  pass exited immediately with auth-failed).
 - **Category:** config (operator action)
 - **Summary:** `/critique`'s reader plays back this cookie to
   walk the authed surface. With it empty, the next /critique
-  tick (after phase 5 ships) will only see public pages.
+  tick will only see public pages — confirmed by pass 1's
+  `auth-failed` finding in `plan/CRITIQUE.md`.
 - **What to do:** Create a dedicated `critique-bot@…` account,
-  sign in once via magic-link in browser, copy the Supabase
-  session cookie from devtools, paste into `.env`. Rotate
+  sign in once via magic-link in browser, copy the resulting
+  `sb-<project>-auth-token` cookie from devtools, paste into
+  `.env` as `SUPABASE_E2E_SESSION_COOKIE`. Update
+  `.env.example` to use the same name (currently shows the
+  older `CRITIQUE_SESSION_COOKIE` placeholder — drift). Rotate
   out-of-band when reader reports auth-failed.
 - **Owner:** user / operator.
 - **/iterate skip:** same as above.
