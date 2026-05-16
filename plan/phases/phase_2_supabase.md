@@ -9,7 +9,7 @@
 ## Outcome
 
 A typed Supabase client lives in `lib/supabase/`. A dev-only
-`/_diag` route round-trips `select 1` against the configured
+`/diag` route round-trips `select 1` against the configured
 Postgres and renders the result. `.env.example` documents every
 key already; `setup/03_supabase.md` is upgraded STUB → PARTIAL
 (keys path captured, auth section still PARTIAL until phase 3).
@@ -19,7 +19,7 @@ shape.
 ## Routes / endpoints (locked in `bearings.md`)
 
 - `/api/health` — unchanged from phase 1 (no Supabase coupling).
-- `/_diag` — **new, dev/preview only.** Server component reads
+- `/diag` — **new, dev/preview only.** Server component reads
   `select 1` via the service-role client and renders
   `{ ok, value, env }`. Returns `notFound()` (HTTP 404) unless
   `DIAG_ENABLED=1` is present at runtime. Not part of the
@@ -32,8 +32,8 @@ shape.
 |---|---|---|
 | `createServerClient()` | `lib/supabase/server.ts` | Server components + server actions; per-request via `cookies()` (placeholder cookie store in phase 2; phase 3 wires the real one). |
 | `createBrowserClient()` | `lib/supabase/client.ts` | Browser bundles (phase 3 is the first real consumer; phase 2 only ships the factory + a unit test that it returns a client). |
-| `createServiceClient()` | `lib/supabase/server.ts` | Server-only, bypasses RLS. Used by `/_diag` and (later) admin scripts. |
-| `runDiagProbe()` | `lib/supabase/diag.ts` | Pure helper consumed by the `/_diag` route. Returns `{ ok: true, value }` on success, `{ ok: false, reason }` on env-missing or query failure. |
+| `createServiceClient()` | `lib/supabase/server.ts` | Server-only, bypasses RLS. Used by `/diag` and (later) admin scripts. |
+| `runDiagProbe()` | `lib/supabase/diag.ts` | Pure helper consumed by the `/diag` route. Returns `{ ok: true, value }` on success, `{ ok: false, reason }` on env-missing or query failure. |
 
 No data fetched from the repo content layer; phase 4 introduces
 `personas/`+`templates/` loaders.
@@ -41,11 +41,13 @@ No data fetched from the repo content layer; phase 4 introduces
 ## Components / handlers
 
 This phase is mostly library code; no new visible components.
-The `/_diag` page renders a small `<DiagPanel />` server
+The `/diag` page renders a small `<DiagPanel />` server
 component inline — kept under `app/_diag/` because it has no
 other consumers.
 
-- `app/_diag/page.tsx` — server component. Calls
+- `app/diag/page.tsx` — server component (path is `/diag`, not
+  `/_diag` — Next.js's leading-underscore folders are excluded
+  from routing). Calls
   `runDiagProbe()`; renders a typographic JSON-ish block.
 - `lib/supabase/server.ts` — `createServerClient()`,
   `createServiceClient()`. Re-exports the `Database` type.
@@ -81,12 +83,12 @@ re-target.
 
 ## SEO / metadata / output schema
 
-`/_diag` emits `<meta name="robots" content="noindex">` and a
+`/diag` emits `<meta name="robots" content="noindex">` and a
 plain `<title>diag</title>`. Not a content surface.
 
 ## Hero / body / sub-section composition
 
-`/_diag`:
+`/diag`:
 
 ```
 <DiagShell>
@@ -122,10 +124,10 @@ No loading state — the page is fully server-rendered.
 - **`Database` type:** placeholder; `pnpm db:types` is wired
   but exits 0 noting "no migrations yet." Regen happens phase
   3+ once tables exist.
-- **`/_diag` gating:** `process.env.DIAG_ENABLED === '1'`.
+- **`/diag` gating:** `process.env.DIAG_ENABLED === '1'`.
   Default unset = 404 in prod. Set locally + on Vercel preview
   via env-var; do not set on production.
-- **`/_diag` query:** `select 1` via `client.rpc()` is not
+- **`/diag` query:** `select 1` via `client.rpc()` is not
   possible without an existing RPC. Instead, use
   `client.from('non_existent').select('*').limit(0)` and
   catch — or better, `await client.auth.getSession()` since
@@ -148,14 +150,14 @@ No loading state — the page is fully server-rendered.
   module-level export is a *factory*, not an instance.
 - **Test strategy:** unit tests cover the env-gating and
   diag-state shape. No live DB calls in tests. E2E does NOT
-  hit `/_diag` (the route is disabled in the e2e build to
+  hit `/diag` (the route is disabled in the e2e build to
   keep the gate hermetic).
 
 A brief that leaves Open Qs is a brief that fails its job.
 
 ## Mobile reflow / responsive
 
-`/_diag` is dev-only; mobile reflow not budgeted. Single
+`/diag` is dev-only; mobile reflow not budgeted. Single
 column at all viewports.
 
 ## Pages × tests matrix
@@ -165,7 +167,7 @@ column at all viewports.
 | `lib/supabase/server.ts` factories | `createServerClient` / `createServiceClient` accept env, throw on missing | n/a |
 | `lib/supabase/client.ts` factory | `createBrowserClient` throws on missing public env | n/a |
 | `lib/supabase/diag.ts` | `runDiagProbe` returns env-missing reason when SUPABASE_URL absent; returns ok-true when the SDK probe resolves cleanly (SDK mocked) | n/a |
-| `/_diag` route | `page.tsx` calls `notFound()` when `DIAG_ENABLED !== '1'` | n/a (route disabled in e2e build) |
+| `/diag` route | `page.tsx` calls `notFound()` when `DIAG_ENABLED !== '1'` | n/a (route disabled in e2e build) |
 | Phase 1 regressions | (unchanged from phase 1) | landing + /api/health still pass |
 
 ## Verify gate

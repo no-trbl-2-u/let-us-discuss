@@ -1,8 +1,11 @@
 # Supabase setup — boardroom
 
-> **STUB.** Project not yet created. Phase 2 (Supabase wired)
-> ships when the keys land in `.env`; phase 3 (auth) ships
-> when magic-link is configured in the Auth section.
+> **PARTIAL.** Phase 2 has landed: typed clients exist
+> (`lib/supabase/{server,client,diag}.ts`), `/_diag` round-trips
+> a Supabase probe, and `.env` carries the three keys. Auth
+> section is still **PARTIAL** — magic-link configuration
+> (Section C) and the first migration (Section D) ship in
+> phase 3.
 >
 > **Account:** TBD (the user's personal Supabase account)
 > **Region:** Pick the region closest to Vercel's primary
@@ -39,15 +42,30 @@ Path: https://supabase.com/dashboard/new
 - [ ] Database password: generate a long random; store in 1Password
 - [ ] Region: nearest to the Vercel primary region
 
-## Section B — Capture keys
+## Section B — Capture keys (PARTIAL — local `.env` populated; Vercel mirror still required)
 
 Path: Project → Settings → API
 
-- [ ] `SUPABASE_URL` ← Project URL
-- [ ] `SUPABASE_ANON_KEY` ← anon public
-- [ ] `SUPABASE_SERVICE_ROLE_KEY` ← service_role (server-only)
+- [x] `SUPABASE_URL` ← Project URL
+- [x] `SUPABASE_ANON_KEY` ← anon public
+- [x] `SUPABASE_SERVICE_ROLE_KEY` ← service_role (server-only)
 - [ ] Mirror into Vercel env vars per `02_vercel.md` Section B
-- [ ] Mirror into local `.env`
+      (include `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+      — phase 3 reads them from the browser bundle)
+- [x] Mirror into local `.env`
+
+### Diagnostic route (`/diag`)
+
+Phase 2 ships a guarded diagnostic route at `/diag` that runs a
+Supabase `auth.getSession()` probe and renders the result.
+
+- The route returns **404** unless `DIAG_ENABLED=1` is present
+  at runtime.
+- Set `DIAG_ENABLED=1` locally in `.env` and on Vercel **preview**
+  environment only. **Never set on production.**
+- The probe is intentionally light (no tables exist yet); phase 3
+  upgrades it to touch `auth.users` once the first migration
+  ships.
 
 ## Section C — Auth (magic-link, phase 3)
 
