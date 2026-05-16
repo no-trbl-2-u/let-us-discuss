@@ -26,10 +26,10 @@ commit that ships the phase.
       under `personas/` and `templates/`, Zod schemas,
       `pnpm data:validate` green, persona library renders
       read-only) — `1db4a2f`
-- [ ] Phase 5 — Boardroom canonical surface (the drag-and-drop
+- [x] Phase 5 — Boardroom canonical surface (the drag-and-drop
       board, persona-card primitives, empty/active/in-progress
       states; **canonical sibling** — every later in-app
-      surface mirrors its shape)
+      surface mirrors its shape) — `6123320`
 
 **Feature surfaces (phases 6–13):**
 - [ ] Phase 6 — Anonymous demo loop (`/try` — capped session,
@@ -283,3 +283,9 @@ motion stops. Sweep for the "small thing wrong" findings that
   loaders + lib/limits.ts; /about/personas read-only library;
   scripts/validate-data.ts replaces the no-op stub via tsx;
   gray-matter + tsx added)
+- phase 5 — 6123320 — boardroom canonical surface (drag-and-drop
+  /app with 6-seat oval table, persona shelf, pitch input,
+  start-session button gated on a 4-state reducer; @dnd-kit/core
+  + utilities; URL-params + sessionStorage persistence; design
+  v1 primitives consumed; components/boardroom/ is the canonical
+  shape every later authed surface mirrors)
