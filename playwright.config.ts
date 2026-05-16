@@ -50,6 +50,15 @@ export default defineConfig({
         process.env.SUPABASE_ANON_KEY ?? 'placeholder-anon-key',
       SUPABASE_SERVICE_ROLE_KEY:
         process.env.SUPABASE_SERVICE_ROLE_KEY ?? 'placeholder-service-key',
+      // Magic-link e2e walk (e2e/auth-flow.spec.ts) reads these.
+      // Unset by default; the spec test-skips when absent.
+      NEXT_PUBLIC_SITE_URL:
+        process.env.NEXT_PUBLIC_SITE_URL ?? BASE_URL,
+      MAGIC_LINK_INBOX_PROVIDER:
+        process.env.MAGIC_LINK_INBOX_PROVIDER ?? '',
+      MAILOSAUR_API_KEY: process.env.MAILOSAUR_API_KEY ?? '',
+      MAILOSAUR_SERVER_ID: process.env.MAILOSAUR_SERVER_ID ?? '',
+      MAGIC_LINK_TEST_EMAIL: process.env.MAGIC_LINK_TEST_EMAIL ?? '',
     },
   },
 })
