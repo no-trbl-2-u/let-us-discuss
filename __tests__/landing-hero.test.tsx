@@ -1,0 +1,27 @@
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import {
+  HERO_HEADLINE,
+  HERO_SUBHEAD,
+  LandingHero,
+} from '@/components/site/landing-hero'
+
+describe('LandingHero', () => {
+  it('renders the pitch headline as an H1', () => {
+    render(<LandingHero />)
+    const h1 = screen.getByRole('heading', { level: 1 })
+    expect(h1).toHaveTextContent(HERO_HEADLINE)
+  })
+
+  it('renders the subhead', () => {
+    render(<LandingHero />)
+    expect(screen.getByText(HERO_SUBHEAD)).toBeInTheDocument()
+  })
+
+  it('renders the Try-it CTA as aria-disabled', () => {
+    render(<LandingHero />)
+    const cta = screen.getByRole('button', { name: /try it/i })
+    expect(cta).toHaveAttribute('aria-disabled', 'true')
+    expect(cta).toBeDisabled()
+  })
+})

@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #faf6ef;
+  --ink: #16181a;
+  --accent: #1e3a5f;
+  --font-sans: var(--font-sans-loaded, ui-sans-serif, system-ui, sans-serif);
+  --font-serif: var(--font-serif-loaded, ui-serif, Georgia, serif);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #16181a;
+    --ink: #f1ece1;
+    --accent: #8aaad1;
+  }
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-serif);
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans);
+  line-height: 1.2;
+}
