@@ -14,9 +14,9 @@ shipped (with commit hash). Tick in this file in the same
 commit that ships the phase.
 
 **Substrate (phases 1–5):**
-- [ ] Phase 1 — Bootstrap (Next.js 15 + Tailwind + Biome,
+- [x] Phase 1 — Bootstrap (Next.js 15 + Tailwind + Biome,
       verify gate green, deploy gate functional, marketing
-      landing renders)
+      landing renders) — `c37471b`
 - [ ] Phase 2 — Supabase wired (project linked, env example,
       typed client, `setup/03_supabase.md` upgraded from STUB)
 - [ ] Phase 3 — Auth (magic-link sign-in, `/signin`,
@@ -250,10 +250,16 @@ motion stops. Sweep for the "small thing wrong" findings that
 
 ## Carry-overs / known gaps (update as phases ship)
 
-(Empty until phases ship. Add `[-]` rows for partial-but-shipped
-phases with linked notes here.)
+- [-] Phase 1 — deploy gate not yet verified end-to-end. `pnpm verify`
+      is green; `pnpm deploy:check` is blocked on a populated `.env`
+      (VERCEL_TOKEN, VERCEL_PROJECT_ID, DEPLOY_PROVIDER=vercel — per
+      `setup/02_vercel.md` + `.env.example`). User will populate
+      out-of-band; the next loop tick that runs `deploy:check` will
+      confirm green and the phase-close comment (deploy URL) can be
+      posted to issue #1 retroactively if desired.
 
 ## Phase log (commit hashes)
 
-(Empty until phase 1 ships. One line per shipped phase, format:
-`phase <N> — <commit hash> — <one-line summary>`.)
+- phase 1 — c37471b — bootstrap (Next.js 15 + Tailwind + Biome +
+  Vitest + Playwright; marketing landing + /api/health; verify gate
+  green; deploy gate wired but unverified pending .env)
