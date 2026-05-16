@@ -114,7 +114,65 @@ into the product. Migration the other direction is not planned.
 
 ## Spine — auth, identity, abuse, moderation
 
-*Pinned by Batch 2 of the pre-spec interview.*
+### Auth provider
+
+- **Supabase Auth** with magic-link as the primary flow.
+- Pairs with the `hybrid-with-managed-postgres` data call —
+  Supabase covers identity *and* Postgres in one wired surface,
+  which collapses two pre-flights into one for the v1 phases.
+- One external service to pre-flight (env vars, RLS policies,
+  email-sender domain).
+
+### Identity tiers
+
+- **Anonymous** users can:
+  - Land on the marketing surface.
+  - Read documentation about how a boardroom session works.
+  - Run **one short demo session** (capped at a small token /
+    turn budget) without signing in. The demo persists to
+    `sessionStorage` only, evaporates on tab close, and cannot
+    be downloaded as files.
+- **Authenticated** users (magic-link signed-in) can:
+  - Run full sessions with the standard token / turn budget.
+  - Persist session transcripts and generated artifacts to the
+    database.
+  - Download `spec.md`, the exec summary, and the call-outs
+    file.
+- The demo cap exists to let the persona ("new to multi-agent
+  AI") *feel* the loop before paying with their email.
+
+### Anti-abuse posture
+
+Three lightweight controls, layered:
+
+- **Per-account session quota.** Authenticated users get N
+  sessions/day (initial N pinned in a config file; revisitable
+  in `/oversight`).
+- **Per-IP rate limit** on the anonymous demo path so a single
+  bad actor can't grind the demo for free LLM calls.
+- **Per-session token cap.** Every session has a hard token
+  ceiling; the conversation gracefully wraps at the cap with
+  the artifacts produced so far, even if the personas haven't
+  fully converged.
+- Cost-of-abuse is bounded by all three. No CAPTCHA, no
+  account-age gate — those tax the persona without addressing
+  the real failure mode (cost runaway).
+
+### Moderation flow
+
+- **AI pre-filter, two-sided.** OpenAI moderation endpoint (or
+  the equivalent of whichever provider we pin in Phase B) runs
+  twice per turn:
+  1. On the **user's pitch / typed input** before it is fanned
+     out to persona prompts.
+  2. On **each persona output** before it is rendered or
+     persisted.
+- Clean → continue normally. Suspect → halt the session,
+  surface a polite refusal in the UI, and log the flag row to
+  Postgres for audit. No human moderation queue at v1; sessions
+  are single-user and not published anywhere.
+- A `/moderate`-style skill becomes worth adding only if v1
+  shows a non-trivial flag rate.
 
 ## Surface — hosting, visual system, voice, cadence
 

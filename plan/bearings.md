@@ -37,7 +37,27 @@
 
 ## Auth, identity, anti-abuse, moderation
 
-- Pinned in Batch 2.
+- **Auth provider:** Supabase Auth (magic-link primary).
+  Same Supabase project also fronts Postgres for v1.
+- **Identity tiers:**
+  - Anonymous → marketing pages + **one short demo session**
+    (token/turn-capped, `sessionStorage` only, no download).
+  - Authenticated → full sessions, DB persistence, artifact
+    download.
+- **Anti-abuse (layered):**
+  - Per-account session quota (N/day; constant lives in config,
+    revisable via `/oversight`).
+  - Per-IP rate-limit on the anonymous demo path.
+  - Per-session **token cap**; conversation wraps gracefully
+    at the cap and emits whatever artifacts exist.
+  - No CAPTCHA, no account-age gate at v1.
+- **Moderation:**
+  - AI pre-filter on user input *before* fan-out to persona
+    prompts.
+  - AI pre-filter on each persona output *before* render /
+    persist.
+  - Suspect → halt session, polite refusal, audit row in DB.
+  - No human queue; no `/moderate` skill at v1.
 
 ## Hosting, voice, cadence
 
