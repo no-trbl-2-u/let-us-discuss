@@ -19,9 +19,9 @@ commit that ships the phase.
       landing renders) — `c37471b`
 - [x] Phase 2 — Supabase wired (project linked, env example,
       typed client, `setup/03_supabase.md` upgraded from STUB) — `626e61c`
-- [ ] Phase 3 — Auth (magic-link sign-in, `/signin`,
+- [x] Phase 3 — Auth (magic-link sign-in, `/signin`,
       `/auth/callback`, session-aware server actions, anon vs.
-      authed middleware)
+      authed middleware) — `eb5e302`
 - [ ] Phase 4 — Persona + template substrate (markdown/JSON
       under `personas/` and `templates/`, Zod schemas,
       `pnpm data:validate` green, persona library renders
@@ -267,3 +267,8 @@ motion stops. Sweep for the "small thing wrong" findings that
   lib/supabase/{env,server,client,diag,database.types}.ts; /diag
   DIAG_ENABLED-gated probe; db/migrations + stub scripts;
   setup/03_supabase.md upgraded STUB → PARTIAL)
+- phase 3 — eb5e302 — magic-link auth (/signin server-rendered
+  form + sent/error states; /auth/callback code-exchange handler;
+  middleware.ts + /app/layout.tsx double-gate /app/*; lib/auth
+  helpers + lib/supabase/auth.ts; Header retrofit; 72 unit tests +
+  14 e2e green)
