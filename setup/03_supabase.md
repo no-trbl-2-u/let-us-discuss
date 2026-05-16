@@ -74,13 +74,20 @@ Path: Project → Authentication → Providers
 - [ ] Enable Email provider
 - [ ] Magic Link enabled; password sign-in disabled
 - [ ] Email confirmations: **required** for new accounts
-- [ ] Site URL: `https://boardroom-breakdown.vercel.app`
+- [ ] Site URL: `https://let-us-discuss.vercel.app`
+      (Vercel project is `let-us-discuss`; preview URLs follow
+      `let-us-discuss-*.vercel.app`. If you later rename the
+      Vercel project to `boardroom-breakdown`, update this
+      Site URL and the redirect URLs below in the Supabase
+      dashboard to match.)
 - [ ] Redirect URLs (add all three):
       ```
       http://localhost:3000/auth/callback
-      https://boardroom-breakdown.vercel.app/auth/callback
-      https://*.boardroom-breakdown.vercel.app/auth/callback
+      https://let-us-discuss.vercel.app/auth/callback
+      https://*-tj-braindump.vercel.app/auth/callback
       ```
+      The wildcard covers preview-deploy hostnames Vercel
+      generates per push under the `tj-braindump` team.
 
 Path: Authentication → Email Templates
 
