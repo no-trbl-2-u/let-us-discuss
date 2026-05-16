@@ -6,75 +6,37 @@
 
 ## Pending
 
-### [needs-e2e] Magic-link sign-in walk — **BLOCKS phase 5**
+### [operator] Wire magic-link inbox credentials for e2e walk
 
-- **Source:** oversight 2026-05-16 (phase 3 brief filed as
-  follow-up; lifted here for visibility; upgraded to phase-5
-  blocker per /oversight 2026-05-16 round 2)
-- **Score:** 4.5 (was 4.0 — bumped because phase 5 is now
-  gated on this row landing first; without it, the canonical-
-  sibling deploy ships behind an unverified auth path).
-- **Category:** test
-- **Summary:** The phase 3 verify gate covers `/signin` render
-  + `/app → /signin` redirect, but **does not** walk a real
-  magic link end-to-end. A regression in `signInWithOtp`,
-  `/auth/callback`, or Supabase Site-URL config can ship green.
-- **What to ship:** A Playwright e2e that hits `/signin`,
-  submits a real test-inbox email, pulls the link, follows it,
-  asserts landing at `/app` as the test user. Helper mailbox
-  pinned in `.env.example` so the loop can run it; suggested
-  options below.
-- **Inbox options to evaluate (pick one):**
+- **Source:** oversight 2026-05-16 (round 3 — follows resolution
+  of [needs-e2e] below)
+- **Score:** 3.0 (medium — without credentials the walk skips,
+  so a regression in `signInWithOtp` / `/auth/callback` /
+  Supabase Site-URL config can still ship green; with them the
+  e2e guards the whole magic-link path).
+- **Category:** config (operator action)
+- **Summary:** `e2e/auth-flow.spec.ts` ships behind
+  `MAGIC_LINK_INBOX_PROVIDER`; default `none` makes the spec
+  test-skip. The Mailosaur path is wired in
+  `e2e/helpers/magic-link-inbox.ts` (no SDK install needed —
+  uses `fetch`). To light the spec up, populate the env block
+  documented in `.env.example`.
+- **What to do:** Pick one of the inbox options below; populate
+  the matching env vars in local `.env` (so `pnpm e2e` walks the
+  spec) and, if you want the walk in CI, in the GitHub Actions
+  / Vercel preview env too.
+- **Inbox options:**
   1. **Mailosaur** — purpose-built; per-test inbox + REST API.
-     Paid (~$25/mo). Easiest API surface.
+     Paid (~$25/mo). Easiest API surface; already wired.
   2. **Gmail `+e2e@<account>`** — free; uses Gmail API +
-     OAuth. More setup, but zero per-test cost.
+     OAuth. More setup, but zero per-test cost. Not wired yet;
+     `magicLinkInboxFromEnv` would need a `gmail-app-password`
+     branch.
   3. **Resend test inbox / inbucket** — self-hosted/free
-     options if you have the appetite.
-- **When:** **before phase 5 ships.** The next /march tick
-  should dispatch /iterate (this row scores ≥ 3.0; iterate
-  takes the top finding).
-- **Owner:** `/iterate` next tick.
-
-### [operator] Mirror Supabase keys into NEXT_PUBLIC vars
-
-- **Source:** oversight 2026-05-16
-- **Score:** 4.0 (high — middleware fails closed without this;
-  even a successful magic-link sign-in won't land on /app).
-- **Category:** config (operator action; can't be fixed by
-  the loop)
-- **Summary:** Local `.env` has `SUPABASE_URL` /
-  `SUPABASE_ANON_KEY` populated but the public mirrors
-  (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`)
-  are empty. The middleware at `middleware.ts` reads the
-  public mirrors at request time; absent values trigger the
-  fail-closed redirect, so even an authed user lands back at
-  `/signin`.
-- **What to do:** Copy `SUPABASE_URL` and `SUPABASE_ANON_KEY`
-  into the `NEXT_PUBLIC_*` slots in `.env`. Mirror the same
-  pair into the Vercel project's environment variables
-  (Production + Preview).
+     options if you have the appetite. Not wired yet.
 - **Owner:** user / operator.
 - **/iterate skip:** this row is `[operator]` — `/iterate`
-  should leave it pending and move to the next-highest
-  scoring row.
-
-### [operator] Update Supabase dashboard to let-us-discuss.vercel.app
-
-- **Source:** oversight 2026-05-16
-- **Score:** 3.5 (medium-high — magic-link clicks in
-  production redirect to the dashboard's configured Site URL;
-  if that's still the old hostname, sign-in lands on a 404).
-- **Category:** config (operator action)
-- **Summary:** `setup/03_supabase.md` Section C documents the
-  required dashboard updates: Site URL =
-  `https://let-us-discuss.vercel.app`; Redirect URLs include
-  the production host + the `*-tj-braindump.vercel.app`
-  preview wildcard. None of this is checked in code.
-- **What to do:** Sign in to the Supabase dashboard, walk
-  Section C in `setup/03_supabase.md`, save.
-- **Owner:** user / operator.
-- **/iterate skip:** same as above; leave pending.
+  should leave it pending and move on.
 
 ### [operator] Populate CRITIQUE_SESSION_COOKIE for /critique
 
@@ -93,3 +55,43 @@
   out-of-band when reader reports auth-failed.
 - **Owner:** user / operator.
 - **/iterate skip:** same as above.
+
+## Resolved
+
+### [needs-e2e] Magic-link sign-in walk — resolved 2026-05-16
+
+- **Resolved by:** `4b42d68` (e2e spec + helper + env scaffold) +
+  follow-up playwright config fix excluding the vitest helper
+  test from spec discovery.
+- **What shipped:** `e2e/auth-flow.spec.ts` walks `/signin →
+  inbox → /app` when a provider is configured; pluggable
+  inbox factory in `e2e/helpers/magic-link-inbox.ts` (Mailosaur
+  REST, no SDK install); helper unit tests under
+  `e2e/helpers/__tests__/`; `.env.example` documents the env
+  block; `playwright.config.ts` propagates the vars to the
+  webServer.
+- **Skip-by-default:** with `MAGIC_LINK_INBOX_PROVIDER` unset
+  the spec test-skips, keeping verify green until an operator
+  lights it up. The follow-up to actually walk the link is
+  captured above as `[operator] Wire magic-link inbox
+  credentials`.
+- **Phase-5 unblock:** the gate documented in oversight round
+  2 (5516cde) is satisfied — phase 5 (boardroom canonical) is
+  no longer blocked on this row.
+
+### [operator] Mirror Supabase keys into NEXT_PUBLIC vars — resolved 2026-05-16
+
+- **Resolved by:** operator confirmed via oversight 2026-05-16
+  round 3. `NEXT_PUBLIC_SUPABASE_URL` /
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY` populated in local `.env` and
+  in the Vercel project env (Production + Preview).
+- **Effect:** middleware no longer fails closed on authed
+  traffic; magic-link sign-in can land on `/app`.
+
+### [operator] Update Supabase dashboard to let-us-discuss.vercel.app — resolved 2026-05-16
+
+- **Resolved by:** operator confirmed via oversight 2026-05-16
+  round 3. Site URL + redirect allow-list updated per
+  `setup/03_supabase.md` Section C.
+- **Effect:** magic-link clicks in production redirect to the
+  current host, not the old one.
