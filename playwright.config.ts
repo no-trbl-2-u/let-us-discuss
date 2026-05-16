@@ -33,5 +33,23 @@ export default defineConfig({
     timeout: 60_000,
     stdout: 'pipe',
     stderr: 'pipe',
+    env: {
+      // Placeholder Supabase env so the middleware + auth route
+      // handlers boot without throwing. The redirect-flow tests
+      // never reach the SDK — the middleware short-circuits on
+      // anon traffic before calling getUser when env is absent;
+      // when env is present (placeholders are fine here), getUser
+      // returns null over the dummy URL.
+      NEXT_PUBLIC_SUPABASE_URL:
+        process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://e2e.placeholder.test',
+      NEXT_PUBLIC_SUPABASE_ANON_KEY:
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'placeholder-anon-key',
+      SUPABASE_URL:
+        process.env.SUPABASE_URL ?? 'https://e2e.placeholder.test',
+      SUPABASE_ANON_KEY:
+        process.env.SUPABASE_ANON_KEY ?? 'placeholder-anon-key',
+      SUPABASE_SERVICE_ROLE_KEY:
+        process.env.SUPABASE_SERVICE_ROLE_KEY ?? 'placeholder-service-key',
+    },
   },
 })

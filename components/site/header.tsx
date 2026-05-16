@@ -17,13 +17,9 @@ export function Header() {
           <Link href="/" className="hover:underline">
             Home
           </Link>
-          <span
-            aria-disabled="true"
-            className="cursor-not-allowed text-ink/50"
-            title="Coming in v1"
-          >
+          <Link href="/signin" className="hover:underline">
             Sign in
-          </span>
+          </Link>
         </nav>
       </div>
     </header>
