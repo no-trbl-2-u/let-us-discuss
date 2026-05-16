@@ -96,10 +96,15 @@
 - **Effect:** middleware no longer fails closed on authed
   traffic; magic-link sign-in can land on `/app`.
 
-### [operator] Update Supabase dashboard to let-us-discuss.vercel.app — resolved 2026-05-16
+### [operator] Update Supabase dashboard to let-us-discuss-ai.vercel.app — resolved 2026-05-16
 
 - **Resolved by:** operator confirmed via oversight 2026-05-16
   round 3. Site URL + redirect allow-list updated per
   `setup/03_supabase.md` Section C.
 - **Effect:** magic-link clicks in production redirect to the
   current host, not the old one.
+- **Note:** The original row title named `let-us-discuss.vercel.app`,
+  which was the wrong host — the actual canonical alias is
+  `let-us-discuss-ai.vercel.app` (the bare `.vercel.app` host was
+  already taken). Corrected via oversight 2026-05-16 round 5; the
+  operator's dashboard update presumably used the working host.

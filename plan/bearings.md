@@ -24,11 +24,13 @@ word or one sentence.
 **Project token is `boardroom` in code/config; repo directory
 remains `boardroom-breakdown`.**
 
-**Live at:** https://let-us-discuss.vercel.app
-(Vercel project is named `let-us-discuss`; the repo is
-`boardroom-breakdown`. Repo / project name divergence is
+**Live at:** https://let-us-discuss-ai.vercel.app
+(Vercel project is named `let-us-discuss`; the bare
+`let-us-discuss.vercel.app` host was already taken so the
+production alias is `let-us-discuss-ai.vercel.app`. The repo
+is `boardroom-breakdown`. Repo / project name divergence is
 historical — preview URLs follow the Vercel name pattern
-`let-us-discuss-*.vercel.app`.)
+`let-us-discuss-*-tj-braindump.vercel.app`.)
 
 ## Surface
 
