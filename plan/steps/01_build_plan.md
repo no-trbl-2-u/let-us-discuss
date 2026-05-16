@@ -135,19 +135,25 @@ so the user can preview before staffing a session.
 
 The drag-and-drop board. This is the structural template every
 later in-app surface mirrors. **Spend extra care; budget 2x.**
-Outputs: `app/(authed)/app/page.tsx` (the board itself),
-`components/boardroom/board.tsx`,
-`components/boardroom/persona-card.tsx` (consumes
-`design/primitives/persona-card.tsx` if present),
-`components/boardroom/pitch-input.tsx`. States: empty (no
-personas staffed), staffed (personas on the table, no pitch),
-ready (personas + pitch, "start session" button live), running
-(read-only board with the active transcript inline).
-Persistence hook: in this phase the board state lives in URL
-params + sessionStorage; phase 6 ships the DB persist for
-authed users. **Detailed brief:**
-`plan/phases/phase_canonical_sibling.md` (renamed
-`phase_5_boardroom_canonical.md` at ship time).
+Outputs: `app/app/page.tsx` (the board itself),
+`components/boardroom/board.tsx` +
+`components/boardroom/board-client.tsx` (the dnd-kit island),
+`components/boardroom/persona-shelf.tsx`,
+`components/boardroom/boardroom-surface.tsx`,
+`components/boardroom/pitch-input.tsx`,
+`components/boardroom/start-session-button.tsx`,
+`components/boardroom/use-board-state.ts` +
+`use-board-persistence.ts`. States: empty (no personas
+staffed), staffed (personas on the table, no pitch), ready
+(personas + pitch, "start session" button live), running
+(read-only board with the active transcript placeholder
+inline; phase 7 wires the real conferring). Persistence hook:
+in this phase the board state lives in URL params +
+sessionStorage; phase 6 ships the DB persist for authed users.
+DnD library: `@dnd-kit/core` + `@dnd-kit/sortable` (pinned by
+`/oversight` 2026-05-16). Design primitives consumed directly
+from `design/primitives/`. **Detailed brief:**
+`plan/phases/phase_5_boardroom_canonical.md`.
 
 ### Phase 6 — Anonymous demo loop
 
