@@ -17,8 +17,8 @@ commit that ships the phase.
 - [x] Phase 1 — Bootstrap (Next.js 15 + Tailwind + Biome,
       verify gate green, deploy gate functional, marketing
       landing renders) — `c37471b`
-- [ ] Phase 2 — Supabase wired (project linked, env example,
-      typed client, `setup/03_supabase.md` upgraded from STUB)
+- [x] Phase 2 — Supabase wired (project linked, env example,
+      typed client, `setup/03_supabase.md` upgraded from STUB) — `626e61c`
 - [ ] Phase 3 — Auth (magic-link sign-in, `/signin`,
       `/auth/callback`, session-aware server actions, anon vs.
       authed middleware)
@@ -263,3 +263,7 @@ motion stops. Sweep for the "small thing wrong" findings that
 - phase 1 — c37471b — bootstrap (Next.js 15 + Tailwind + Biome +
   Vitest + Playwright; marketing landing + /api/health; verify gate
   green; deploy gate wired but unverified pending .env)
+- phase 2 — 626e61c — supabase wired (@supabase/ssr + supabase-js;
+  lib/supabase/{env,server,client,diag,database.types}.ts; /diag
+  DIAG_ENABLED-gated probe; db/migrations + stub scripts;
+  setup/03_supabase.md upgraded STUB → PARTIAL)
