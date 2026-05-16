@@ -32,9 +32,9 @@ commit that ships the phase.
       surface mirrors its shape) — `6123320`
 
 **Feature surfaces (phases 6–13):**
-- [ ] Phase 6 — Anonymous demo loop (`/try` — capped session,
+- [x] Phase 6 — Anonymous demo loop (`/try` — capped session,
       sessionStorage only, no DB write; happy-path end-to-end
-      with one persona for the smoke test)
+      with one persona for the smoke test) — `38fb53f`
 - [ ] Phase 7 — Multi-persona conferring loop (lead-ring
       clarifying questions; exec-summary checkpoint;
       specialist round; final-artifact render). The product's
@@ -289,3 +289,9 @@ motion stops. Sweep for the "small thing wrong" findings that
   + utilities; URL-params + sessionStorage persistence; design
   v1 primitives consumed; components/boardroom/ is the canonical
   shape every later authed surface mirrors)
+- phase 6 — 38fb53f — anonymous demo loop (/try with product-lead
+  pre-staffed; canned 3-turn transcript through TurnBubble +
+  ArtifactTile previews with sign-in CTAs; DEMO_PITCH_WORDS=100;
+  sessionStorage one-tab cap; PitchInput gained an optional max
+  prop; ArtifactTile gained downloadable=false; landing CTA
+  retro-fitted to link to /try; no AI calls in this phase)
