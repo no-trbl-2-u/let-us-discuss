@@ -18,10 +18,10 @@ test.describe('landing', () => {
     expect(consoleErrors, consoleErrors.join('\n')).toEqual([])
   })
 
-  test('Try-a-demo CTA is disabled until phase 6', async ({ page }) => {
+  test('Try-a-demo CTA links to /try', async ({ page }) => {
     await page.goto('/')
-    const cta = page.getByRole('button', { name: /try a demo session/i })
-    await expect(cta).toHaveAttribute('aria-disabled', 'true')
+    const cta = page.getByRole('link', { name: /try a demo session/i })
+    await expect(cta).toHaveAttribute('href', '/try')
   })
 
   test('375px viewport reflows without horizontal scroll', async ({

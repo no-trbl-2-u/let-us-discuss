@@ -1,5 +1,5 @@
+import NextLink from 'next/link'
 import { Heading } from '@/design/primitives/heading'
-import { Button } from '@/design/primitives/button'
 import { Link } from '@/design/primitives/link'
 
 export const HERO_HEADLINE =
@@ -41,15 +41,12 @@ export function LandingHero() {
             {HERO_SUBHEAD}
           </p>
           <div className="flex flex-wrap items-center gap-[var(--space-4)]">
-            <Button
-              type="button"
-              variant="primary"
-              disabled
-              aria-disabled="true"
-              title="Coming in v1 — sign up to be notified."
+            <NextLink
+              href="/try"
+              className="inline-flex items-center justify-center gap-[var(--space-2)] h-[40px] px-[var(--space-5)] font-[var(--font-sans)] font-medium tracking-[var(--tracking-ui)] text-[var(--text-sm)] rounded-[var(--radius-sm)] bg-[color:var(--accent)] text-[color:var(--accent-ink)] shadow-[var(--shadow-resting)] hover:bg-[color:var(--accent-pressed)] active:translate-y-[1px] active:shadow-none transition-[background-color,color,box-shadow,transform] duration-[var(--t-lift)] ease-[var(--ease-lift)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ring-offset)]"
             >
               Try a demo session
-            </Button>
+            </NextLink>
             <Link href="/about/personas" variant="default">
               What is a boardroom session?
             </Link>

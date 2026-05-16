@@ -18,11 +18,10 @@ describe('LandingHero', () => {
     expect(screen.getByText(HERO_SUBHEAD)).toBeInTheDocument()
   })
 
-  it('renders the demo-session CTA as disabled until phase 6', () => {
+  it('renders the demo-session CTA as a link to /try', () => {
     render(<LandingHero />)
-    const cta = screen.getByRole('button', { name: /try a demo session/i })
-    expect(cta).toHaveAttribute('aria-disabled', 'true')
-    expect(cta).toBeDisabled()
+    const cta = screen.getByRole('link', { name: /try a demo session/i })
+    expect(cta).toHaveAttribute('href', '/try')
   })
 
   it('renders the "how a session runs" notes', () => {

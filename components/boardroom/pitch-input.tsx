@@ -9,14 +9,22 @@ type Props = {
   value: string
   onChange: (next: string) => void
   disabled?: boolean
+  max?: number
+  placeholder?: string
 }
 
-export function PitchInput({ value, onChange, disabled }: Props) {
+export function PitchInput({
+  value,
+  onChange,
+  disabled,
+  max = MAX_PITCH_WORDS,
+  placeholder = 'In a few sentences: what are you trying to ship, and for whom?',
+}: Props) {
   const id = useId()
   const words = countWords(value)
-  const percent = (words / MAX_PITCH_WORDS) * 100
+  const percent = (words / max) * 100
   const softWarn = percent >= 90 && percent < 100
-  const atCap = words >= MAX_PITCH_WORDS
+  const atCap = words >= max
 
   return (
     <div className="flex flex-col gap-[var(--space-2)]">
@@ -35,10 +43,10 @@ export function PitchInput({ value, onChange, disabled }: Props) {
         rows={5}
         onChange={(event) => {
           const next = event.target.value
-          if (countWords(next) > MAX_PITCH_WORDS) return
+          if (countWords(next) > max) return
           onChange(next)
         }}
-        placeholder="In a few sentences: what are you trying to ship, and for whom?"
+        placeholder={placeholder}
         className={cn(
           'w-full min-h-[120px] px-[var(--space-4)] py-[var(--space-3)]',
           'bg-[color:var(--paper-sunken)] text-[color:var(--ink)]',
@@ -64,7 +72,7 @@ export function PitchInput({ value, onChange, disabled }: Props) {
       >
         <span>{atCap ? 'At cap — trim to continue.' : 'Aim for 1–3 short paragraphs.'}</span>
         <span data-counter>
-          {words} / {MAX_PITCH_WORDS} words
+          {words} / {max} words
         </span>
       </p>
     </div>

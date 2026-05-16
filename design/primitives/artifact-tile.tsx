@@ -24,6 +24,11 @@ interface ArtifactTileProps {
   tokensUsed: number;    // budget consumed
   finishedAt: string;    // pre-formatted relative time
   downloaded?: boolean;
+  /** When false, the action slot renders a sign-in-to-download CTA
+   *  instead of the download button. Used by the anonymous /try
+   *  preview (phase 6); always true for the authed /app surface. */
+  downloadable?: boolean;
+  signInHref?: string;
   onDownload?: () => void;
   className?: string;
 }
@@ -41,6 +46,8 @@ export function ArtifactTile({
   tokensUsed,
   finishedAt,
   downloaded = false,
+  downloadable = true,
+  signInHref = "/signin",
   onDownload,
   className,
 }: ArtifactTileProps) {
@@ -87,22 +94,40 @@ export function ArtifactTile({
         <span className="font-[var(--font-mono)] text-[var(--text-2xs)] text-[color:var(--ink-faint)]">
           {tokensUsed.toLocaleString()} tok · {finishedAt}
         </span>
-        <button
-          type="button"
-          onClick={onDownload}
-          className={cn(
-            "inline-flex items-center gap-[var(--space-2)]",
-            "h-[32px] px-[var(--space-3)]",
-            "font-[var(--font-sans)] text-[var(--text-xs)] font-medium tracking-[var(--tracking-ui)]",
-            "rounded-[var(--radius-sm)]",
-            "border border-[color:var(--paper-edge)]",
-            "text-[color:var(--ink)] bg-[color:var(--paper)]",
-            "hover:bg-[color:var(--paper-sunken)] hover:border-[color:var(--ink-faint)]",
-            "transition-colors duration-[var(--t-lift)]"
-          )}
-        >
-          {downloaded ? "Download again" : "Download"}
-        </button>
+        {downloadable ? (
+          <button
+            type="button"
+            onClick={onDownload}
+            className={cn(
+              "inline-flex items-center gap-[var(--space-2)]",
+              "h-[32px] px-[var(--space-3)]",
+              "font-[var(--font-sans)] text-[var(--text-xs)] font-medium tracking-[var(--tracking-ui)]",
+              "rounded-[var(--radius-sm)]",
+              "border border-[color:var(--paper-edge)]",
+              "text-[color:var(--ink)] bg-[color:var(--paper)]",
+              "hover:bg-[color:var(--paper-sunken)] hover:border-[color:var(--ink-faint)]",
+              "transition-colors duration-[var(--t-lift)]"
+            )}
+          >
+            {downloaded ? "Download again" : "Download"}
+          </button>
+        ) : (
+          <a
+            href={signInHref}
+            className={cn(
+              "inline-flex items-center gap-[var(--space-2)]",
+              "h-[32px] px-[var(--space-3)]",
+              "font-[var(--font-sans)] text-[var(--text-xs)] font-medium tracking-[var(--tracking-ui)]",
+              "rounded-[var(--radius-sm)]",
+              "border border-[color:var(--paper-edge)]",
+              "text-[color:var(--ink-muted)] bg-[color:var(--paper-sunken)]",
+              "hover:bg-[color:var(--paper)] hover:text-[color:var(--ink)] hover:border-[color:var(--ink-faint)]",
+              "transition-colors duration-[var(--t-lift)]"
+            )}
+          >
+            Sign in to download
+          </a>
+        )}
       </footer>
     </article>
   );

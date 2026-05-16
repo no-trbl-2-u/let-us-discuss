@@ -30,4 +30,18 @@ describe('PitchInput', () => {
     fireEvent.change(textarea, { target: { value: `${atCap} overflow` } })
     expect(onChange).not.toHaveBeenCalled()
   })
+
+  it('honors a custom `max` prop in the counter and cap', () => {
+    const onChange = vi.fn()
+    render(<PitchInput value="hello there" onChange={onChange} max={100} />)
+    expect(screen.getByText(/2 \/ 100 words/i)).toBeInTheDocument()
+
+    const atCap = Array.from({ length: 100 }, (_, i) => `w${i}`).join(' ')
+    const { rerender } = render(<PitchInput value={atCap} onChange={onChange} max={100} />)
+    rerender(<PitchInput value={atCap} onChange={onChange} max={100} />)
+    const textareas = screen.getAllByRole('textbox')
+    const overCap = textareas[textareas.length - 1] as HTMLTextAreaElement
+    fireEvent.change(overCap, { target: { value: `${atCap} overflow` } })
+    expect(onChange).not.toHaveBeenCalled()
+  })
 })
