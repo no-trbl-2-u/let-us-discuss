@@ -52,9 +52,9 @@ commit that ships the phase.
 - [x] Phase 8 — Moderation gates (input + output pre-filter
       via OpenAI omni-moderation; halt-and-refuse UX;
       `flag_audit` table) — `41803c4`
-- [ ] Phase 9 — Anti-abuse limits (per-account session quota,
+- [x] Phase 9 — Anti-abuse limits (per-account session quota,
       per-IP demo limit, per-session token cap, graceful wrap
-      UX)
+      UX) — `f82f35a`
 - [ ] Phase 10 — Artifact render + download (spec.md, exec
       summary, call-outs; client-side download; cleanly
       typeset preview tiles)
