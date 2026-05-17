@@ -49,9 +49,9 @@ commit that ships the phase.
       ClarifyPrompt + ExecSummaryCard + ArtifactPreviewGrid
       light up). The product's core gameplay; budget extra
       care. Requires ANTHROPIC_API_KEY populated. — `305bb25`
-- [ ] Phase 8 — Moderation gates (input + output pre-filter
+- [x] Phase 8 — Moderation gates (input + output pre-filter
       via OpenAI omni-moderation; halt-and-refuse UX;
-      `flag_audit` table)
+      `flag_audit` table) — `41803c4`
 - [ ] Phase 9 — Anti-abuse limits (per-account session quota,
       per-IP demo limit, per-session token cap, graceful wrap
       UX)
