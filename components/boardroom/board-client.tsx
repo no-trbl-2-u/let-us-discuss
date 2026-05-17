@@ -11,20 +11,24 @@ import {
   useSensors,
 } from '@dnd-kit/core'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ArtifactPreviewGrid } from './artifact-preview-grid'
 import { BoardroomEmptyHint } from './boardroom-empty-hint'
 import { BoardroomSurface } from './boardroom-surface'
-import { NotImplementedCard } from './not-implemented-card'
+import { BudgetBanner } from './budget-banner'
+import { ClarifyPrompt } from './clarify-prompt'
+import { ExecSummaryCard } from './exec-summary-card'
+import { LiveTranscript } from './live-transcript'
 import { PersonaShelf } from './persona-shelf'
 import { PitchInput } from './pitch-input'
-import { startSession } from './session-stream'
+import { SessionErrorCard } from './session-error'
+import { sendAnswer, startSession } from './session-stream'
 import { StartSessionButton } from './start-session-button'
 import type { SeatId } from './types'
 import {
   readInitialBoardState,
   useBoardPersistence,
 } from './use-board-persistence'
-import { useBoardState } from './use-board-state'
-import { seatedPersonas } from './use-board-state'
+import { seatedPersonas, useBoardState } from './use-board-state'
 import { useSessionState } from './use-session-state'
 
 type Props = {
@@ -46,10 +50,6 @@ export function BoardClient({
     [personas],
   )
 
-  // Hydrate once on mount from URL params + sessionStorage. We don't read
-  // these on the server (would force-dynamic the entire route on every
-  // request); we keep the initial render as the canonical empty state and
-  // then dispatch HYDRATE.
   useEffect(() => {
     if (hydrated) return
     const search = typeof window !== 'undefined' ? window.location.search : ''
@@ -97,8 +97,29 @@ export function BoardClient({
     sessionDispatch({ type: 'reset' })
   }, [dispatch, sessionDispatch])
 
-  const showNotImplemented =
-    state.tag === 'running' && session.error?.code === 'not-implemented'
+  const sessionId = session.sessionId
+  const submitClarify = useCallback(
+    (answer: string) => {
+      if (!sessionId) return
+      void sendAnswer(sessionId, { kind: 'clarify', body: answer })
+    },
+    [sessionId],
+  )
+  const submitAccept = useCallback(() => {
+    if (!sessionId) return
+    void sendAnswer(sessionId, { kind: 'exec-summary-accept', body: 'accept' })
+  }, [sessionId])
+  const submitRedirect = useCallback(
+    (body: string) => {
+      if (!sessionId) return
+      void sendAnswer(sessionId, { kind: 'exec-summary-redirect', body })
+    },
+    [sessionId],
+  )
+
+  const checkpoint = session.currentCheckpoint
+  const showError = session.error !== null
+  const showArtifact = session.artifact !== null && session.status === 'done'
 
   return (
     <DndContext
@@ -124,7 +145,37 @@ export function BoardClient({
             onStart={handleStart}
             templateFirstPhaseName={templateFirstPhaseName}
           />
-          {showNotImplemented && <NotImplementedCard onReset={handleReset} />}
+          {state.tag === 'running' && session.status !== 'idle' && (
+            <>
+              <LiveTranscript
+                turns={session.turns}
+                personasBySlug={personasBySlug}
+              />
+              <BudgetBanner budget={session.budget} />
+              {checkpoint?.kind === 'clarify' && !showError && (
+                <ClarifyPrompt
+                  questions={checkpoint.questions}
+                  onSubmit={submitClarify}
+                />
+              )}
+              {checkpoint?.kind === 'exec-summary' && !showError && (
+                <ExecSummaryCard
+                  summary={checkpoint.body}
+                  onAccept={submitAccept}
+                  onRedirect={submitRedirect}
+                />
+              )}
+              {showArtifact && session.artifact && (
+                <ArtifactPreviewGrid
+                  artifact={session.artifact}
+                  tokensUsed={session.budget.used}
+                />
+              )}
+              {showError && session.error && (
+                <SessionErrorCard error={session.error} onReset={handleReset} />
+              )}
+            </>
+          )}
         </section>
       </div>
     </DndContext>

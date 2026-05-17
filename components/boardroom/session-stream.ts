@@ -69,3 +69,28 @@ export async function startSession(
   }
   return { ok: true }
 }
+
+export type AnswerPayload =
+  | { kind: 'clarify'; body: string }
+  | { kind: 'exec-summary-accept'; body?: string }
+  | { kind: 'exec-summary-redirect'; body: string }
+
+export async function sendAnswer(
+  sessionId: string,
+  payload: AnswerPayload,
+): Promise<{ ok: true } | { ok: false; status: number; code?: string }> {
+  const response = await fetch(`/api/sessions/${sessionId}/answer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (response.ok) return { ok: true }
+  let code: string | undefined
+  try {
+    const data = (await response.json()) as { code?: string }
+    code = data.code
+  } catch {
+    // ignored
+  }
+  return { ok: false, status: response.status, code }
+}
