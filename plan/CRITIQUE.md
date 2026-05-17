@@ -1,13 +1,159 @@
 # Critique log
 
-> Last pass: 2026-05-16 at commit f48c299
-> Pass count: 3
+> Last pass: 2026-05-16 at commit 2921fbe
+> Pass count: 4
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
 > for the contract.
 
 ## Pending
+
+### [HIGH] /legal/privacy + /legal/terms — footer links 404 across the whole site
+
+- **Pass:** 4 (2026-05-16, commit `2921fbe`)
+- **Viewport:** desktop + mobile
+- **Auth state:** anonymous
+- **Category:** infra
+- **Severity:** HIGH
+- **Observation:** The global footer links to `/legal/privacy` and
+  `/legal/terms` from every page. Both URLs return the generic
+  Next.js 404. The 404 page itself renders the same footer, so a
+  user who clicks the footer link from the 404 page lands on
+  another 404 — infinite loop. This was surfaced earlier in the
+  session in an aborted critique tick; the brief allowed
+  re-filing if still present, and it is.
+- **Evidence:** WebFetch returns 404 for both routes; the 404
+  body is `404 / This page could not be found.` with no in-main
+  links; the global footer renders on the 404 page and links
+  back to the same dead URLs.
+- **Suggested fix:** Phase 12 owns `/about + /legal/*`; either
+  pull it forward to ship one-paragraph stubs at
+  `/legal/privacy` and `/legal/terms`, or remove the footer
+  links until phase 12 lands.
+- **Source:** browser (reader sub-agent)
+
+### [MED] 404 page is bare and inherits the landing title
+
+- **Pass:** 4 (2026-05-16, commit `2921fbe`)
+- **Viewport:** desktop
+- **Auth state:** anonymous
+- **Category:** seo
+- **Severity:** MED
+- **Observation:** The `app/not-found.tsx` page has no
+  dedicated `<title>` and renders only two headings ("404"
+  and "This page could not be found."). The tab title falls
+  through to the landing page's title ("boardroom — a short,
+  opinionated meeting with AI personas"), which misleads
+  search engines + browser history users; the page body has
+  no "back home" affordance.
+- **Evidence:** `read_page` on /legal/privacy shows main with
+  only `<h1>404</h1>` + `<h2>This page could not be found.</h2>`;
+  document.title equals the landing-page title.
+- **Suggested fix:** Add `export const metadata = { title: 'Not
+  found — boardroom' }` and a one-line in-voice body with a
+  link back to `/` inside `app/not-found.tsx`.
+- **Source:** browser (reader sub-agent)
+
+### [MED] /try — Product Lead persona card is rendered twice (shelf + boardroom)
+
+- **Pass:** 4 (2026-05-16, commit `2921fbe`)
+- **Viewport:** desktop + mobile
+- **Auth state:** anonymous
+- **Category:** visual
+- **Observation:** On `/try` the same Product Lead card appears
+  in the left "Demo shelf" complementary region AND in the
+  boardroom region (the staffed seat). Identical name + role
+  tag + voice line + blurb. First-paint reading: "is one a
+  preview? am I supposed to drag it?" Screen readers also
+  announce the persona twice. The dual-render is consistent
+  with the shelf-as-source / boardroom-as-seat pattern from
+  `/app`, but on `/try` there is only one persona and it is
+  pre-seated — so the shelf-side card carries no useful
+  affordance.
+- **Evidence:** Accessibility tree shows article[ref=14] under
+  complementary "Demo shelf" and article[ref=24] under the
+  boardroom region, both with identical content.
+- **Suggested fix:** On `/try` specifically, hide the
+  shelf-side persona card when the persona is already staffed
+  (or mark it `aria-hidden="true"` + visually-dim). The /app
+  surface — where unseated personas are common — keeps the
+  shelf-side card as the drag source.
+- **Source:** browser (reader sub-agent)
+
+### [MED] /try — seat count (5 locked + 1 staffed) contradicts "Want all four?"
+
+- **Pass:** 4 (2026-05-16, commit `2921fbe`)
+- **Viewport:** desktop
+- **Auth state:** anonymous
+- **Category:** comprehension
+- **Observation:** The /try boardroom shows 5 locked seats +
+  1 staffed Product Lead — 6 total seat positions. The locked
+  CTA copy says "Want all four?" referring to the four curated
+  personas. A first-time visitor counting either the seats OR
+  the CTA gets contradictory signals about table size vs
+  persona count. The existing pending "Want all four?" finding
+  is about voice register, not arithmetic — this is a separate
+  observation.
+- **Evidence:** Accessibility tree at /try lists seats with
+  labels "Seat 1 — demo locked" through "Seat 5 — demo
+  locked" + the staffed "Seat 0". CTA text reads "Want all
+  four? to staff the full table." Personas dir on disk holds
+  exactly 4 markdown files.
+- **Suggested fix:** Pick a single anchor for the demo's
+  visible scale. Either: (a) trim the demo boardroom to show 4
+  seats (matching the 4 personas) and keep "Want all four?";
+  or (b) reword the CTA to "Want the full table?" so the
+  number disappears and the 6-seat visual is uncontested.
+  Option (b) is the cheaper change and respects the existing
+  MAX_PERSONAS_SEATED=6 constant.
+- **Source:** browser (reader sub-agent)
+
+### [LOW] /signin — unlabeled hidden inputs surface to assistive tech
+
+- **Pass:** 4 (2026-05-16, commit `2921fbe`)
+- **Viewport:** desktop
+- **Auth state:** anonymous
+- **Category:** a11y
+- **Observation:** The magic-link form on `/signin` contains
+  four hidden text inputs. Three are announced to assistive
+  tech with the label "[value redacted]"; one has no
+  accessible name at all. Hidden inputs are usually skipped
+  by AT, but these four are appearing — likely missing
+  `aria-hidden="true"` on the framework-injected CSRF /
+  honeypot fields.
+- **Evidence:** `read_page` /signin → form[ref=10] contains
+  textbox[ref=11] type='hidden' (no label) + textboxes[12-14]
+  type='hidden' labeled '[value redacted]'.
+- **Suggested fix:** Add `aria-hidden="true"` to the
+  framework-injected hidden inputs in `app/signin/sign-in-form.tsx`
+  (or wherever the form is composed). Investigate which
+  layer adds them (Supabase SSR vs Next form) before patching.
+- **Source:** browser (reader sub-agent)
+
+### [LOW] /try — pitch textbox has three overlapping guidance affordances
+
+- **Pass:** 4 (2026-05-16, commit `2921fbe`)
+- **Viewport:** mobile
+- **Auth state:** anonymous
+- **Category:** comprehension
+- **Observation:** The pitch input stacks placeholder ("What
+  are you trying to ship, and for whom? (≤ 100 words.)"),
+  helper text ("Aim for 1–3 short paragraphs."), and a counter
+  ("0 / 100 words") all under one label. On 375-wide mobile
+  the stack feels noisy for a single-paragraph input. Adjacent
+  to the existing pending "1–3 short paragraphs" finding but
+  distinct (that one is about the cap mismatch; this is about
+  visual density).
+- **Evidence:** read_page /try: ref_46 label 'Pitch' → ref_47
+  textbox (placeholder) → ref_48 generic 'Aim for 1–3 short
+  paragraphs.' → ref_49 '0 / 100 words'.
+- **Suggested fix:** Collapse to two affordances when the
+  1-3-paragraphs/100-words fix lands. Suggested shape:
+  placeholder as the example + a single helper line carrying
+  both the constraint and the counter, e.g. "100 words max ·
+  0 used".
+- **Source:** browser (reader sub-agent)
 
 ### [needs-user-call] /critique reader cannot exercise interactive states — Chrome MCP not configured
 
