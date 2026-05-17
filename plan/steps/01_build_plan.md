@@ -55,9 +55,9 @@ commit that ships the phase.
 - [x] Phase 9 — Anti-abuse limits (per-account session quota,
       per-IP demo limit, per-session token cap, graceful wrap
       UX) — `f82f35a`
-- [ ] Phase 10 — Artifact render + download (spec.md, exec
+- [x] Phase 10 — Artifact render + download (spec.md, exec
       summary, call-outs; client-side download; cleanly
-      typeset preview tiles)
+      typeset preview tiles) — `18277f2`
 - [ ] Phase 11 — Past-session surface (`/app/sessions`,
       `/app/sessions/[id]`, `/app/sessions/[id]/transcript`)
 - [ ] Phase 12 — About + legal (`/about`, `/legal/privacy`,
