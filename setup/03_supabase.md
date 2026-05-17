@@ -111,7 +111,10 @@ appends one or more `.sql` files:
   See `db/migrations/20260516_phase_7_sessions.sql`.
 - Phase 8 — `flag_audit` (with RLS). See
   `db/migrations/20260516_phase_8_flag_audit.sql`.
-- Phase 9 — `daily_quotas`, `ip_rate_limits`.
+- Phase 9 — `ip_rate_limits` (RLS on; service-role only). See
+  `db/migrations/20260516_phase_9_ip_rate_limits.sql`. (No
+  separate `daily_quotas` table in v1 — per-account quota is
+  derived by counting `sessions` over the last 24 hours.)
 - Phase 16 — `token_usage`.
 
 RLS policies ship in the same migration as the table they

@@ -169,6 +169,7 @@ export function BoardClient({
                 <ArtifactPreviewGrid
                   artifact={session.artifact}
                   tokensUsed={session.budget.used}
+                  wrapped={session.budget.wrapped}
                 />
               )}
               {showError && session.error && (

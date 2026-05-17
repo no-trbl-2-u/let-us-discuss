@@ -20,6 +20,7 @@ export type SessionErrorCode =
   | 'internal'
   | 'budget'
   | 'moderation'
+  | 'quota'
 
 export type SessionEvent =
   | { type: 'session.started'; sessionId: string }

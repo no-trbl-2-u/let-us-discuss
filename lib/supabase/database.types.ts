@@ -97,6 +97,15 @@ type FlagAuditInsert = Omit<FlagAuditRow, 'id' | 'flagged_at'> & {
   flagged_at?: string
 }
 
+type IpRateLimitRow = {
+  ip_hash: string
+  day_utc: string
+  surface: 'demo'
+  count: number
+}
+
+type IpRateLimitInsert = IpRateLimitRow & { count?: number }
+
 export type Database = {
   public: {
     Tables: {
@@ -122,6 +131,12 @@ export type Database = {
         Row: FlagAuditRow
         Insert: FlagAuditInsert
         Update: Partial<FlagAuditRow>
+        Relationships: []
+      }
+      ip_rate_limits: {
+        Row: IpRateLimitRow
+        Insert: IpRateLimitInsert
+        Update: Partial<IpRateLimitRow>
         Relationships: []
       }
     }

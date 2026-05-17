@@ -1,7 +1,10 @@
 import { runConferring } from '@/lib/anthropic/conferring'
+import { hashIp } from '@/lib/anti-abuse/ip-hash'
+import { countSessionsLast24h } from '@/lib/anti-abuse/quota'
 import {
   MAX_PERSONAS_SEATED,
   MAX_PITCH_WORDS,
+  MAX_SESSIONS_PER_DAY,
   MIN_PERSONAS_SEATED,
 } from '@/lib/limits'
 import { writeFlagAudit } from '@/lib/moderation/audit'
@@ -89,6 +92,41 @@ export async function POST(req: NextRequest) {
     return jsonError(400, `unknown template: ${body.templateSlug}`)
   }
 
+  // Phase 9 quota gate: cheaper to count rows than to call OpenAI, so this
+  // runs before the moderation gate. On quota-exceeded: single SSE event,
+  // no session row.
+  let used = 0
+  try {
+    used = await countSessionsLast24h(session.supabase, session.user.id)
+  } catch {
+    used = 0
+  }
+  if (used >= MAX_SESSIONS_PER_DAY) {
+    const stream = new ReadableStream({
+      start(controller) {
+        const encoder = new TextEncoder()
+        controller.enqueue(
+          encoder.encode(
+            encodeSseEvent({
+              type: 'session.error',
+              code: 'quota',
+              message: `daily session limit reached (${used}/${MAX_SESSIONS_PER_DAY})`,
+            }),
+          ),
+        )
+        controller.close()
+      },
+    })
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-store',
+        Connection: 'keep-alive',
+      },
+    })
+  }
+
   // Phase 8 input gate: moderate the pitch before fan-out. On flagged: skip
   // the session insert, write an unattached flag_audit row, and return a
   // single-event SSE stream so the client renders SessionErrorCard the same
@@ -126,6 +164,7 @@ export async function POST(req: NextRequest) {
     })
   }
 
+  const ipHash = hashIp(req)
   let created: { id: string }
   try {
     created = await createSession(session.supabase, {
@@ -135,6 +174,7 @@ export async function POST(req: NextRequest) {
       personaSlugs: body.personaSlugs,
       model: process.env.ANTHROPIC_MODEL ?? 'claude-opus-4-7',
       status: 'clarify',
+      ipHash,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'unknown'

@@ -1,26 +1,36 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import {
+  DEMO_AUTO_ADVANCE_MS,
+  MAX_DEMO_SESSIONS_PER_IP_PER_DAY,
+} from '@/lib/limits'
 import type { Persona } from '@/lib/schemas/persona'
-import { DEMO_AUTO_ADVANCE_MS } from '@/lib/limits'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { DemoAlreadyUsed } from './demo-already-used'
 import { DemoArtifactPreview } from './demo-artifact-preview'
 import { DemoCTA } from './demo-cta'
 import { DemoPitchInput } from './demo-pitch-input'
+import { DemoRateLimitedCard } from './demo-rate-limited-card'
 import { DemoShelf } from './demo-shelf'
 import { DemoStartButton } from './demo-start-button'
 import { DemoSurface } from './demo-surface'
 import { DemoTranscript } from './demo-transcript'
-import { readInitialDemoState, useDemoPersistence } from './use-demo-persistence'
+import {
+  readInitialDemoState,
+  useDemoPersistence,
+} from './use-demo-persistence'
 import { useDemoState } from './use-demo-state'
 
 type Props = {
   persona: Persona
 }
 
+type RateLimited = { used: number; limit: number }
+
 export function TryClient({ persona }: Props) {
   const [state, dispatch] = useDemoState()
   const [hydrated, setHydrated] = useState(false)
+  const [rateLimited, setRateLimited] = useState<RateLimited | null>(null)
   // True iff on first mount we found the demo-used flag already set.
   const alreadyUsedOnMount = useRef(false)
 
@@ -46,8 +56,35 @@ export function TryClient({ persona }: Props) {
     return () => window.clearTimeout(timer)
   }, [state, dispatch])
 
+  const handleStart = useCallback(async () => {
+    try {
+      const res = await fetch('/api/demo/begin', { method: 'POST' })
+      if (res.status === 429) {
+        const data = (await res.json().catch(() => ({}))) as {
+          used?: number
+          limit?: number
+        }
+        setRateLimited({
+          used: data.used ?? MAX_DEMO_SESSIONS_PER_IP_PER_DAY,
+          limit: data.limit ?? MAX_DEMO_SESSIONS_PER_IP_PER_DAY,
+        })
+        return
+      }
+    } catch {
+      // Fail-open: a network blip on the rate-limit ping shouldn't block
+      // the canned demo.
+    }
+    dispatch({ type: 'START' })
+  }, [dispatch])
+
   if (hydrated && alreadyUsedOnMount.current) {
     return <DemoAlreadyUsed />
+  }
+
+  if (rateLimited) {
+    return (
+      <DemoRateLimitedCard used={rateLimited.used} limit={rateLimited.limit} />
+    )
   }
 
   const revealIndex = state.tag === 'running' ? state.revealIndex : null
@@ -67,7 +104,9 @@ export function TryClient({ persona }: Props) {
         {!showTranscript && (
           <DemoStartButton
             disabled={state.tag !== 'ready'}
-            onStart={() => dispatch({ type: 'START' })}
+            onStart={() => {
+              void handleStart()
+            }}
           />
         )}
         {showTranscript && (

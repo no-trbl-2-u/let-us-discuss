@@ -58,6 +58,10 @@ function bodyFor(error: SessionError): string {
       return 'Something broke mid-session. Reset and try again — if it keeps happening, the operator needs to look at the logs.'
     case 'budget':
       return 'The session wrapped early because the token budget was exhausted. The partial artifact is on the table.'
+    case 'quota':
+      return error.message.includes('limit reached')
+        ? `${error.message}. Try again tomorrow, or hit Reset to free up the workspace.`
+        : "You've hit today's session limit. Try again tomorrow, or hit Reset to free up the workspace."
     case 'not-implemented':
       return 'This path is not yet wired up.'
     default:
