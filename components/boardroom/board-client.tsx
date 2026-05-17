@@ -170,6 +170,7 @@ export function BoardClient({
                   artifact={session.artifact}
                   tokensUsed={session.budget.used}
                   wrapped={session.budget.wrapped}
+                  sessionId={session.sessionId}
                 />
               )}
               {showError && session.error && (
