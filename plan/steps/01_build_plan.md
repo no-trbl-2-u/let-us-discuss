@@ -42,13 +42,13 @@ commit that ships the phase.
       SSE event types, repo helpers, budget tracker,
       AnthropicConfigError factory; session-side reducer +
       stream hook wired to the Start button; no LLM calls) — `3ff025a`
-- [ ] Phase 7b — Multi-persona conferring loop (Anthropic
+- [x] Phase 7b — Multi-persona conferring loop (Anthropic
       orchestrator replaces the not-implemented return;
       clarify → confer → exec-summary checkpoint →
       specialists → artifact rounds; LiveTranscript +
       ClarifyPrompt + ExecSummaryCard + ArtifactPreviewGrid
       light up). The product's core gameplay; budget extra
-      care. Requires ANTHROPIC_API_KEY populated.
+      care. Requires ANTHROPIC_API_KEY populated. — `305bb25`
 - [ ] Phase 8 — Moderation gates (input + output pre-filter
       via OpenAI omni-moderation; halt-and-refuse UX;
       `flag_audit` table)
