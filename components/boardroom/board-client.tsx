@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import type { Persona } from '@/lib/schemas/persona'
 import {
   DndContext,
   type DragEndEvent,
@@ -10,32 +10,36 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import type { Persona } from '@/lib/schemas/persona'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BoardroomEmptyHint } from './boardroom-empty-hint'
 import { BoardroomSurface } from './boardroom-surface'
+import { NotImplementedCard } from './not-implemented-card'
 import { PersonaShelf } from './persona-shelf'
 import { PitchInput } from './pitch-input'
+import { startSession } from './session-stream'
 import { StartSessionButton } from './start-session-button'
-import { TranscriptPlaceholder } from './transcript-placeholder'
 import type { SeatId } from './types'
 import {
   readInitialBoardState,
   useBoardPersistence,
 } from './use-board-persistence'
 import { useBoardState } from './use-board-state'
+import { seatedPersonas } from './use-board-state'
+import { useSessionState } from './use-session-state'
 
 type Props = {
   personas: readonly Persona[]
   templateFirstPhaseName: string
-  templateFirstPhaseDescription: string
+  templateSlug: string
 }
 
 export function BoardClient({
   personas,
   templateFirstPhaseName,
-  templateFirstPhaseDescription,
+  templateSlug,
 }: Props) {
   const [state, dispatch] = useBoardState()
+  const [session, sessionDispatch] = useSessionState()
   const [hydrated, setHydrated] = useState(false)
   const personasBySlug = useMemo(
     () => new Map(personas.map((p) => [p.slug, p])),
@@ -66,19 +70,49 @@ export function BoardClient({
 
   const onDragEnd = (event: DragEndEvent) => {
     if (!event.over) return
-    const personaSlug = (event.active.data.current as { personaSlug?: string } | undefined)
-      ?.personaSlug
-    const seatId = (event.over.data.current as { seatId?: number } | undefined)?.seatId
+    const personaSlug = (
+      event.active.data.current as { personaSlug?: string } | undefined
+    )?.personaSlug
+    const seatId = (event.over.data.current as { seatId?: number } | undefined)
+      ?.seatId
     if (!personaSlug || seatId === undefined) return
     dispatch({ type: 'SEAT_PERSONA', personaSlug, seatId: seatId as SeatId })
   }
 
+  const handleStart = useCallback(() => {
+    dispatch({ type: 'START' })
+    sessionDispatch({ type: 'reset' })
+    void startSession(
+      {
+        pitch: state.pitch,
+        personaSlugs: seatedPersonas(state.seats),
+        templateSlug,
+      },
+      (ev) => sessionDispatch({ type: 'event', event: ev }),
+    )
+  }, [dispatch, sessionDispatch, state.pitch, state.seats, templateSlug])
+
+  const handleReset = useCallback(() => {
+    dispatch({ type: 'RESET' })
+    sessionDispatch({ type: 'reset' })
+  }, [dispatch, sessionDispatch])
+
+  const showNotImplemented =
+    state.tag === 'running' && session.error?.code === 'not-implemented'
+
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={onDragEnd}
+    >
       <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-[var(--space-6)]">
         <PersonaShelf personas={personas} boardState={state} />
         <section className="flex flex-col gap-[var(--space-5)]">
-          <BoardroomSurface boardState={state} personasBySlug={personasBySlug} />
+          <BoardroomSurface
+            boardState={state}
+            personasBySlug={personasBySlug}
+          />
           <BoardroomEmptyHint />
           <PitchInput
             value={state.pitch}
@@ -87,13 +121,10 @@ export function BoardClient({
           />
           <StartSessionButton
             disabled={state.tag !== 'ready'}
-            onStart={() => dispatch({ type: 'START' })}
+            onStart={handleStart}
             templateFirstPhaseName={templateFirstPhaseName}
           />
-          <TranscriptPlaceholder
-            visible={state.tag === 'running'}
-            excerpt={templateFirstPhaseDescription}
-          />
+          {showNotImplemented && <NotImplementedCard onReset={handleReset} />}
         </section>
       </div>
     </DndContext>

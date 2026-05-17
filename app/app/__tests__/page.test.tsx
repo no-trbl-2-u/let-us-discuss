@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
 import type { Persona } from '@/lib/schemas/persona'
 import type { Template } from '@/lib/schemas/template'
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 
 const personas: Persona[] = [
   {
@@ -59,6 +59,7 @@ vi.mock('@/lib/personas/load', () => ({
 
 vi.mock('@/lib/templates/load', () => ({
   loadDefaultTemplate: () => template,
+  DEFAULT_TEMPLATE_SLUG: 'pitch-to-spec',
 }))
 
 import AppHomePage from '@/app/app/page'
@@ -70,7 +71,9 @@ describe('/app boardroom page', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: /staff a table/i }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /sign out/i }),
+    ).toBeInTheDocument()
   })
 
   it('renders the boardroom surface (drop targets + persona shelf)', async () => {

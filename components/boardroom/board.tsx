@@ -1,5 +1,8 @@
 import { loadPersonas } from '@/lib/personas/load'
-import { loadDefaultTemplate } from '@/lib/templates/load'
+import {
+  DEFAULT_TEMPLATE_SLUG,
+  loadDefaultTemplate,
+} from '@/lib/templates/load'
 import { BoardClient } from './board-client'
 
 export function Board() {
@@ -10,7 +13,7 @@ export function Board() {
     <BoardClient
       personas={personas}
       templateFirstPhaseName={firstPhase?.name ?? 'Clarify'}
-      templateFirstPhaseDescription={firstPhase?.description ?? ''}
+      templateSlug={DEFAULT_TEMPLATE_SLUG}
     />
   )
 }

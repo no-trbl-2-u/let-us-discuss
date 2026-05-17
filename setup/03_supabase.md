@@ -107,13 +107,40 @@ appends one or more `.sql` files:
 - Phase 4 — `personas` + `templates` tables only if we move
   authoring into the product (we don't in v1; this row stays
   empty).
-- Phase 6 — `sessions`, `messages`, `artifacts`.
+- Phase 7a — `sessions`, `turns`, `artifacts` (with RLS).
+  See `db/migrations/20260516_phase_7_sessions.sql`.
 - Phase 8 — `flag_audit`.
 - Phase 9 — `daily_quotas`, `ip_rate_limits`.
 - Phase 16 — `token_usage`.
 
 RLS policies ship in the same migration as the table they
 gate.
+
+### Applying the phase 7 migration (operator action)
+
+The phase 7a code ships against the schema described in
+`db/migrations/20260516_phase_7_sessions.sql`. Apply it to
+the project DB before the route is exercised:
+
+```bash
+# Option A — psql with the project's connection string
+psql "$SUPABASE_DB_URL" -f db/migrations/20260516_phase_7_sessions.sql
+
+# Option B — paste the file's contents into the Supabase SQL editor
+#   https://supabase.com/dashboard/project/<ref>/sql
+```
+
+After the migration lands, regenerate the typed client:
+
+```bash
+pnpm db:types
+```
+
+The shipped `lib/supabase/database.types.ts` is a hand-written
+placeholder that mirrors the migration so typecheck passes;
+`pnpm db:types` overwrites it with the canonical output. Commit
+the regen as a separate change (subject: `data: db types regen
+post phase 7a`) so the operator step is visible in history.
 
 ## Section E — Cookie for `/critique`'s reader
 
