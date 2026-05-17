@@ -9,28 +9,6 @@
 
 ## Pending
 
-### [HIGH] /try — H1 "See the shape in under a minute." reads as marketing fluff
-
-- **Pass:** 2 (2026-05-16, commit `337e03e`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** voice
-- **Severity:** HIGH
-- **Observation:** The `/try` H1 is exactly the marketing-fluff
-  register `plan/bearings.md` prohibits. The page body below it
-  is honest and plainspoken ("three canned turns, no AI calls"),
-  so the H1 is the outlier — and it's the first thing a visitor
-  reads. A been-there colleague says what the page is, not
-  "see the shape."
-- **Evidence:** H1 in `app/try/page.tsx`: `See the shape in
-  under a minute.` Bearings voice cue
-  (`plan/bearings.md`): *"Plainspoken, terse, no marketing
-  fluff."*
-- **Suggested fix:** Replace H1 with a descriptive variant,
-  e.g. `What a session looks like.` or `A one-minute demo
-  session.` — drop the abstract-noun phrasing.
-- **Source:** web-fetch (reader sub-agent)
-
 ### [MED] /about/personas — "Persona changes ship via PR" leaks build-process language
 
 - **Pass:** 2 (2026-05-16, commit `337e03e`)
@@ -174,6 +152,16 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [HIGH] /try — H1 marketing-fluff reworded — addressed at `3fcf592` (issue #9)
+
+- **Original (pass 2, commit `337e03e`):** H1 "See the shape
+  in under a minute." reads as marketing fluff.
+- **Resolution:** H1 rewritten to "What a session looks like."
+  — descriptive, terse, matches bearings voice cue and the
+  on-voice page body underneath.
+- **Closed by:** /iterate tick at `3fcf592`. Issue #9 auto-closed
+  on push.
 
 ### [x] [misdirected] Production canonical URL returns 404 — closed 2026-05-16 oversight round 5
 
