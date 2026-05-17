@@ -1,13 +1,47 @@
 # Critique log
 
-> Last pass: 2026-05-16 at commit 337e03e
-> Pass count: 2
+> Last pass: 2026-05-16 at commit f48c299
+> Pass count: 3
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
 > for the contract.
 
 ## Pending
+
+### [needs-user-call] /critique reader cannot exercise interactive states — Chrome MCP not configured
+
+- **Pass:** 3 (2026-05-16, commit `f48c299`)
+- **Viewport:** desktop + mobile
+- **Auth state:** anonymous
+- **Category:** infra
+- **Severity:** HIGH
+- **Observation:** Pass 3 was commissioned specifically to walk
+  the interactive /try demo loop (TurnBubble auto-advance,
+  Skip button, DemoAlreadyUsed sessionStorage state, 375×800
+  mobile reflow). The reader sub-agent's tool surface does
+  not include the `mcp__claude-in-chrome__*` namespace; only
+  `WebFetch`, `WebSearch`, `Read`, `Grep`, `Glob` are
+  exposed. WebFetch can't execute JS, so the interactive
+  states stay unreachable across passes. Pass 2 hit the same
+  wall; pass 3 surfaced it as a single finding rather than
+  re-producing pass 2's blind spot.
+- **Evidence:** Reader sub-agent return — "Available tool
+  list in this invocation: WebFetch, WebSearch, Read, Grep,
+  Glob. No mcp__claude-in-chrome__* namespace present."
+  Spot-check via direct curl confirmed the H1 fix shipped at
+  `3fcf592` is live in production (the page source contains
+  "What a session looks like" and the old "See the shape"
+  copy is gone) — so the deploy itself is healthy; the
+  reader's environment is the gap.
+- **Suggested fix:** Register the `claude-in-chrome` MCP server
+  in the user's `~/.claude.json` (or equivalent) so the
+  reader sub-agent inherits the `mcp__claude-in-chrome__*`
+  tools. Verify by re-spawning a reader and checking its
+  available tool list before walking the page set. Until
+  that lands, /critique passes can only assess server-rendered
+  HTML; interactive state critique is blocked.
+- **Source:** reader sub-agent (introspection on its own tool list)
 
 ### [MED] /about/personas — "Persona changes ship via PR" leaks build-process language
 
