@@ -58,8 +58,8 @@ commit that ships the phase.
 - [x] Phase 10 — Artifact render + download (spec.md, exec
       summary, call-outs; client-side download; cleanly
       typeset preview tiles) — `18277f2`
-- [ ] Phase 11 — Past-session surface (`/app/sessions`,
-      `/app/sessions/[id]`, `/app/sessions/[id]/transcript`)
+- [x] Phase 11 — Past-session surface (`/app/sessions`,
+      `/app/sessions/[id]`, `/app/sessions/[id]/transcript`) — `f017ff9`
 - [ ] Phase 12 — About + legal (`/about`, `/legal/privacy`,
       `/legal/terms`)
 - [ ] Phase 13 — `/api/health` + smoke-walker integration into
