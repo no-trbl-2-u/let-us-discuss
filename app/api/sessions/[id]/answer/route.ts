@@ -1,4 +1,6 @@
 import type { AnswerInput } from '@/lib/anthropic/conferring'
+import { writeFlagAudit } from '@/lib/moderation/audit'
+import { moderate } from '@/lib/moderation/client'
 import { deliverAnswer } from '@/lib/sessions/resume-map'
 import { getRouteUser } from '@/lib/supabase/auth'
 import type { NextRequest } from 'next/server'
@@ -62,6 +64,30 @@ export async function POST(
   }
   if (!data) {
     return jsonError(404, 'not-found', 'no such session for this user')
+  }
+
+  // Phase 8 input gate: moderate the answer body before delivering it to
+  // the orchestrator. On flagged: write the audit row, do NOT call
+  // deliverAnswer (the orchestrator stays awaiting), respond 409 so the
+  // client surfaces the moderation halt.
+  if (parsedBody.data.body && parsedBody.data.body.trim().length > 0) {
+    const verdict = await moderate(parsedBody.data.body, {
+      sessionId,
+      surface: 'input',
+    })
+    if (verdict.flagged) {
+      await writeFlagAudit(session.supabase, {
+        sessionId,
+        surface: 'input',
+        text: parsedBody.data.body,
+        verdict,
+      })
+      return jsonError(
+        409,
+        'moderation',
+        'answer halted by the moderation gate',
+      )
+    }
   }
 
   const delivered = deliverAnswer(sessionId, parsedBody.data as AnswerInput)

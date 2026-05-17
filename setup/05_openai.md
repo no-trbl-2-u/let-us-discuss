@@ -2,7 +2,10 @@
 
 > **STUB.** Key not yet created. Used solely for the
 > moderation pre-filter; no generation calls go to OpenAI.
-> Phase 8 (moderation gates) ships when this reaches OK.
+> Phase 8 (moderation gates) shipped against the unset-key
+> path: when `OPENAI_API_KEY` is unset the moderation gate
+> opens with a single `console.warn` and falls through. Setting
+> the key flips behavior to actual moderation calls.
 >
 > **Account:** TBD (the user's personal OpenAI account)
 > **Dashboard:** https://platform.openai.com

@@ -83,6 +83,20 @@ type ArtifactInsert = Omit<ArtifactRow, 'id' | 'finished_at'> & {
   finished_at?: string
 }
 
+type FlagAuditRow = {
+  id: string
+  session_id: string | null
+  surface: 'input' | 'output'
+  text: string
+  verdict: Json
+  flagged_at: string
+}
+
+type FlagAuditInsert = Omit<FlagAuditRow, 'id' | 'flagged_at'> & {
+  id?: string
+  flagged_at?: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -102,6 +116,12 @@ export type Database = {
         Row: ArtifactRow
         Insert: ArtifactInsert
         Update: Partial<ArtifactRow>
+        Relationships: []
+      }
+      flag_audit: {
+        Row: FlagAuditRow
+        Insert: FlagAuditInsert
+        Update: Partial<FlagAuditRow>
         Relationships: []
       }
     }

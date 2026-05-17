@@ -73,6 +73,13 @@ export type AnthropicStreamClient = {
   }>
 }
 
+export type ModerationCheck = {
+  flagged: boolean
+  // The route handler passes the full verdict through unchanged so it can
+  // write the flag_audit row with the original payload.
+  verdict: unknown
+}
+
 export type RunConferringInput = {
   pitch: string
   personas: Persona[]
@@ -80,12 +87,20 @@ export type RunConferringInput = {
   hooks: ConferringHooks
   awaitAnswer(): Promise<AnswerInput>
   client?: AnthropicStreamClient
+  // Phase 8: per-persona-output moderation. Default (route handler wires)
+  // is the real OpenAI client + writeFlagAudit. Tests pass a stub. When the
+  // result is flagged the orchestrator yields session.error code=moderation,
+  // calls hooks.markStatus('aborted') via the final catch, and returns.
+  moderateOutput?: (text: string) => Promise<ModerationCheck>
+  onFlaggedOutput?: (text: string, verdict: unknown) => Promise<void>
 }
 
 export async function* runConferring(
   input: RunConferringInput,
 ): AsyncGenerator<SessionEvent> {
   const { pitch, personas, template, hooks, awaitAnswer } = input
+  const moderateOutput = input.moderateOutput
+  const onFlaggedOutput = input.onFlaggedOutput
 
   let client: AnthropicStreamClient
   try {
@@ -140,13 +155,35 @@ export async function* runConferring(
     const final = await stream.final
     if (!body) body = final.text
     budget.add(final.tokens)
+    const trimmed = body.trim()
+    if (moderateOutput) {
+      const check = await moderateOutput(trimmed)
+      if (check.flagged) {
+        if (onFlaggedOutput) await onFlaggedOutput(trimmed, check.verdict)
+        yield {
+          type: 'session.error',
+          code: 'moderation',
+          message: 'persona output was halted by the moderation gate',
+        }
+        flaggedAndAborted = true
+        return {
+          id: turnId,
+          phase,
+          personaSlug: persona.slug,
+          author: 'persona',
+          body: trimmed,
+          replyingTo: null,
+          tokens: final.tokens,
+        }
+      }
+    }
     yield { type: 'turn.end', turnId, tokens: final.tokens }
     const turn: RecordedTurn = {
       id: turnId,
       phase,
       personaSlug: persona.slug,
       author: 'persona',
-      body: body.trim(),
+      body: trimmed,
       replyingTo: null,
       tokens: final.tokens,
     }
@@ -154,6 +191,8 @@ export async function* runConferring(
     await hooks.persistTurn({ ...turn, idx: turnIdx })
     return turn
   }
+
+  let flaggedAndAborted = false
 
   async function* runModeratorTurn(
     phase: SessionPhase,
@@ -225,6 +264,10 @@ export async function* runConferring(
       'clarify',
       'Ask ONE brief clarifying question that the user can answer in a word or one sentence. Output only the question.',
     )
+    if (flaggedAndAborted) {
+      await hooks.markStatus('aborted')
+      return
+    }
     questions.push({
       id: turn.id,
       personaSlug: persona.slug,
@@ -261,6 +304,10 @@ export async function* runConferring(
       'confer',
       'Build on the prior turns. Push toward a concrete spec; keep it short.',
     )
+    if (flaggedAndAborted) {
+      await hooks.markStatus('aborted')
+      return
+    }
     const signal = emitBudgetSignal()
     if (signal) {
       yield signal
@@ -325,6 +372,10 @@ export async function* runConferring(
       'specialists',
       'Drill into your domain. Output a short paragraph plus 1-3 concrete bullet points.',
     )
+    if (flaggedAndAborted) {
+      await hooks.markStatus('aborted')
+      return
+    }
     const signal = emitBudgetSignal()
     if (signal) {
       yield signal

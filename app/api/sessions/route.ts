@@ -4,6 +4,8 @@ import {
   MAX_PITCH_WORDS,
   MIN_PERSONAS_SEATED,
 } from '@/lib/limits'
+import { writeFlagAudit } from '@/lib/moderation/audit'
+import { moderate } from '@/lib/moderation/client'
 import { loadPersonas } from '@/lib/personas/load'
 import {
   appendTurn,
@@ -87,6 +89,43 @@ export async function POST(req: NextRequest) {
     return jsonError(400, `unknown template: ${body.templateSlug}`)
   }
 
+  // Phase 8 input gate: moderate the pitch before fan-out. On flagged: skip
+  // the session insert, write an unattached flag_audit row, and return a
+  // single-event SSE stream so the client renders SessionErrorCard the same
+  // way it would for an in-session moderation halt.
+  const inputVerdict = await moderate(body.pitch, { surface: 'input' })
+  if (inputVerdict.flagged) {
+    await writeFlagAudit(session.supabase, {
+      sessionId: '00000000-0000-0000-0000-000000000000',
+      surface: 'input',
+      text: body.pitch,
+      verdict: inputVerdict,
+    })
+    const stream = new ReadableStream({
+      start(controller) {
+        const encoder = new TextEncoder()
+        controller.enqueue(
+          encoder.encode(
+            encodeSseEvent({
+              type: 'session.error',
+              code: 'moderation',
+              message: 'pitch halted by the moderation gate',
+            }),
+          ),
+        )
+        controller.close()
+      },
+    })
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-store',
+        Connection: 'keep-alive',
+      },
+    })
+  }
+
   let created: { id: string }
   try {
     created = await createSession(session.supabase, {
@@ -122,6 +161,20 @@ export async function POST(req: NextRequest) {
           personas: seatedPersonas,
           template,
           awaitAnswer: () => waitForAnswer(sessionId),
+          async moderateOutput(text) {
+            const v = await moderate(text, { sessionId, surface: 'output' })
+            return { flagged: v.flagged, verdict: v }
+          },
+          async onFlaggedOutput(text, verdict) {
+            await writeFlagAudit(supabase, {
+              sessionId,
+              surface: 'output',
+              text,
+              verdict: verdict as Parameters<
+                typeof writeFlagAudit
+              >[1]['verdict'],
+            })
+          },
           hooks: {
             async persistTurn(turn) {
               nextIdx = Math.max(nextIdx, turn.idx + 1)

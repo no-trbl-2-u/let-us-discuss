@@ -109,7 +109,8 @@ appends one or more `.sql` files:
   empty).
 - Phase 7a — `sessions`, `turns`, `artifacts` (with RLS).
   See `db/migrations/20260516_phase_7_sessions.sql`.
-- Phase 8 — `flag_audit`.
+- Phase 8 — `flag_audit` (with RLS). See
+  `db/migrations/20260516_phase_8_flag_audit.sql`.
 - Phase 9 — `daily_quotas`, `ip_rate_limits`.
 - Phase 16 — `token_usage`.
 
