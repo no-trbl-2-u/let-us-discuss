@@ -27,7 +27,7 @@ export default function TryPage() {
           boardroom &nbsp;·&nbsp; try the demo
         </p>
         <Heading level={1} className="mb-[var(--space-4)]">
-          See the shape in under a minute.
+          What a session looks like.
         </Heading>
         <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)]">
           One persona, three canned turns, three artifact tiles. Real

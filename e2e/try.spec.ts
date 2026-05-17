@@ -6,7 +6,7 @@ test.describe('/try anonymous demo', () => {
   }) => {
     await page.goto('/try')
     await expect(
-      page.getByRole('heading', { level: 1, name: /see the shape/i }),
+      page.getByRole('heading', { level: 1, name: /what a session looks like/i }),
     ).toBeVisible()
     await expect(page.getByLabel(/demo shelf/i)).toBeVisible()
     const start = page.getByRole('button', { name: /start demo/i })
