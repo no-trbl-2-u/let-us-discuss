@@ -46,11 +46,11 @@ run any time, including inside `/oversight`.
 
 | # | Service | Runbook | Status | Phases that touch it |
 |---|---|---|---|---|
-| 01 | GitHub | `01_github.md` | `STUB` | substrate, all (push), `/triage` (issues), cloud loop |
-| 02 | Vercel | `02_vercel.md` | `STUB` | phase 1 (deploy gate), all (deploys), Preview env |
-| 03 | Supabase (Postgres + Auth + email) | `03_supabase.md` | `STUB` | phase 2 (client), phase 3 (auth + magic-link email), phase 4+ (schema + RLS), phase 8 (flag_audit table) |
-| 04 | Anthropic | `04_anthropic.md` | `STUB` | phase 7 (persona reasoning), phase 6 (demo loop preview) |
-| 05 | OpenAI | `05_openai.md` | `STUB` | phase 8 (moderation pre-filter — input + output) |
+| 01 | GitHub | `01_github.md` | `PARTIAL` | substrate, all (push), `/triage` (issues), cloud loop |
+| 02 | Vercel | `02_vercel.md` | `OK` | phase 1 (deploy gate), all (deploys), Preview env |
+| 03 | Supabase (Postgres + Auth + email) | `03_supabase.md` | `OK` | phase 2 (client), phase 3 (auth + magic-link email), phase 4+ (schema + RLS), phase 8 (flag_audit), phase 18 (admin delete) |
+| 04 | Anthropic | `04_anthropic.md` | `PARTIAL` | phase 7 (persona reasoning), phase 6 (demo loop preview) |
+| 05 | OpenAI | `05_openai.md` | `PARTIAL` | phase 8 (moderation pre-filter — input + output) |
 
 > Drop any row that doesn't apply to this project. Renumber
 > to keep dependency order. The minimum is GitHub + hosting;

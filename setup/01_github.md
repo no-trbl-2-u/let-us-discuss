@@ -1,8 +1,12 @@
 # GitHub setup — boardroom
 
-> **STUB.** Repo exists; PAT and branch protection not yet
-> wired. Phase 1 can ship against this stub; unattended runs
-> (Level 3+) require this to reach `OK`.
+> **PARTIAL.** PAT is populated (`GH_TOKEN` in `.env` drives
+> the loop's `gh issue` calls + `scripts/loop-issue.mjs` for
+> phase mirrors + /triage routing — all confirmed across the
+> 18 phase ships and the post-build /iterate ticks). Branch
+> protection remains unverified; the loop hasn't required it.
+> Reach `OK` when an operator confirms or deliberately defers
+> branch protection.
 >
 > **Account:** `no-trbl-2-u`
 > **Repo:** `no-trbl-2-u/let-us-discuss` (production name is

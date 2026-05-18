@@ -295,13 +295,12 @@ sweep of any rows lacking that chain.
 
 ## Carry-overs / known gaps (update as phases ship)
 
-- [-] Phase 1 — deploy gate not yet verified end-to-end. `pnpm verify`
-      is green; `pnpm deploy:check` is blocked on a populated `.env`
-      (VERCEL_TOKEN, VERCEL_PROJECT_ID, DEPLOY_PROVIDER=vercel — per
-      `setup/02_vercel.md` + `.env.example`). User will populate
-      out-of-band; the next loop tick that runs `deploy:check` will
-      confirm green and the phase-close comment (deploy URL) can be
-      posted to issue #1 retroactively if desired.
+- [x] Phase 1 — deploy gate verified end-to-end. Resolved at
+      `c37471b` once the operator populated `VERCEL_TOKEN` /
+      `VERCEL_PROJECT_ID`; every subsequent phase ship + post-
+      build /iterate tick has run `pnpm deploy:check` green
+      (60+ consecutive successes). `setup/02_vercel.md` status
+      is now `OK`.
 
 ## Phase log (commit hashes)
 

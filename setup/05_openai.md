@@ -1,11 +1,15 @@
 # OpenAI setup — boardroom
 
-> **STUB.** Key not yet created. Used solely for the
-> moderation pre-filter; no generation calls go to OpenAI.
-> Phase 8 (moderation gates) shipped against the unset-key
-> path: when `OPENAI_API_KEY` is unset the moderation gate
-> opens with a single `console.warn` and falls through. Setting
-> the key flips behavior to actual moderation calls.
+> **PARTIAL.** Phase 8 (moderation gates) shipped at `41803c4`
+> with the documented fall-through behavior: when
+> `OPENAI_API_KEY` is unset the moderation gate opens with a
+> single `console.warn` and lets the turn through. Setting
+> the key flips behavior to actual `omni-moderation-latest`
+> calls on every user input + every persona output. Used
+> solely for the moderation pre-filter; no generation calls
+> go to OpenAI. Reach `OK` when the operator confirms
+> production has the key populated AND a real session walk
+> has tripped the gate at least once.
 >
 > **Account:** TBD (the user's personal OpenAI account)
 > **Dashboard:** https://platform.openai.com

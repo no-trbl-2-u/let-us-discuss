@@ -1,8 +1,11 @@
 # Vercel setup — boardroom
 
-> **STUB.** Project not yet linked. Phase 1's `pnpm
-> deploy:check` lights up once this reaches PARTIAL (token +
-> project id in `.env`).
+> **OK.** Project linked; `VERCEL_TOKEN` + `VERCEL_PROJECT_ID`
+> + `DEPLOY_PROVIDER=vercel` populated. `pnpm deploy:check`
+> has confirmed green on every commit across the 18 phase
+> ships + every post-build /iterate tick. Production alias
+> `let-us-discuss-ai.vercel.app` is live; preview deploys
+> ride `let-us-discuss-*-tj-braindump.vercel.app` per push.
 >
 > **Account:** TBD (the user's personal Vercel account)
 > **Region:** Auto (Vercel's default; revisit if Postgres
