@@ -7,6 +7,16 @@ export const metadata: Metadata = {
   title: 'Terms — boardroom',
   description:
     'Acceptable use, moderation policy, and account-quota terms for boardroom.',
+  openGraph: {
+    title: 'Terms — boardroom',
+    description:
+      'Acceptable use, moderation policy, and account-quota terms for boardroom.',
+  },
+  twitter: {
+    title: 'Terms — boardroom',
+    description:
+      'Acceptable use, moderation policy, and account-quota terms for boardroom.',
+  },
 }
 
 export const LAST_UPDATED = '2026-05-18'

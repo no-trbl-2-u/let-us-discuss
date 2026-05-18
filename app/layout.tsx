@@ -3,6 +3,7 @@ import { IBM_Plex_Mono, IBM_Plex_Sans, Source_Serif_4 } from 'next/font/google'
 import { Header } from '@/components/site/header'
 import { Footer } from '@/components/site/footer'
 import { SkipLink } from '@/components/site/skip-link'
+import { getSiteOrigin } from '@/lib/site/origin'
 import './globals.css'
 
 const serif = Source_Serif_4({
@@ -27,10 +28,27 @@ const mono = IBM_Plex_Mono({
   weight: ['400', '500'],
 })
 
+const ROOT_TITLE = 'boardroom — a short, opinionated meeting with AI personas'
+const ROOT_DESCRIPTION =
+  'Drop a few personas onto the table, hand them your pitch, and let them confer. You answer one-word questions at the checkpoints. They do the thinking.'
+
 export const metadata: Metadata = {
-  title: 'boardroom — a short, opinionated meeting with AI personas',
-  description:
-    'Drop a few personas onto the table, hand them your pitch, and let them confer. You answer one-word questions at the checkpoints. They do the thinking.',
+  metadataBase: new URL(getSiteOrigin()),
+  title: ROOT_TITLE,
+  description: ROOT_DESCRIPTION,
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: 'website',
+    siteName: 'boardroom',
+    title: ROOT_TITLE,
+    description: ROOT_DESCRIPTION,
+    url: '/',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: ROOT_TITLE,
+    description: ROOT_DESCRIPTION,
+  },
 }
 
 export default function RootLayout({

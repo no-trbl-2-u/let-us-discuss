@@ -5,6 +5,14 @@ import { Link } from '@/design/primitives/link'
 export const metadata: Metadata = {
   title: 'About boardroom — boardroom',
   description: "What boardroom is, what it isn't, and who it's for.",
+  openGraph: {
+    title: 'About boardroom',
+    description: "What boardroom is, what it isn't, and who it's for.",
+  },
+  twitter: {
+    title: 'About boardroom',
+    description: "What boardroom is, what it isn't, and who it's for.",
+  },
 }
 
 export default function AboutPage() {

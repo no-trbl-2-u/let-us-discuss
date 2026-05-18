@@ -7,6 +7,16 @@ export const metadata: Metadata = {
   title: 'Personas — boardroom',
   description:
     'The v1 persona library — who comes to the boardroom table.',
+  openGraph: {
+    title: 'Personas — boardroom',
+    description:
+      'The v1 persona library — who comes to the boardroom table.',
+  },
+  twitter: {
+    title: 'Personas — boardroom',
+    description:
+      'The v1 persona library — who comes to the boardroom table.',
+  },
 }
 
 export default function PersonasPage() {

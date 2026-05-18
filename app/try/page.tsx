@@ -9,6 +9,16 @@ export const metadata: Metadata = {
   description:
     'One short, AI-free walkthrough of the boardroom session. No account; nothing saved.',
   robots: { index: true, follow: true },
+  openGraph: {
+    title: 'Try a boardroom demo',
+    description:
+      'One short, AI-free walkthrough of the boardroom session. No account; nothing saved.',
+  },
+  twitter: {
+    title: 'Try a boardroom demo',
+    description:
+      'One short, AI-free walkthrough of the boardroom session. No account; nothing saved.',
+  },
 }
 
 export default function TryPage() {

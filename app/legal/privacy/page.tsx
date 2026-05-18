@@ -7,6 +7,16 @@ export const metadata: Metadata = {
   title: 'Privacy — boardroom',
   description:
     "What boardroom stores, what gets deleted, and how to close your account.",
+  openGraph: {
+    title: 'Privacy — boardroom',
+    description:
+      "What boardroom stores, what gets deleted, and how to close your account.",
+  },
+  twitter: {
+    title: 'Privacy — boardroom',
+    description:
+      "What boardroom stores, what gets deleted, and how to close your account.",
+  },
 }
 
 export const LAST_UPDATED = '2026-05-18'
