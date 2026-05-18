@@ -23,6 +23,7 @@ export type LogScope =
   | 'session-route'
   | 'rate-limit'
   | 'data'
+  | 'client-boundary'
   | 'other'
 
 export interface LogErrorOptions {
