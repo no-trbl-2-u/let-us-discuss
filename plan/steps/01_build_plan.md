@@ -83,6 +83,11 @@ commit that ships the phase.
       delete across `sessions`/`turns`/`artifacts`/`flag_audit`
       + Supabase `auth.deleteUser`; closes the privacy-policy
       promise from phase 12) — `e2c10eb`
+- [ ] Phase 19 — Quota visibility (small "N/10 sessions left
+      today" tile in the boardroom shelf or on `/app`; reads
+      from the same `quota.ts` helper phase 9 ships; no
+      migration; surfaces the existing anti-abuse cap before
+      the user hits it)
 
 > **After phase 17 (and any later promoted phases):** the loop
 > transitions to `/iterate` — persona-library refinement,
@@ -271,6 +276,24 @@ log drain (no third-party APM at v1).
 states for every list, transitions per `design/decisions.md`
 motion stops. Sweep for the "small thing wrong" findings that
 `/iterate` would have surfaced later anyway.
+
+### Phase 19 — Quota visibility
+
+Promoted by `/oversight` 2026-05-18 (round 7) from
+`plan/PHASE_CANDIDATES.md` `[4.0] Quota visibility`. Phase 9
+ships a 10-sessions/day per-account quota with graceful-wrap
+UX, but users only learn about it by hitting it. This phase
+surfaces remaining quota proactively as a small monospace
+tile on the authed boardroom shelf (or on `/app` adjacent
+to the existing Settings link): `N/10 sessions left today ·
+resets at midnight UTC`. Reads from the same
+`countSessionsLast24h` helper phase 9 already uses; no new
+schema; no new dependencies. Composes with phase 16's
+SessionUsageFooter (different surface — quota is on the
+active boardroom; usage is on past sessions). Unit test
+covers the count + reset boundary; no e2e (authed-only
+surface; existing `/app` redirect test continues to cover
+the route's auth gate).
 
 ### Phase 18 — Account deletion + data wipe
 

@@ -35,6 +35,9 @@
   3. **Resend test inbox / inbucket** — self-hosted/free
      options if you have the appetite. Not wired yet.
 - **Owner:** user / operator.
+- **oversight 2026-05-18 round 7:** explicitly deferred —
+  operator not planning to wire Mailosaur soon. Row stays
+  pending; loop continues to skip per `[operator]` contract.
 - **/iterate skip:** this row is `[operator]` — `/iterate`
   should leave it pending and move on.
 
@@ -62,6 +65,10 @@
   authed session at `/app/sessions/[id]` and confirming the
   footer shows non-`—` prompt/completion/cost values.
 - **Owner:** user / operator.
+- **oversight 2026-05-18 round 7:** explicitly deferred —
+  operator not planning to apply the migration soon. The
+  SessionUsageFooter renders `—` for all sessions until then;
+  no functional regression. Row stays pending.
 - **/iterate skip:** this row is `[operator]` — `/iterate`
   should leave it pending and move on.
 
@@ -89,6 +96,11 @@
 - **Documentation drift cleanup:** done 2026-05-18 (this
   audit pass) — `.env.example` and `setup/03_supabase.md` both
   now name `SUPABASE_E2E_SESSION_COOKIE` correctly.
+- **oversight 2026-05-18 round 7:** explicitly deferred —
+  operator not planning to mint the bot cookie soon. Authed
+  `/critique` passes remain blocked; `/app/*` surfaces stay
+  observed-only via unit tests + the URL-contract walker's
+  redirect check. Row stays pending.
 - **Owner:** user / operator.
 - **/iterate skip:** same as above.
 

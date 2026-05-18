@@ -9,9 +9,14 @@
 
 ## Pending
 
-### [ ] [score 4.0] Quota visibility — surface remaining sessions/day before the user starts
+(empty — all proposed candidates have been resolved)
+
+## Promoted
+
+### [x] [score 4.0] Quota visibility — promoted 2026-05-18 as phase 19
 
 - proposed: 2026-05-18, expand pass 1
+- promoted: 2026-05-18 (oversight round 7) → phase 19
 - source signals:
   - Phase 9 ships per-account session quota (10/day, pinned
     in `config/limits.ts`) and graceful wrap UX at the cap —
@@ -36,14 +41,12 @@
 - conflicts: none. Lives inside the boardroom surface;
   doesn't compete with phase 16's observability footer
   (token usage per session, not quota).
-- best slot: post-phase 13, before phase 16 (so phase 16's
-  observability footer can co-locate with quota if useful).
 - oversight 2026-05-18 round 6: **deferred** — nice-to-have
-  polish, not a v1 blocker. The graceful-wrap UX already
-  handles the hit; proactive visibility is comfort, not
-  safety. Revisit if a real user complains.
-
-## Promoted
+  polish, not a v1 blocker.
+- oversight 2026-05-18 round 7: **promoted as phase 19** —
+  ship while context is fresh, before the loop fully drains.
+  Brief generation by the next /march tick via
+  ship-a-phase's missing-brief contract.
 
 ### [x] [score 5.0] Account deletion + data wipe — promoted 2026-05-18 as phase 18
 
