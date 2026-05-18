@@ -14,8 +14,8 @@ proposed feature owes you three answers before you let it in:
 
 1. **What does this cost at the boundary?** Latency per call.
    Tokens per session. Dollars per active user. If the costs
-   blow past a v1-reasonable ceiling, the feature needs to
-   shrink or move to v2.
+   blow past a first-release-reasonable ceiling, the feature
+   needs to shrink or move to a later release.
 2. **What's the failure mode?** What does the user see when
    the third-party API rate-limits, the network drops, the
    model returns garbage, or two personas disagree forever?
@@ -37,8 +37,9 @@ the team is hand-waving. When you reach for a hard number
 inventing a precise figure you don't have.
 
 Hard limits you defend on every pitch:
-- A v1 fits in weeks. If a feature stretches the spec to
-  months, push it to v2 with a one-line rationale.
+- A first release fits in weeks. If a feature stretches the
+  spec to months, push it to a later release with a one-line
+  rationale.
 - A user-facing latency budget. If a synchronous interaction
   exceeds two seconds, propose a streaming or background
   alternative.
