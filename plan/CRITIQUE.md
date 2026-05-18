@@ -1,13 +1,72 @@
 # Critique log
 
-> Last pass: 2026-05-18 at commit fed25d5
-> Pass count: 5
+> Last pass: 2026-05-18 at commit 1ba4649
+> Pass count: 6
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
 > for the contract.
 
 ## Pending
+
+### [MED] /try — locked tiles labeled "Seat N" don't back up the new CTA's "other personas"
+
+- **Pass:** 6 (2026-05-18, commit `1ba4649`)
+- **Viewport:** desktop
+- **Auth state:** anonymous
+- **Category:** comprehension
+- **Severity:** MED
+- **Observation:** Knock-on from the pass-2/4 joint fix at
+  `098e24f` that rewrote the locked-seat CTA to "The other
+  personas need a session — sign in to staff the full table."
+  The demo boardroom shows one named persona (Product Lead)
+  plus five generic "Seat 1"…"Seat 5" locked tiles. The CTA
+  promises "other personas" behind the locks, but the tiles
+  show only ordinal numbers — a first-time visitor can't
+  tell whether the other personas exist yet or are
+  to-be-designed. Compounded by the fact that the v1 library
+  documented on `/about/personas` has exactly four personas
+  (PL, SE, EP, GV), so five locked seats also overshoots the
+  documented library size.
+- **Evidence:** `/try` rendered tile order: "Product Lead,
+  Seat 1, Seat 2, Seat 3, Seat 4, Seat 5". Current CTA copy
+  (`components/demo/demo-shelf.tsx`): "The other personas
+  need a session — sign in to staff the full table." Personas
+  dir on disk holds exactly 4 markdown files.
+- **Suggested fix:** Either label the three remaining locked
+  tiles with the real persona names (Skeptical Engineer,
+  End-user Proxy, Growth Voice) and drop the count to 3
+  locked seats, or rename the CTA to talk about "seats"
+  rather than "personas" so the generic tiles stop implying
+  hidden identities. Option (b) is the cheaper change.
+- **Source:** browser (reader sub-agent — pass 6)
+
+### [LOW] /about — "nexus" appears in the footer with no antecedent on the page
+
+- **Pass:** 6 (2026-05-18, commit `1ba4649`)
+- **Viewport:** desktop
+- **Auth state:** anonymous
+- **Category:** voice
+- **Severity:** LOW
+- **Observation:** Pass 5's MED finding on the "Built with
+  nexus" /about closer was closed by dropping the body
+  paragraph (`f6338cb`). Result: the footer's "boardroom —
+  a nexus build" tagline is now the only mention of "nexus"
+  anywhere a first-time visitor sees. With no antecedent,
+  "nexus" reads as an unexplained internal codename. The
+  body-paragraph removal was correct; the footer tagline
+  now carries the whole burden of that reference alone.
+- **Evidence:** Footer verbatim across every page:
+  `boardroom — a nexus build` (followed by Privacy / Terms /
+  Personas links). No body sentence defines "nexus" on
+  `/about` or anywhere else anonymous visitors land.
+- **Suggested fix:** Drop "— a nexus build" from the footer
+  (the product name alone is sufficient branding) — that's
+  the cleanest closure. Alternative: make "nexus" a link
+  that resolves to a one-line explainer or the GitHub repo
+  README. Don't leave an undefined proper noun as the sole
+  footer brand mark.
+- **Source:** browser (reader sub-agent — pass 6)
 
 ### [LOW] /about/personas — lede leads with a constraint
 
