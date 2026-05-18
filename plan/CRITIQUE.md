@@ -9,33 +9,6 @@
 
 ## Pending
 
-### [LOW] /about — "nexus" appears in the footer with no antecedent on the page
-
-- **Pass:** 6 (2026-05-18, commit `1ba4649`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** voice
-- **Severity:** LOW
-- **Observation:** Pass 5's MED finding on the "Built with
-  nexus" /about closer was closed by dropping the body
-  paragraph (`f6338cb`). Result: the footer's "boardroom —
-  a nexus build" tagline is now the only mention of "nexus"
-  anywhere a first-time visitor sees. With no antecedent,
-  "nexus" reads as an unexplained internal codename. The
-  body-paragraph removal was correct; the footer tagline
-  now carries the whole burden of that reference alone.
-- **Evidence:** Footer verbatim across every page:
-  `boardroom — a nexus build` (followed by Privacy / Terms /
-  Personas links). No body sentence defines "nexus" on
-  `/about` or anywhere else anonymous visitors land.
-- **Suggested fix:** Drop "— a nexus build" from the footer
-  (the product name alone is sufficient branding) — that's
-  the cleanest closure. Alternative: make "nexus" a link
-  that resolves to a one-line explainer or the GitHub repo
-  README. Don't leave an undefined proper noun as the sole
-  footer brand mark.
-- **Source:** browser (reader sub-agent — pass 6)
-
 ### [LOW] /signin — unlabeled hidden inputs surface to assistive tech
 
 - **Pass:** 4 (2026-05-16, commit `2921fbe`)
@@ -155,6 +128,19 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [LOW] /about — "nexus" appears in the footer with no antecedent — addressed at `35794eb`
+
+- **Original (pass 6, commit `1ba4649`):** After the /about
+  closer paragraph at f6338cb was dropped, the footer's
+  "boardroom — a nexus build" became the only mention of
+  "nexus" any anonymous visitor saw — an unexplained proper
+  noun.
+- **Resolution:** /iterate took the reader's cleanest option
+  and dropped "— a nexus build" from the footer. The product
+  name alone is sufficient branding; the README still credits
+  nexus for visitors who follow the GitHub link.
+- **Closed by:** /iterate tick at `35794eb`.
 
 ### [x] [LOW] /try — pitch placeholder contradicts the 100-word cap — addressed at `1e49701`
 
