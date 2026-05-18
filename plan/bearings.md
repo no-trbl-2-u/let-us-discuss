@@ -160,10 +160,13 @@ The v1 URL set:
 /app/sessions/[id]       A specific past session's results page (read + re-download).
 /app/sessions/[id]/transcript   Full transcript view for a past session.
 /about                   What boardroom is and isn't; tone-setter for the persona; links to nexus.
+/about/personas          Read-only library of the curated v1 personas.
 /legal/privacy           Privacy + retention.
 /legal/terms             Terms of use.
 /api/health              Cheap "is the app alive" probe for the deploy gate.
-/api/sessions            Server-action surface for the active session (streaming responses).
+/api/sessions            Server-action surface for the active session (POST: create; streaming responses).
+/api/sessions/[id]/answer  POST: answers from the user at a clarify/checkpoint moment.
+/api/demo/begin          POST: starts the canned anonymous demo session (no AI calls).
 ```
 
 These are permanent. New URLs come from new phases; existing
