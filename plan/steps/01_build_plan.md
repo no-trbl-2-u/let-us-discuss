@@ -78,11 +78,11 @@ commit that ships the phase.
       transitions per `design/decisions.md` motion stops) — `09e85c2`
 
 **Post-build additions (promoted by `/oversight`):**
-- [ ] Phase 18 — Account deletion + data wipe (settings
+- [x] Phase 18 — Account deletion + data wipe (settings
       route to close an account; server action that cascades
       delete across `sessions`/`turns`/`artifacts`/`flag_audit`
       + Supabase `auth.deleteUser`; closes the privacy-policy
-      promise from phase 12)
+      promise from phase 12) — `e2c10eb`
 
 > **After phase 17 (and any later promoted phases):** the loop
 > transitions to `/iterate` — persona-library refinement,
