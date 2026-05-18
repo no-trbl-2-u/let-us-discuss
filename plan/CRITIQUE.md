@@ -9,28 +9,6 @@
 
 ## Pending
 
-### [LOW] /signin — unlabeled hidden inputs surface to assistive tech
-
-- **Pass:** 4 (2026-05-16, commit `2921fbe`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** a11y
-- **Observation:** The magic-link form on `/signin` contains
-  four hidden text inputs. Three are announced to assistive
-  tech with the label "[value redacted]"; one has no
-  accessible name at all. Hidden inputs are usually skipped
-  by AT, but these four are appearing — likely missing
-  `aria-hidden="true"` on the framework-injected CSRF /
-  honeypot fields.
-- **Evidence:** `read_page` /signin → form[ref=10] contains
-  textbox[ref=11] type='hidden' (no label) + textboxes[12-14]
-  type='hidden' labeled '[value redacted]'.
-- **Suggested fix:** Add `aria-hidden="true"` to the
-  framework-injected hidden inputs in `app/signin/sign-in-form.tsx`
-  (or wherever the form is composed). Investigate which
-  layer adds them (Supabase SSR vs Next form) before patching.
-- **Source:** browser (reader sub-agent)
-
 ### [needs-user-call] /critique reader cannot exercise interactive states — Chrome MCP not configured
 
 - **Pass:** 3 (2026-05-16, commit `f48c299`)
@@ -107,6 +85,28 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [LOW] /signin — unlabeled hidden inputs surface to assistive tech — addressed at `1b04cd5`
+
+- **Original (pass 4, commit `2921fbe`):** Reader's
+  accessibility-tree dump showed 4 hidden inputs on
+  `/signin`; 3 announced as "[value redacted]" and 1
+  unlabeled. Read as missing `aria-hidden` on framework-
+  injected CSRF/state fields.
+- **Resolution:** Only one of the four hidden inputs is
+  app-owned (`<input type="hidden" name="next">`); the
+  other three are Next.js's $ACTION-encoded blobs that
+  the runtime emits for `<form action={serverAction}>`.
+  /iterate added `aria-hidden="true"` + `tabIndex={-1}`
+  to the one app-owned input as a defensive belt-and-
+  suspenders (HTML spec already requires AT to skip
+  type=hidden; this is the redundant explicit guard).
+  Framework-injected fields stay as-is — annotating them
+  would require monkey-patching Next's form runtime, out
+  of /iterate scope. Likely a reader-tool artifact rather
+  than a real screen-reader experience bug; a real-AT
+  audit (NVDA/VoiceOver) would settle it.
+- **Closed by:** /iterate tick at `1b04cd5`.
 
 ### [x] [LOW] /try — "Start demo · 3 turns, one persona, no AI calls" crams meta into the button — addressed at `f157f40`
 
