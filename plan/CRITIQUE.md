@@ -1,7 +1,7 @@
 # Critique log
 
-> Last pass: 2026-05-18 at commit f2d7ad9
-> Pass count: 7
+> Last pass: 2026-05-18 at commit 6dd0c39
+> Pass count: 8
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
