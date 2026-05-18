@@ -65,12 +65,12 @@ export function PitchInput({
       <p
         id={`${id}-counter`}
         className={cn(
-          'font-[var(--font-sans)] text-[var(--text-2xs)] text-[color:var(--ink-muted)] flex justify-between',
+          'font-[var(--font-sans)] text-[var(--text-2xs)] text-[color:var(--ink-muted)] flex justify-end gap-[var(--space-3)]',
           softWarn && 'text-[color:var(--ink)]',
-          atCap && 'text-[color:var(--signal-warning)]',
+          atCap && 'text-[color:var(--signal-warning)] justify-between',
         )}
       >
-        <span>{atCap ? 'At cap — trim to continue.' : 'Aim for 1–3 short paragraphs.'}</span>
+        {atCap ? <span>At cap — trim to continue.</span> : null}
         <span data-counter>
           {words} / {max} words
         </span>
