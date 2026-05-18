@@ -62,8 +62,8 @@ commit that ships the phase.
       `/app/sessions/[id]`, `/app/sessions/[id]/transcript`) — `f017ff9`
 - [x] Phase 12 — About + legal (`/about`, `/legal/privacy`,
       `/legal/terms`) — `6f32cb8`
-- [ ] Phase 13 — `/api/health` + smoke-walker integration into
-      hermetic e2e
+- [x] Phase 13 — `/api/health` + smoke-walker integration into
+      hermetic e2e — `93c57ff`
 
 **Cross-cutting (phases 14–17):**
 - [ ] Phase 14 — A11y + keyboard sweep (drag-drop has a
