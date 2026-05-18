@@ -1,13 +1,43 @@
 # Critique log
 
-> Last pass: 2026-05-18 at commit 1ba4649
-> Pass count: 6
+> Last pass: 2026-05-18 at commit f2d7ad9
+> Pass count: 7
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
 > for the contract.
 
 ## Pending
+
+### [LOW] /about/personas — new lede reads as a run-on for a first-time visitor
+
+- **Pass:** 7 (2026-05-18, commit `f2d7ad9`)
+- **Viewport:** desktop
+- **Auth state:** anonymous
+- **Category:** comprehension
+- **Severity:** LOW
+- **Observation:** Follow-up critique of `/iterate`'s pass-5
+  lede rewrite at `dd5c0d9`. The new lede crams the
+  definition + staffing mechanic + library scope +
+  roadmap-gap into two dense sentences with em-dash and
+  semicolon hops. Coherent but breathless — the staffing-
+  by-drag mechanic is buried mid-sentence rather than
+  getting its own beat. The pass-5/6 critique progression
+  moved a constraint-first problem to a density problem;
+  this is the next refinement step.
+- **Evidence:** Lede verbatim on `/about/personas`:
+  "A persona brings a fixed role and voice to the boardroom
+  conversation — you staff a table by dragging the ones you
+  want in the discussion. The v1 library is these four;
+  user-defined personas aren't shipped yet."
+- **Suggested fix:** Split the first sentence at the
+  em-dash so the definition stands on its own, then the
+  staffing mechanic gets its own beat. Example: "A persona
+  brings a fixed role and voice to the conversation. You
+  staff a table by dragging the ones you want in. The v1
+  library is these four; user-defined personas aren't
+  shipped yet."
+- **Source:** browser (reader sub-agent — pass 7)
 
 ### [LOW] /signin — unlabeled hidden inputs surface to assistive tech
 
