@@ -29,6 +29,9 @@ type SessionRow = {
     | 'done'
     | 'aborted'
   total_tokens: number
+  prompt_tokens: number
+  completion_tokens: number
+  cost_cents: number
   ip_hash: string | null
   created_at: string
   updated_at: string
@@ -65,10 +68,19 @@ type ArtifactRow = {
 
 type SessionInsert = Omit<
   SessionRow,
-  'id' | 'created_at' | 'updated_at' | 'total_tokens'
+  | 'id'
+  | 'created_at'
+  | 'updated_at'
+  | 'total_tokens'
+  | 'prompt_tokens'
+  | 'completion_tokens'
+  | 'cost_cents'
 > & {
   id?: string
   total_tokens?: number
+  prompt_tokens?: number
+  completion_tokens?: number
+  cost_cents?: number
   created_at?: string
   updated_at?: string
 }

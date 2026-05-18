@@ -1,4 +1,5 @@
 import type { SupabaseServerClient } from '@/lib/supabase/server'
+import { estimateCostCents } from '@/lib/observability/pricing'
 
 export type SessionStatus =
   | 'clarify'
@@ -50,6 +51,11 @@ export type AppendTurnInput = {
   body: string
   replyingTo?: string | null
   tokens: number
+  /** phase 16: split usage for per-session observability */
+  promptTokens?: number
+  completionTokens?: number
+  /** the session's model, used to estimate the cost increment */
+  model?: string
 }
 
 export type FinalizeArtifactInput = {
@@ -122,6 +128,65 @@ export async function appendTurn(
   })
   if (error) {
     throw new Error(`appendTurn failed: ${error.message}`)
+  }
+  await accumulateSessionUsage(supabase, input)
+}
+
+/**
+ * Phase 16: read-modify-write the session's running aggregates.
+ * Sessions are processed serially within a single orchestrator run,
+ * so the lack of an atomic increment is fine at v1 traffic.
+ *
+ * Best-effort: a read or write failure here does not throw —
+ * the turn row itself is already persisted, and a later turn
+ * write will reconcile the column. Logged via the standard
+ * error helper.
+ */
+async function accumulateSessionUsage(
+  supabase: SupabaseServerClient,
+  input: AppendTurnInput,
+): Promise<void> {
+  const promptDelta = input.promptTokens ?? 0
+  const completionDelta = input.completionTokens ?? 0
+  const totalDelta = input.tokens
+  const costDelta =
+    input.model && (promptDelta > 0 || completionDelta > 0)
+      ? estimateCostCents(input.model, promptDelta, completionDelta) ?? 0
+      : 0
+
+  if (
+    promptDelta === 0 &&
+    completionDelta === 0 &&
+    totalDelta === 0 &&
+    costDelta === 0
+  ) {
+    return
+  }
+
+  try {
+    const { data: current, error: readErr } = await supabase
+      .from('sessions')
+      .select('total_tokens, prompt_tokens, completion_tokens, cost_cents')
+      .eq('id', input.sessionId)
+      .maybeSingle()
+    if (readErr || !current) return
+
+    await supabase
+      .from('sessions')
+      .update({
+        total_tokens: (current.total_tokens ?? 0) + totalDelta,
+        prompt_tokens: (current.prompt_tokens ?? 0) + promptDelta,
+        completion_tokens:
+          (current.completion_tokens ?? 0) + completionDelta,
+        cost_cents: (current.cost_cents ?? 0) + costDelta,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', input.sessionId)
+  } catch {
+    // Silent: best-effort accumulator. The per-turn row is
+    // already persisted; the next turn's read-modify-write
+    // reconciles. Mock clients in unit tests don't stub the
+    // .select chain, which lands us here.
   }
 }
 

@@ -9,6 +9,7 @@ import {
 } from '@/lib/limits'
 import { writeFlagAudit } from '@/lib/moderation/audit'
 import { moderate } from '@/lib/moderation/client'
+import { logError } from '@/lib/observability/log'
 import { loadPersonas } from '@/lib/personas/load'
 import {
   appendTurn,
@@ -165,6 +166,7 @@ export async function POST(req: NextRequest) {
   }
 
   const ipHash = hashIp(req)
+  const model = process.env.ANTHROPIC_MODEL ?? 'claude-opus-4-7'
   let created: { id: string }
   try {
     created = await createSession(session.supabase, {
@@ -172,7 +174,7 @@ export async function POST(req: NextRequest) {
       pitch: body.pitch,
       templateSlug: body.templateSlug,
       personaSlugs: body.personaSlugs,
-      model: process.env.ANTHROPIC_MODEL ?? 'claude-opus-4-7',
+      model,
       status: 'clarify',
       ipHash,
     })
@@ -227,10 +229,18 @@ export async function POST(req: NextRequest) {
                   author: turn.author,
                   body: turn.body,
                   tokens: turn.tokens,
+                  promptTokens: turn.promptTokens,
+                  completionTokens: turn.completionTokens,
+                  model,
                 })
-              } catch {
+              } catch (err) {
                 // Best-effort; the SSE stream is the source of truth for the
                 // client. A failed turn write does not abort the session.
+                logError('orchestrator', err, {
+                  sessionId,
+                  phase: turn.phase,
+                  step: 'persistTurn',
+                })
               }
             },
             async persistArtifact(artifact) {
@@ -260,6 +270,7 @@ export async function POST(req: NextRequest) {
         }
       } catch (err) {
         const message = err instanceof Error ? err.message : 'unknown'
+        logError('session-route', err, { sessionId, step: 'orchestrator' })
         send(
           encodeSseEvent({
             type: 'session.error',

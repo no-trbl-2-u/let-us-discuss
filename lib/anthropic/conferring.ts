@@ -36,7 +36,11 @@ export type RecordedTurn = {
   author: TurnAuthor
   body: string
   replyingTo: string | null
+  /** combined input + output; retained for budget-tracker back-compat */
   tokens: number
+  /** phase 16: split usage for per-session observability */
+  promptTokens: number
+  completionTokens: number
 }
 
 export type ConferringHooks = {
@@ -69,7 +73,12 @@ export type AnthropicStreamClient = {
     maxTokens: number
   }): Promise<{
     deltas: AsyncIterable<string>
-    final: Promise<{ text: string; tokens: number }>
+    final: Promise<{
+      text: string
+      tokens: number
+      promptTokens: number
+      completionTokens: number
+    }>
   }>
 }
 
@@ -174,6 +183,8 @@ export async function* runConferring(
           body: trimmed,
           replyingTo: null,
           tokens: final.tokens,
+          promptTokens: final.promptTokens,
+          completionTokens: final.completionTokens,
         }
       }
     }
@@ -186,6 +197,8 @@ export async function* runConferring(
       body: trimmed,
       replyingTo: null,
       tokens: final.tokens,
+      promptTokens: final.promptTokens,
+      completionTokens: final.completionTokens,
     }
     turns.push(turn)
     await hooks.persistTurn({ ...turn, idx: turnIdx })
@@ -217,6 +230,8 @@ export async function* runConferring(
       body,
       replyingTo: null,
       tokens: 0,
+      promptTokens: 0,
+      completionTokens: 0,
     }
     turns.push(turn)
     await hooks.persistTurn({ ...turn, idx: turnIdx })
@@ -236,6 +251,8 @@ export async function* runConferring(
       body,
       replyingTo: null,
       tokens: estimateTokens(body),
+      promptTokens: 0,
+      completionTokens: 0,
     }
     turns.push(turn)
     await hooks.persistTurn({ ...turn, idx: turnIdx })
@@ -584,10 +601,10 @@ function defaultStreamClient(): AnthropicStreamClient {
           .filter((block) => block.type === 'text')
           .map((block) => block.text)
           .join('')
-        const tokens =
-          (message.usage?.input_tokens ?? 0) +
-          (message.usage?.output_tokens ?? 0)
-        return { text, tokens }
+        const promptTokens = message.usage?.input_tokens ?? 0
+        const completionTokens = message.usage?.output_tokens ?? 0
+        const tokens = promptTokens + completionTokens
+        return { text, tokens, promptTokens, completionTokens }
       })()
       return { deltas: deltas(), final }
     },

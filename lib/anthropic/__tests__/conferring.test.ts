@@ -19,9 +19,16 @@ function makeClient(replies: string[]): AnthropicStreamClient {
       async function* deltas() {
         yield text
       }
+      const promptTokens = Math.max(1, Math.floor(tokens / 2))
+      const completionTokens = tokens - promptTokens
       return {
         deltas: deltas(),
-        final: Promise.resolve({ text, tokens }),
+        final: Promise.resolve({
+          text,
+          tokens,
+          promptTokens,
+          completionTokens,
+        }),
       }
     },
   }

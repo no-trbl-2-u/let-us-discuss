@@ -1,4 +1,5 @@
 import { ArtifactPreviewGrid } from '@/components/boardroom/artifact-preview-grid'
+import { SessionUsageFooter } from '@/components/sessions/session-usage-footer'
 import { StatusPill } from '@/components/sessions/status-pill'
 import { Heading } from '@/design/primitives/heading'
 import { Link } from '@/design/primitives/link'
@@ -78,6 +79,14 @@ export default async function SessionResultsPage({
           ← Back to past sessions
         </Link>
       </nav>
+
+      <SessionUsageFooter
+        model={session.model}
+        totalTokens={session.totalTokens}
+        promptTokens={session.promptTokens}
+        completionTokens={session.completionTokens}
+        costCents={session.costCents}
+      />
     </section>
   )
 }

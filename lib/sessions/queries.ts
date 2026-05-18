@@ -19,7 +19,11 @@ export type SessionListItem = {
 export type LoadedSession = {
   id: string
   status: SessionStatus
+  model: string
   totalTokens: number
+  promptTokens: number
+  completionTokens: number
+  costCents: number
   createdAt: string
   updatedAt: string
   pitch: string
@@ -38,6 +42,11 @@ export type LoadedSession = {
 export type LoadedTranscript = {
   id: string
   status: SessionStatus
+  model: string
+  totalTokens: number
+  promptTokens: number
+  completionTokens: number
+  costCents: number
   createdAt: string
   pitch: string
   personaSlugs: string[]
@@ -85,7 +94,7 @@ export async function loadSession(
   const { data, error } = await supabase
     .from('sessions')
     .select(
-      'id, status, total_tokens, created_at, updated_at, pitch, template_slug, persona_slugs',
+      'id, status, model, total_tokens, prompt_tokens, completion_tokens, cost_cents, created_at, updated_at, pitch, template_slug, persona_slugs',
     )
     .eq('user_id', userId)
     .eq('id', id)
@@ -115,7 +124,11 @@ export async function loadSession(
   return {
     id: data.id,
     status: data.status as SessionStatus,
+    model: data.model,
     totalTokens: data.total_tokens,
+    promptTokens: data.prompt_tokens ?? 0,
+    completionTokens: data.completion_tokens ?? 0,
+    costCents: data.cost_cents ?? 0,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
     pitch: data.pitch,
@@ -141,7 +154,9 @@ export async function loadTranscript(
 ): Promise<LoadedTranscript | null> {
   const { data, error } = await supabase
     .from('sessions')
-    .select('id, status, created_at, pitch, persona_slugs')
+    .select(
+      'id, status, model, total_tokens, prompt_tokens, completion_tokens, cost_cents, created_at, pitch, persona_slugs',
+    )
     .eq('user_id', userId)
     .eq('id', id)
     .maybeSingle()
@@ -173,6 +188,11 @@ export async function loadTranscript(
   return {
     id: data.id,
     status: data.status as SessionStatus,
+    model: data.model,
+    totalTokens: data.total_tokens,
+    promptTokens: data.prompt_tokens ?? 0,
+    completionTokens: data.completion_tokens ?? 0,
+    costCents: data.cost_cents ?? 0,
     createdAt: data.created_at,
     pitch: data.pitch,
     personaSlugs: data.persona_slugs,

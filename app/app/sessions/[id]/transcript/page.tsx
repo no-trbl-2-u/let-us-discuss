@@ -1,3 +1,4 @@
+import { SessionUsageFooter } from '@/components/sessions/session-usage-footer'
 import { StatusPill } from '@/components/sessions/status-pill'
 import { TranscriptView } from '@/components/sessions/transcript-view'
 import { Heading } from '@/design/primitives/heading'
@@ -66,6 +67,14 @@ export default async function SessionTranscriptPage({
           ← Back to results
         </Link>
       </nav>
+
+      <SessionUsageFooter
+        model={session.model}
+        totalTokens={session.totalTokens}
+        promptTokens={session.promptTokens}
+        completionTokens={session.completionTokens}
+        costCents={session.costCents}
+      />
     </section>
   )
 }
