@@ -34,32 +34,6 @@
   small note below the cards.
 - **Source:** browser (reader sub-agent — pass 5)
 
-### [MED] /try — Product Lead persona card is rendered twice (shelf + boardroom)
-
-- **Pass:** 4 (2026-05-16, commit `2921fbe`)
-- **Viewport:** desktop + mobile
-- **Auth state:** anonymous
-- **Category:** visual
-- **Observation:** On `/try` the same Product Lead card appears
-  in the left "Demo shelf" complementary region AND in the
-  boardroom region (the staffed seat). Identical name + role
-  tag + voice line + blurb. First-paint reading: "is one a
-  preview? am I supposed to drag it?" Screen readers also
-  announce the persona twice. The dual-render is consistent
-  with the shelf-as-source / boardroom-as-seat pattern from
-  `/app`, but on `/try` there is only one persona and it is
-  pre-seated — so the shelf-side card carries no useful
-  affordance.
-- **Evidence:** Accessibility tree shows article[ref=14] under
-  complementary "Demo shelf" and article[ref=24] under the
-  boardroom region, both with identical content.
-- **Suggested fix:** On `/try` specifically, hide the
-  shelf-side persona card when the persona is already staffed
-  (or mark it `aria-hidden="true"` + visually-dim). The /app
-  surface — where unseated personas are common — keeps the
-  shelf-side card as the drag source.
-- **Source:** browser (reader sub-agent)
-
 ### [LOW] /signin — unlabeled hidden inputs surface to assistive tech
 
 - **Pass:** 4 (2026-05-16, commit `2921fbe`)
@@ -226,6 +200,23 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [MED] /try — Product Lead persona card is rendered twice (shelf + boardroom) — addressed at `f4a5ca3`
+
+- **Original (pass 4, commit `2921fbe`):** Same Product Lead
+  card rendered in both the left "Demo shelf" and the
+  boardroom region (the staffed seat). Visual + SR duplication.
+- **Resolution:** /iterate dropped the `<PersonaCard>` from
+  `DemoShelf` entirely. The shelf now carries only the
+  context strip (eyebrow + one-line description + sign-in
+  pointer); the boardroom-side rendering is the single
+  source of persona identity on /try. DemoShelf no longer
+  needs the `persona` prop; its colocated test now guards
+  against regression (asserts the persona name is absent
+  from the shelf).
+- **Closed by:** /iterate tick at `f4a5ca3`. The /app
+  surface — where unseated personas are common — keeps its
+  shelf-side cards as the drag source (unchanged).
 
 ### [x] [MED] /about/personas — three different meanings of "v1" on one page — addressed at `4babc35`
 
