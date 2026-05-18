@@ -45,7 +45,7 @@ describe('/about page', () => {
       '/signin',
     )
     expect(
-      screen.getByRole('link', { name: '/about/personas' }),
+      screen.getByRole('link', { name: /persona library/i }),
     ).toHaveAttribute('href', '/about/personas')
   })
 })

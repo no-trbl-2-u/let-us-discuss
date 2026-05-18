@@ -67,8 +67,8 @@ export default function AboutPage() {
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch]">
         <Link href="/try">Run an anonymous demo</Link> — no sign-in needed.{' '}
         <Link href="/signin">Sign in</Link> to run full sessions and keep your
-        artifacts. The persona library is on{' '}
-        <Link href="/about/personas">/about/personas</Link>.
+        artifacts. The <Link href="/about/personas">persona library</Link>{' '}
+        has the full v1 set.
       </p>
 
       <p className="mt-[var(--space-8)] font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)]">
