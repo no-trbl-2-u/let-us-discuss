@@ -1,11 +1,12 @@
 # Supabase setup — boardroom
 
-> **PARTIAL.** Phase 2 has landed: typed clients exist
-> (`lib/supabase/{server,client,diag}.ts`), `/_diag` round-trips
-> a Supabase probe, and `.env` carries the three keys. Auth
-> section is still **PARTIAL** — magic-link configuration
-> (Section C) and the first migration (Section D) ship in
-> phase 3.
+> **READY.** All build-plan phases that touch Supabase have
+> shipped (phases 2, 3, 7a, 7b, 8, 9, 16, 18). Typed clients,
+> magic-link auth, four-table schema with RLS, the moderation-
+> audit table, the IP rate-limit counter, and account-deletion
+> via the service-role admin client are all live. One operator-
+> action follows: apply the phase-16 token-usage migration in
+> Supabase (tracked in `plan/AUDIT.md`).
 >
 > **Account:** TBD (the user's personal Supabase account)
 > **Region:** Pick the region closest to Vercel's primary
@@ -67,23 +68,23 @@ Supabase `auth.getSession()` probe and renders the result.
   upgrades it to touch `auth.users` once the first migration
   ships.
 
-## Section C — Auth (magic-link, phase 3)
+## Section C — Auth (magic-link, phase 3 — shipped at `eb5e302`)
 
 Path: Project → Authentication → Providers
 
 - [ ] Enable Email provider
 - [ ] Magic Link enabled; password sign-in disabled
 - [ ] Email confirmations: **required** for new accounts
-- [ ] Site URL: `https://let-us-discuss.vercel.app`
-      (Vercel project is `let-us-discuss`; preview URLs follow
-      `let-us-discuss-*.vercel.app`. If you later rename the
-      Vercel project to `boardroom-breakdown`, update this
-      Site URL and the redirect URLs below in the Supabase
-      dashboard to match.)
+- [ ] Site URL: `https://let-us-discuss-ai.vercel.app`
+      (Vercel project is `let-us-discuss`; the bare
+      `let-us-discuss.vercel.app` host was already taken,
+      so the canonical alias is `let-us-discuss-ai.vercel.app`
+      — see `plan/bearings.md` L27. Preview URLs follow
+      `let-us-discuss-*-tj-braindump.vercel.app`.)
 - [ ] Redirect URLs (add all three):
       ```
       http://localhost:3000/auth/callback
-      https://let-us-discuss.vercel.app/auth/callback
+      https://let-us-discuss-ai.vercel.app/auth/callback
       https://*-tj-braindump.vercel.app/auth/callback
       ```
       The wildcard covers preview-deploy hostnames Vercel
@@ -102,11 +103,11 @@ filename prefix. Phase 2 ships an empty `db/migrations/`
 directory + a `pnpm db:migrate` script. Each later phase
 appends one or more `.sql` files:
 
-- Phase 3 — `users` extension (Supabase's `auth.users` is
-  primary; product-level user prefs go in `public.profiles`).
-- Phase 4 — `personas` + `templates` tables only if we move
-  authoring into the product (we don't in v1; this row stays
-  empty).
+- Phase 3 — relies on Supabase's `auth.users` directly; no
+  separate `public.profiles` shipped (v1 doesn't need
+  product-level user prefs).
+- Phase 4 — personas + templates stay in repo as markdown +
+  JSON (not in Postgres); no migration.
 - Phase 7a — `sessions`, `turns`, `artifacts` (with RLS).
   See `db/migrations/20260516_phase_7_sessions.sql`.
 - Phase 8 — `flag_audit` (with RLS). See
@@ -115,42 +116,60 @@ appends one or more `.sql` files:
   `db/migrations/20260516_phase_9_ip_rate_limits.sql`. (No
   separate `daily_quotas` table in v1 — per-account quota is
   derived by counting `sessions` over the last 24 hours.)
-- Phase 16 — `token_usage`.
+- Phase 16 — adds three columns to `public.sessions`
+  (`prompt_tokens`, `completion_tokens`, `cost_cents`) —
+  additive, defaults 0 so legacy rows render `—` in the
+  session footer. See
+  `db/migrations/20260518_phase_16_token_usage.sql`.
+- Phase 18 — no migration. Account deletion cascades via
+  the existing FK chain (`auth.users → sessions → turns /
+  artifacts / flag_audit`) using the service-role admin
+  client; no schema change needed.
 
 RLS policies ship in the same migration as the table they
 gate.
 
-### Applying the phase 7 migration (operator action)
+### Applying migrations (operator action per phase)
 
-The phase 7a code ships against the schema described in
-`db/migrations/20260516_phase_7_sessions.sql`. Apply it to
-the project DB before the route is exercised:
+Each phase that adds a migration leaves the application code
+cascade-safe — typed clients fall back when columns are
+missing — so the app deploys green before the operator
+applies the migration. Apply via:
 
 ```bash
 # Option A — psql with the project's connection string
-psql "$SUPABASE_DB_URL" -f db/migrations/20260516_phase_7_sessions.sql
+psql "$SUPABASE_DB_URL" -f db/migrations/<file>.sql
 
 # Option B — paste the file's contents into the Supabase SQL editor
 #   https://supabase.com/dashboard/project/<ref>/sql
 ```
 
-After the migration lands, regenerate the typed client:
+Outstanding operator-action migrations are tracked in
+`plan/AUDIT.md` (search for `[operator]` rows). As of
+2026-05-18, **phase 16's token-usage migration is the only
+unapplied row**.
+
+After any migration lands, regenerate the typed client:
 
 ```bash
 pnpm db:types
 ```
 
 The shipped `lib/supabase/database.types.ts` is a hand-written
-placeholder that mirrors the migration so typecheck passes;
-`pnpm db:types` overwrites it with the canonical output. Commit
-the regen as a separate change (subject: `data: db types regen
-post phase 7a`) so the operator step is visible in history.
+placeholder that mirrors the migrations so typecheck passes;
+`pnpm db:types` overwrites it with the canonical Supabase
+output. Commit the regen as a separate change (subject:
+`data: db types regen post phase <N>`) so the operator step
+is visible in history.
 
 ## Section E — Cookie for `/critique`'s reader
 
 - [ ] Sign in as a critique-bot user via magic-link
 - [ ] Capture the session cookie value from the browser
-- [ ] Drop into `.env` as `CRITIQUE_SESSION_COOKIE`
+- [ ] Drop into `.env` as `SUPABASE_E2E_SESSION_COOKIE`
+      (per `plan/bearings.md` L42 — the older name
+      `CRITIQUE_SESSION_COOKIE` is documentation drift and
+      no longer the variable the reader actually reads)
 - [ ] Refresh out-of-band when the loop reports auth-failed
 
 ---

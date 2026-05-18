@@ -84,10 +84,11 @@
 - **What to do:** Create a dedicated `critique-bot@…` account,
   sign in once via magic-link in browser, copy the resulting
   `sb-<project>-auth-token` cookie from devtools, paste into
-  `.env` as `SUPABASE_E2E_SESSION_COOKIE`. Update
-  `.env.example` to use the same name (currently shows the
-  older `CRITIQUE_SESSION_COOKIE` placeholder — drift). Rotate
-  out-of-band when reader reports auth-failed.
+  `.env` as `SUPABASE_E2E_SESSION_COOKIE`. Rotate out-of-band
+  when reader reports auth-failed.
+- **Documentation drift cleanup:** done 2026-05-18 (this
+  audit pass) — `.env.example` and `setup/03_supabase.md` both
+  now name `SUPABASE_E2E_SESSION_COOKIE` correctly.
 - **Owner:** user / operator.
 - **/iterate skip:** same as above.
 
