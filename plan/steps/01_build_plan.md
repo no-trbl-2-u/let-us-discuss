@@ -333,3 +333,77 @@ sweep of any rows lacking that chain.
   sessionStorage one-tab cap; PitchInput gained an optional max
   prop; ArtifactTile gained downloadable=false; landing CTA
   retro-fitted to link to /try; no AI calls in this phase)
+- phase 7a — 3ff025a — sessions API scaffold + DB schema
+  (sessions/turns/artifacts migration with RLS; /api/sessions
+  route shell returning session.error code=not-implemented end-
+  to-end; shared SSE event types; repo helpers; budget tracker;
+  AnthropicConfigError factory; session-side reducer + stream
+  hook wired to the Start button; no LLM calls yet)
+- phase 7b — 305bb25 — multi-persona conferring loop (Anthropic
+  orchestrator replaces the not-implemented return; clarify →
+  confer → exec-summary checkpoint → specialists → artifact
+  rounds; LiveTranscript + ClarifyPrompt + ExecSummaryCard +
+  ArtifactPreviewGrid light up; requires ANTHROPIC_API_KEY)
+- phase 8 — 41803c4 — moderation gates (OpenAI omni-moderation
+  pre-filter on user input + persona output; halt-and-refuse
+  UX; flag_audit table with RLS; documented unset-key
+  fall-through path)
+- phase 9 — f82f35a — anti-abuse limits (per-account
+  10-sessions/day quota derived from sessions table;
+  per-IP 3-demo/day via ip_rate_limits service-role table;
+  per-session 60k-token cap; graceful-wrap UX with partial
+  artifacts on cap-hit)
+- phase 10 — 18277f2 — artifact render + download (spec.md,
+  exec summary, call-outs rendered as cleanly-typeset preview
+  tiles via design/primitives/artifact-tile.tsx; client-side
+  download; filenames include session token + ISO date)
+- phase 11 — f017ff9 — past-session surface
+  (/app/sessions list 10/page most-recent-first;
+  /app/sessions/[id] reuses ArtifactPreviewGrid with re-download;
+  /app/sessions/[id]/transcript renders LiveTranscript against
+  persisted turns rows; all force-dynamic; RLS pins ownership)
+- phase 12 — 6f32cb8 — about + legal (/about voice-matched
+  "what is this"; /legal/privacy + /legal/terms with locked copy;
+  components/legal/legal-section.tsx; landing-CTA retro-fit
+  /about/personas → /about; closed standing HIGH critique on
+  /legal/* 404 loop)
+- phase 13 — 93c57ff — URL-contract smoke walker
+  (e2e/url-contract-smoke.spec.ts iterates the bearings URL
+  contract; vitest sync test asserts walker ↔ bearings parity;
+  desktop-only via testInfo.project.name filter; surfaced 3
+  shipped routes that had drifted out of the bearings contract)
+- phase 14 — 728595b — a11y + keyboard sweep (skip link;
+  fixed double-button bug on DraggablePersonaCard;
+  aria-labels on every seat (empty + staffed);
+  role="log" + aria-live="polite" on the live transcript;
+  oklch-aware WCAG-AA token-contrast vitest; persona-card
+  aria-label on non-draggable variants)
+- phase 15 — 8f39b59 — performance + meta (metadataBase +
+  default openGraph + twitter card; ImageResponse-built
+  opengraph-image + favicon + apple-icon; sitemap.ts +
+  robots.ts; loading.tsx skeleton blocks on slow
+  /app/sessions/* routes; <Skeleton> primitive in
+  design/primitives; per-page openGraph overrides on 5 public
+  pages)
+- phase 16 — 7171206 — observability (split token usage —
+  prompt_tokens, completion_tokens, cost_cents columns added
+  to sessions via additive migration; estimateCostCents +
+  MODEL_RATES for Claude 4.x family; logError JSON-line helper
+  for Vercel's log drain; orchestrator returns split usage
+  instead of just combined tokens; SessionUsageFooter on both
+  authed session pages; operator action: pnpm db:migrate)
+- phase 17 — 09e85c2 — polish (voice-matched not-found.tsx
+  with H1 "Not found." + dedicated metadata; error.tsx +
+  global-error.tsx via shared <ErrorBoundary> composition
+  that logs to client-boundary scope; EMPTY_STATE_TEMPLATE_RE
+  + audit test covering SessionEmpty + personas empty branch;
+  motion-token audit asserts the 3 timings + 3 easings exist;
+  e2e for the 404 page)
+- phase 18 — e2c10eb — account deletion + data wipe (/app/settings
+  + /app/settings/delete-account with confirm-then-delete flow;
+  deleteAccountAction calling supabase.auth.admin.deleteUser via
+  the service client — FK chain cascades sessions/turns/artifacts
+  /flag_audit; LandingDeletedBanner on /?account=deleted; header
+  settings link; bearings URL contract + smoke walker both
+  updated; closes phase 12's privacy-policy promise structurally;
+  promoted by /oversight round 6 after build-plan completion)
