@@ -69,8 +69,8 @@ commit that ships the phase.
 - [x] Phase 14 — A11y + keyboard sweep (drag-drop has a
       keyboard equivalent; transcript is screen-reader
       navigable) — `728595b`
-- [ ] Phase 15 — Performance + meta (RSC streaming smooth,
-      Lighthouse meta complete, OG image rendered)
+- [x] Phase 15 — Performance + meta (RSC streaming smooth,
+      Lighthouse meta complete, OG image rendered) — `8f39b59`
 - [ ] Phase 16 — Observability (token-usage + cost-per-session
       surfaced in `/app/sessions/[id]`; basic error logging to
       Vercel's surface)
