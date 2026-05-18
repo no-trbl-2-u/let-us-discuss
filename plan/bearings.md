@@ -71,11 +71,11 @@ WebFetch; cloud-loop friendly. See
 
 | # | Service | Runbook | Status | Last verified | Dashboard |
 |---|---|---|---|---|---|
-| 01 | GitHub | `setup/01_github.md` | STUB | 2026-05-16 | https://github.com/no-trbl-2-u/let-us-discuss |
-| 02 | Vercel | `setup/02_vercel.md` | STUB | 2026-05-16 | https://vercel.com/dashboard |
-| 03 | Supabase (Postgres + Auth + storage) | `setup/03_supabase.md` | STUB | 2026-05-16 | https://supabase.com/dashboard |
-| 04 | Anthropic | `setup/04_anthropic.md` | STUB | 2026-05-16 | https://console.anthropic.com |
-| 05 | OpenAI (moderation only) | `setup/05_openai.md` | STUB | 2026-05-16 | https://platform.openai.com |
+| 01 | GitHub | `setup/01_github.md` | PARTIAL | 2026-05-18 | https://github.com/no-trbl-2-u/let-us-discuss |
+| 02 | Vercel | `setup/02_vercel.md` | OK | 2026-05-18 | https://vercel.com/dashboard |
+| 03 | Supabase (Postgres + Auth + storage) | `setup/03_supabase.md` | OK | 2026-05-18 | https://supabase.com/dashboard |
+| 04 | Anthropic | `setup/04_anthropic.md` | PARTIAL | 2026-05-18 | https://console.anthropic.com |
+| 05 | OpenAI (moderation only) | `setup/05_openai.md` | PARTIAL | 2026-05-18 | https://platform.openai.com |
 
 See `../nexus/customization/external-services.md` for the
 runbook shape and the loop's introspection contract.
