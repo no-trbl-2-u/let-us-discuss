@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { IBM_Plex_Mono, IBM_Plex_Sans, Source_Serif_4 } from 'next/font/google'
 import { Header } from '@/components/site/header'
 import { Footer } from '@/components/site/footer'
+import { SkipLink } from '@/components/site/skip-link'
 import './globals.css'
 
 const serif = Source_Serif_4({
@@ -52,8 +53,11 @@ export default function RootLayout({
       }
     >
       <body className="min-h-screen antialiased flex flex-col">
+        <SkipLink />
         <Header />
-        <main className="flex-1">{children}</main>
+        <main id="main" className="flex-1">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>

@@ -38,7 +38,12 @@ export function LiveTranscript({ turns, personasBySlug }: Props) {
   }
 
   return (
-    <section aria-label="session transcript" className="flex flex-col">
+    <section
+      aria-label="session transcript"
+      role="log"
+      aria-live="polite"
+      className="flex flex-col"
+    >
       {turns.map((turn, i) => {
         const persona =
           turn.personaSlug != null ? personasBySlug.get(turn.personaSlug) : null

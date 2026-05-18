@@ -47,16 +47,32 @@ export function PersonaCard({
   state = "resting",
   draggable = true,
   className,
+  "aria-label": ariaLabelProp,
   ...rest
-}: PersonaCardProps) {
+}: PersonaCardProps & { "aria-label"?: string }) {
   const isDragging = state === "dragging";
   const isStaffed = state === "staffed";
+
+  // When the card is the focusable surface (draggable), the
+  // caller supplies its own aria-label or we fall back to a
+  // role+pressed pattern. When non-draggable (a seated tile
+  // rendered inside a DroppableSeat, or a persona-library
+  // entry), provide an accessible name on the article so SR
+  // users hear "<role>: <name> (seated)" without needing to
+  // navigate into the badge.
+  const defaultLabel = isStaffed
+    ? `${role}: ${name} (seated)`
+    : !draggable
+      ? `${role}: ${name}`
+      : undefined;
+  const articleAriaLabel = ariaLabelProp ?? defaultLabel;
 
   return (
     <article
       role={draggable ? "button" : undefined}
       tabIndex={draggable ? 0 : undefined}
       aria-pressed={isStaffed || undefined}
+      aria-label={articleAriaLabel}
       data-state={state}
       className={cn(
         "relative w-[260px] select-none",

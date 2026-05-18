@@ -6,6 +6,10 @@ import { cn } from '@/lib/cn'
 import { monogramFor } from '@/lib/personas/monogram'
 import { PersonaCard } from '@/design/primitives/persona-card'
 import type { BoardState, BoardStateTag } from './types'
+import {
+  KEYBOARD_INSTRUCTIONS_ID,
+  KeyboardInstructions,
+} from './keyboard-instructions'
 
 type Props = {
   boardState: BoardState
@@ -51,13 +55,17 @@ function DroppableSeat({
     data: { seatId },
   })
   const pos = seatPositionPercent(t)
+  const seatLabel = persona
+    ? `Seat ${seatId} — ${persona.name} staffed`
+    : `Seat ${seatId} — empty`
   return (
     <div
       ref={setNodeRef}
       data-seat-id={seatId}
       data-occupied={Boolean(persona)}
       data-over={isOver || undefined}
-      className="absolute -translate-x-1/2 -translate-y-1/2"
+      aria-label={seatLabel}
+      className="absolute -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius-md)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--ring-offset)]"
       style={{ left: pos.left, top: pos.top }}
     >
       {persona ? (
@@ -73,7 +81,7 @@ function DroppableSeat({
         />
       ) : (
         <div
-          aria-label={`Seat ${seatId} — empty`}
+          aria-hidden
           className={cn(
             'w-[140px] sm:w-[180px] md:w-[220px]',
             'h-[80px] sm:h-[96px] md:h-[112px]',
@@ -97,7 +105,9 @@ export function BoardroomSurface({ boardState, personasBySlug }: Props) {
   const visualState = visualTagFor(boardState.tag)
 
   return (
-    <div
+    <section
+      aria-label="Boardroom table"
+      aria-describedby={KEYBOARD_INSTRUCTIONS_ID}
       data-state={visualState}
       className={cn(
         'relative mx-auto w-full max-w-[880px]',
@@ -108,6 +118,7 @@ export function BoardroomSurface({ boardState, personasBySlug }: Props) {
         'shadow-[inset_0_2px_4px_oklch(20%_0.01_60/0.05),inset_0_-1px_0_oklch(100%_0_0/0.4)]',
       )}
     >
+      <KeyboardInstructions />
       {visualState === 'active' && (
         <div
           aria-hidden
@@ -138,6 +149,6 @@ export function BoardroomSurface({ boardState, personasBySlug }: Props) {
           <DroppableSeat key={s.id} seatId={s.id} t={s.t} persona={persona} />
         )
       })}
-    </div>
+    </section>
   )
 }

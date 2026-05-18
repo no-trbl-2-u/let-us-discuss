@@ -42,6 +42,29 @@ describe('LiveTranscript', () => {
     expect(screen.getByText(/A clarifying question/i)).toBeInTheDocument()
   })
 
+  it('exposes the transcript region as a polite live log', () => {
+    const turns: SessionTurn[] = [
+      {
+        id: 't1',
+        phase: 'clarify',
+        author: 'persona',
+        personaSlug: null,
+        replyingTo: null,
+        body: 'hello',
+        tokens: 0,
+        closed: true,
+      },
+    ]
+    const { container } = render(
+      <LiveTranscript turns={turns} personasBySlug={new Map()} />,
+    )
+    const region = container.querySelector('section')
+    expect(region).not.toBeNull()
+    expect(region?.getAttribute('role')).toBe('log')
+    expect(region?.getAttribute('aria-live')).toBe('polite')
+    expect(region?.getAttribute('aria-label')).toBe('session transcript')
+  })
+
   it('labels moderator turns with the Boardroom register', () => {
     const turns: SessionTurn[] = [
       {
