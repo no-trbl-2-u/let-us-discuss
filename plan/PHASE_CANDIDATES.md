@@ -140,15 +140,12 @@
 - next pass: re-examine if a critique pass or triaged issue
   asks for it.
 
-### [score 2.5] Stale GH issue housekeeping (#6, #8)
+### [done] [score 2.5] Stale GH issue housekeeping (#6, #8) — closed 2026-05-18 (/iterate)
 
 - proposed: 2026-05-18, expand pass 1
-- source: issue #6 ("test: gated magic-link e2e walk") was
-  resolved by oversight 2026-05-16 (`4b42d68`); issue #8
-  ("Phase 7 — Multi-persona conferring loop") was satisfied
-  by phase 7b at `305bb25` — both still open.
-- why below threshold: not a phase, just housekeeping. The
-  next /triage tick should close them with a one-line
-  comment.
-- next pass: drop from candidates list once /triage closes
-  them.
+- closed: 2026-05-18 (/iterate honest-cleanup tick)
+- resolution: Both issues closed via `gh issue close` with
+  one-line comments pointing at the resolving commits
+  (#6 → `4b42d68`; #8 → 7a/7b split at `3ff025a`/`305bb25`).
+- left as a record (not deleted) so future expand passes
+  don't re-file the same candidate from a fresh signal scan.
