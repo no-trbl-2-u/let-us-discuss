@@ -36,31 +36,6 @@
   footer brand mark.
 - **Source:** browser (reader sub-agent — pass 6)
 
-### [LOW] /about/personas — lede leads with a constraint
-
-- **Pass:** 5 (2026-05-18, commit `fed25d5`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** comprehension
-- **Severity:** LOW
-- **Observation:** Opening line "A curated v1 library. These
-  four are fixed for v1 — you can't add your own yet." opens
-  on a constraint (what the user can't do) before
-  establishing what a persona is or why these four exist.
-  For a first-time visitor arriving from the footer "Personas"
-  link, the lede answers a question they haven't asked yet.
-  This is a follow-up critique of the pass-2 fix (`1413406`)
-  that replaced the "ship via PR" leak — the new copy is
-  cleaner but still constraint-first.
-- **Evidence:** First sentence of `app/about/personas/page.tsx`
-  after the heading: "A curated v1 library. These four are
-  fixed for v1 — you can't add your own yet."
-- **Suggested fix:** Lead with one plainspoken sentence on
-  what a persona is and why these four; move the
-  "can't add your own yet" clause to a second sentence or a
-  small note below the cards.
-- **Source:** browser (reader sub-agent — pass 5)
-
 ### [LOW] /signin — unlabeled hidden inputs surface to assistive tech
 
 - **Pass:** 4 (2026-05-16, commit `2921fbe`)
@@ -227,6 +202,24 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [LOW] /about/personas — lede leads with a constraint — addressed at `dd5c0d9`
+
+- **Original (pass 5, commit `fed25d5`):** Lede opened with
+  "A curated v1 library. These four are fixed for v1 —
+  you can't add your own yet." — answered "what can't you
+  do?" before "what is this?"
+- **Resolution:** /iterate rewrote the lede to lead with
+  what a persona is: "A persona brings a fixed role and
+  voice to the boardroom conversation — you staff a table
+  by dragging the ones you want in the discussion. The v1
+  library is these four; user-defined personas aren't
+  shipped yet." First sentence answers the orientation
+  question; constraint moves to a secondary clause. Also
+  collapses the lede's "v1" usage to one mention
+  (page-level only), aligning with the persona-card
+  rewrite at 4babc35.
+- **Closed by:** /iterate tick at `dd5c0d9`.
 
 ### [x] [MED] /try — locked tiles labeled "Seat N" don't back up the new CTA's "other personas" — addressed at `4fb5663`
 
