@@ -58,30 +58,6 @@
   layer adds them (Supabase SSR vs Next form) before patching.
 - **Source:** browser (reader sub-agent)
 
-### [LOW] /try — pitch textbox has three overlapping guidance affordances
-
-- **Pass:** 4 (2026-05-16, commit `2921fbe`)
-- **Viewport:** mobile
-- **Auth state:** anonymous
-- **Category:** comprehension
-- **Observation:** The pitch input stacks placeholder ("What
-  are you trying to ship, and for whom? (≤ 100 words.)"),
-  helper text ("Aim for 1–3 short paragraphs."), and a counter
-  ("0 / 100 words") all under one label. On 375-wide mobile
-  the stack feels noisy for a single-paragraph input. Adjacent
-  to the existing pending "1–3 short paragraphs" finding but
-  distinct (that one is about the cap mismatch; this is about
-  visual density).
-- **Evidence:** read_page /try: ref_46 label 'Pitch' → ref_47
-  textbox (placeholder) → ref_48 generic 'Aim for 1–3 short
-  paragraphs.' → ref_49 '0 / 100 words'.
-- **Suggested fix:** Collapse to two affordances when the
-  1-3-paragraphs/100-words fix lands. Suggested shape:
-  placeholder as the example + a single helper line carrying
-  both the constraint and the counter, e.g. "100 words max ·
-  0 used".
-- **Source:** browser (reader sub-agent)
-
 ### [needs-user-call] /critique reader cannot exercise interactive states — Chrome MCP not configured
 
 - **Pass:** 3 (2026-05-16, commit `f48c299`)
@@ -120,29 +96,6 @@
   /critique pass confirms the reader inherits the
   `mcp__claude-in-chrome__*` namespace.
 - **Source:** reader sub-agent (introspection on its own tool list)
-
-### [LOW] /try — pitch placeholder contradicts the 100-word cap
-
-- **Pass:** 2 (2026-05-16, commit `337e03e`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** comprehension
-- **Severity:** LOW
-- **Observation:** The pitch input placeholder says "Aim for
-  1–3 short paragraphs" but the counter directly below caps at
-  "0 / 100 words". A short paragraph easily reaches 60–80
-  words; three of them comfortably exceeds the cap, setting up
-  an avoidable input-rejection moment.
-- **Evidence:** `components/demo/demo-pitch-input.tsx` passes
-  the placeholder "What are you trying to ship, and for whom?
-  (≤ 100 words.)" — but the underlying `PitchInput` (phase 5)
-  still has the old hard-coded "Aim for 1–3 short paragraphs"
-  helper text in its counter row.
-- **Suggested fix:** Either parametrize the helper text along
-  with `max` in `components/boardroom/pitch-input.tsx`, or
-  override it in the demo wrapper. Suggested copy at the demo
-  cap: "A paragraph or two — 100 words max."
-- **Source:** web-fetch (reader sub-agent)
 
 ### [LOW] /try — "Start demo · 3 turns, one persona, no AI calls" crams meta into the button
 
@@ -202,6 +155,32 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [LOW] /try — pitch placeholder contradicts the 100-word cap — addressed at `1e49701`
+
+- **Original (pass 2, commit `337e03e`):** Helper text "Aim for
+  1–3 short paragraphs" contradicted the "0 / 100 words" cap;
+  three short paragraphs easily exceeded the cap.
+- **Resolution:** /iterate dropped the standing helper text
+  entirely below the textarea. The counter "X / 100 words"
+  already carries the constraint; the redundant
+  "1–3 paragraphs" framing was doing more harm than good.
+- **Closed by:** /iterate tick at `1e49701` (joint resolution
+  with the density finding below).
+
+### [x] [LOW] /try — pitch textbox has three overlapping guidance affordances — addressed at `1e49701`
+
+- **Original (pass 4, commit `2921fbe`):** Pitch input stacked
+  placeholder + helper text + counter as three affordances
+  under one label; reader called it noisy on 375-wide mobile.
+- **Resolution:** Same `1e49701` edit. Normal flow now renders
+  one affordance (the counter); the at-cap warning ("At cap —
+  trim to continue.") only appears paired with the counter
+  when the user actually hits the cap. Two-affordance shape
+  becomes one-affordance most of the time.
+- **Closed by:** /iterate tick at `1e49701` (joint resolution
+  with the placeholder/cap finding above — one helper-row
+  rewrite closed both).
 
 ### [x] [LOW] /about/personas — lede leads with a constraint — addressed at `dd5c0d9`
 
