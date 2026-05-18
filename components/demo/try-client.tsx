@@ -93,7 +93,7 @@ export function TryClient({ persona }: Props) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-[var(--space-6)]">
-      <DemoShelf persona={persona} />
+      <DemoShelf />
       <section className="flex flex-col gap-[var(--space-5)]">
         <DemoSurface persona={persona} tag={state.tag} />
         <DemoPitchInput

@@ -23,10 +23,19 @@ const persona: Persona = {
 }
 
 describe('DemoShelf', () => {
-  it('renders the single demo persona', () => {
-    render(<DemoShelf persona={persona} />)
+  it('renders the eyebrow + sign-in CTA without duplicating the seated persona card', () => {
+    render(<DemoShelf />)
     expect(screen.getByLabelText(/demo shelf/i)).toBeInTheDocument()
-    expect(screen.getByText('Product lead')).toBeInTheDocument()
+    // The shelf used to render a duplicate PersonaCard of the persona
+    // already on the board (pass-4 critique [MED] "rendered twice").
+    // It now carries only the context strip + sign-in pointer.
+    expect(screen.queryByText(/^product lead$/i)).toBeNull()
+    expect(
+      screen.getByText(/product lead is already at the table/i),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: /sign in/i }),
+    ).toHaveAttribute('href', '/signin?next=/app')
   })
 })
 
