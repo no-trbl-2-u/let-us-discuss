@@ -28,7 +28,7 @@ export function DemoShelf({ persona }: Props) {
         monogram={monogramFor(persona.name)}
       />
       <p className="font-[var(--font-serif)] italic text-[var(--text-xs)] text-[color:var(--ink-muted)]">
-        Want all four? <Link href="/signin?next=/app" variant="default">Sign in</Link> to staff the full table.
+        The other personas need a session — <Link href="/signin?next=/app" variant="default">sign in</Link> to staff the full table.
       </p>
     </aside>
   )
