@@ -45,8 +45,8 @@ export default function PersonasPage() {
         Personas
       </Heading>
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch] mb-[var(--space-7)]">
-        A curated v1 library. User-created personas land post-v1. Persona
-        changes ship via PR — the table here is the canonical view.
+        A curated v1 library. These four are fixed for v1 — you can&apos;t
+        add your own yet.
       </p>
 
       {personas.length === 0 ? (
