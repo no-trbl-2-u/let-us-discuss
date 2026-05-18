@@ -45,10 +45,9 @@ export default function PersonasPage() {
         Personas
       </Heading>
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch] mb-[var(--space-7)]">
-        A persona brings a fixed role and voice to the boardroom
-        conversation — you staff a table by dragging the ones you want in
-        the discussion. The v1 library is these four; user-defined personas
-        aren&apos;t shipped yet.
+        A persona brings a fixed role and voice to the conversation. You
+        staff a table by dragging the ones you want in. The v1 library is
+        these four; user-defined personas aren&apos;t shipped yet.
       </p>
 
       {personas.length === 0 ? (
