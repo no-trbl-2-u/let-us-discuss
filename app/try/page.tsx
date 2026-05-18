@@ -40,8 +40,8 @@ export default function TryPage() {
           What a session looks like.
         </Heading>
         <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)]">
-          One persona, three canned turns, three artifact tiles. Real
-          sessions sign in.
+          One persona, three canned turns, three artifact tiles. Full
+          sessions need a sign-in.
         </p>
       </header>
       <TryBoard />
