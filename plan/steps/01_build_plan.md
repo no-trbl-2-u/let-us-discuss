@@ -71,9 +71,9 @@ commit that ships the phase.
       navigable) — `728595b`
 - [x] Phase 15 — Performance + meta (RSC streaming smooth,
       Lighthouse meta complete, OG image rendered) — `8f39b59`
-- [ ] Phase 16 — Observability (token-usage + cost-per-session
+- [x] Phase 16 — Observability (token-usage + cost-per-session
       surfaced in `/app/sessions/[id]`; basic error logging to
-      Vercel's surface)
+      Vercel's surface) — `7171206`
 - [ ] Phase 17 — Polish (404, error boundaries, empty states,
       transitions per `design/decisions.md` motion stops)
 
