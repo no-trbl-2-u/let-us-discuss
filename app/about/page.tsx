@@ -70,18 +70,6 @@ export default function AboutPage() {
         artifacts. The <Link href="/about/personas">persona library</Link>{' '}
         has the full v1 set.
       </p>
-
-      <p className="mt-[var(--space-8)] font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)]">
-        Built with{' '}
-        <Link
-          href="https://github.com/no-trbl-2-u/let-us-discuss"
-          variant="quiet"
-        >
-          nexus
-        </Link>{' '}
-        — the autonomous loop that drives every commit in this repo. See the
-        README for how the build works.
-      </p>
     </section>
   )
 }

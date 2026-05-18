@@ -26,13 +26,10 @@ describe('/about page', () => {
     ).toBeInTheDocument()
   })
 
-  it('links the "nexus" footnote to the project repo', () => {
+  it('does NOT render the "Built with nexus" build-process footnote (closed pass 5 critique)', () => {
     render(AboutPage())
-    const nexusLink = screen.getByRole('link', { name: /^nexus$/i })
-    expect(nexusLink).toHaveAttribute(
-      'href',
-      'https://github.com/no-trbl-2-u/let-us-discuss',
-    )
+    expect(screen.queryByText(/built with/i)).toBeNull()
+    expect(screen.queryByRole('link', { name: /^nexus$/i })).toBeNull()
   })
 
   it('links to /try, /signin, and /about/personas in the body', () => {
