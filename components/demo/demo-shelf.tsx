@@ -15,7 +15,7 @@ export function DemoShelf() {
         The Product Lead is already at the table.
       </p>
       <p className="font-[var(--font-serif)] italic text-[var(--text-xs)] text-[color:var(--ink-muted)]">
-        The other personas need a session — <Link href="/signin?next=/app" variant="default">sign in</Link> to staff the full table.
+        The other seats are locked — <Link href="/signin?next=/app" variant="default">sign in</Link> to staff the full table.
       </p>
     </aside>
   )
