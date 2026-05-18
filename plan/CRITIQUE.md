@@ -187,6 +187,11 @@
   available tool list before walking the page set. Until
   that lands, /critique passes can only assess server-rendered
   HTML; interactive state critique is blocked.
+- **Note (oversight 2026-05-18):** User committed to adding
+  the entry to project-scope `.mcp.json` (now tracked) alongside
+  the existing Supabase server. Row stays pending until the next
+  /critique pass confirms the reader inherits the
+  `mcp__claude-in-chrome__*` namespace.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
 ### [MED] /about/personas — "Persona changes ship via PR" leaks build-process language
@@ -329,6 +334,12 @@
   `sb-<project>-auth-token` cookie; set
   `SUPABASE_E2E_SESSION_COOKIE` in `.env`. Update
   `.env.example` with a commented-out template.
+- **Note (oversight 2026-05-18):** User explicitly deferred
+  this round. Critique passes continue anonymous-only; authed
+  `/app/*` surfaces (phases 5, 11) remain outside the reader's
+  reach until an operator populates the cookie. AUDIT.md
+  `[operator] Populate SUPABASE_E2E_SESSION_COOKIE` row holds
+  the same context with score 3.0.
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
