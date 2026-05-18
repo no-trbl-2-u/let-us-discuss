@@ -9,52 +9,6 @@
 
 ## Pending
 
-### [HIGH] /legal/privacy + /legal/terms — footer links 404 across the whole site
-
-- **Pass:** 4 (2026-05-16, commit `2921fbe`)
-- **Viewport:** desktop + mobile
-- **Auth state:** anonymous
-- **Category:** infra
-- **Severity:** HIGH
-- **Observation:** The global footer links to `/legal/privacy` and
-  `/legal/terms` from every page. Both URLs return the generic
-  Next.js 404. The 404 page itself renders the same footer, so a
-  user who clicks the footer link from the 404 page lands on
-  another 404 — infinite loop. This was surfaced earlier in the
-  session in an aborted critique tick; the brief allowed
-  re-filing if still present, and it is.
-- **Evidence:** WebFetch returns 404 for both routes; the 404
-  body is `404 / This page could not be found.` with no in-main
-  links; the global footer renders on the 404 page and links
-  back to the same dead URLs.
-- **Suggested fix:** Phase 12 owns `/about + /legal/*`; either
-  pull it forward to ship one-paragraph stubs at
-  `/legal/privacy` and `/legal/terms`, or remove the footer
-  links until phase 12 lands.
-- **Source:** browser (reader sub-agent)
-
-### [MED] 404 page is bare and inherits the landing title
-
-- **Pass:** 4 (2026-05-16, commit `2921fbe`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** seo
-- **Severity:** MED
-- **Observation:** The `app/not-found.tsx` page has no
-  dedicated `<title>` and renders only two headings ("404"
-  and "This page could not be found."). The tab title falls
-  through to the landing page's title ("boardroom — a short,
-  opinionated meeting with AI personas"), which misleads
-  search engines + browser history users; the page body has
-  no "back home" affordance.
-- **Evidence:** `read_page` on /legal/privacy shows main with
-  only `<h1>404</h1>` + `<h2>This page could not be found.</h2>`;
-  document.title equals the landing-page title.
-- **Suggested fix:** Add `export const metadata = { title: 'Not
-  found — boardroom' }` and a one-line in-voice body with a
-  link back to `/` inside `app/not-found.tsx`.
-- **Source:** browser (reader sub-agent)
-
 ### [MED] /try — Product Lead persona card is rendered twice (shelf + boardroom)
 
 - **Pass:** 4 (2026-05-16, commit `2921fbe`)
@@ -194,27 +148,6 @@
   `mcp__claude-in-chrome__*` namespace.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
-### [MED] /about/personas — "Persona changes ship via PR" leaks build-process language
-
-- **Pass:** 2 (2026-05-16, commit `337e03e`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** comprehension
-- **Severity:** MED
-- **Observation:** The persona-library intro carries internal
-  contributor copy onto a public surface. An anonymous
-  visitor does not know what "ship via PR" means in this
-  context and doesn't need to. The first sentence is fine;
-  the second sentence is the leak.
-- **Evidence:** Intro in `app/about/personas/page.tsx`:
-  `A curated v1 library. User-created personas land post-v1.
-  Persona changes ship via PR — the table here is the
-  canonical view.`
-- **Suggested fix:** Replace the second sentence with
-  reader-facing context, e.g. `These four are fixed for v1;
-  you can't add your own yet.`
-- **Source:** web-fetch (reader sub-agent)
-
 ### [MED] /try — "Want all four?" CTA shifts into pitch-deck register
 
 - **Pass:** 2 (2026-05-16, commit `337e03e`)
@@ -235,31 +168,6 @@
 - **Suggested fix:** Reword to a flat statement, e.g.
   `The other four personas need a session — sign in to staff
   the full table.`
-- **Source:** web-fetch (reader sub-agent)
-
-### [MED] / — "What is a boardroom session?" link mis-routed to /about/personas
-
-- **Pass:** 2 (2026-05-16, commit `337e03e`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** navigation
-- **Severity:** MED
-- **Observation:** The landing CTA labels itself as a "what is
-  this" explainer but routes to `/about/personas`, which is a
-  persona library, not a definition page.
-  `plan/bearings.md` L154 reserves `/about` for "What boardroom
-  is and isn't" — but `/about` doesn't ship until phase 12.
-  Until then, the label promises a destination that doesn't
-  exist, and the actual destination doesn't answer the label's
-  question.
-- **Evidence:** Landing CTA in `components/site/landing-hero.tsx`:
-  `<Link href="/about/personas" variant="default">What is a
-  boardroom session?</Link>`. `/about/personas` opens: "A
-  curated v1 library."
-- **Suggested fix:** Until phase 12 ships `/about`, rename the
-  label to match the destination, e.g. `Meet the personas.`
-  Phase 12 can then add the canonical `/about` link with the
-  "what is this" framing.
 - **Source:** web-fetch (reader sub-agent)
 
 ### [LOW] /try — pitch placeholder contradicts the 100-word cap
@@ -343,6 +251,60 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [HIGH] /legal/privacy + /legal/terms — footer links 404 across the whole site — addressed at `6f32cb8` (phase 12)
+
+- **Original (pass 4, commit `2921fbe`):** Global footer links
+  to `/legal/privacy` and `/legal/terms`; both 404; the 404 page
+  itself renders the same footer → infinite loop.
+- **Resolution:** Phase 12 shipped `/legal/privacy`,
+  `/legal/terms`, and `/about` as real surfaces. The e2e spec
+  `e2e/legal-routes-resolve.spec.ts` asserts all three return
+  200 with their expected H1; the footer links resolve from
+  every page including the 404. Phase 17 made the 404 itself
+  voice-matched.
+- **Closed by:** /march tick at `6f32cb8` (feat) + `7cdabee`
+  (DoD). Mirror issue #16 closed via Closes #16 trailer.
+
+### [x] [MED] 404 page is bare and inherits the landing title — addressed at `09e85c2` (phase 17)
+
+- **Original (pass 4, commit `2921fbe`):** Next's auto-404
+  rendered "404 / This page could not be found." with no
+  dedicated title and no back-home affordance.
+- **Resolution:** Phase 17 shipped `app/not-found.tsx` with H1
+  "Not found.", in-voice body, three CTAs (`/`, `/try`, `/about`),
+  and dedicated metadata (`title: "Not found — boardroom"`,
+  noindex). The e2e spec `e2e/not-found.spec.ts` asserts the
+  status, H1, CTA href, and document.title.
+- **Closed by:** /march tick at `09e85c2` (feat) + `3d62ea6`
+  (DoD). Mirror issue #21 closed via Closes #21 trailer.
+
+### [x] [MED] / — "What is a boardroom session?" link mis-routed to /about/personas — addressed at `6f32cb8` (phase 12 retro-fit)
+
+- **Original (pass 2, commit `337e03e`):** Landing CTA labeled
+  itself as a "what is this" explainer but routed to
+  `/about/personas` (a persona library, not a definition page).
+- **Resolution:** Phase 12 shipped `/about` as the canonical
+  "what boardroom is" page; the cross-link retro-fit on
+  `components/site/landing-hero.tsx` retargeted the CTA's href
+  from `/about/personas` → `/about`. The landing-hero unit
+  test asserts the new href; the e2e CTA test continues to
+  pass.
+- **Closed by:** /march tick at `6f32cb8` (feat) + `7cdabee`
+  (DoD).
+
+### [x] [MED] /about/personas — "Persona changes ship via PR" leaks build-process language — addressed at `1413406`
+
+- **Original (pass 2, commit `337e03e`):** The persona-library
+  intro carried internal contributor copy ("Persona changes ship
+  via PR — the table here is the canonical view.") onto a
+  public surface. An anonymous visitor doesn't know what "ship
+  via PR" means.
+- **Resolution:** /iterate replaced the second sentence with
+  reader-facing context: "These four are fixed for v1 — you
+  can't add your own yet." Phase 12's brief explicitly
+  deferred this to /iterate as a single-sentence change.
+- **Closed by:** /iterate tick at `1413406`.
 
 ### [x] [HIGH] /try — H1 marketing-fluff reworded — addressed at `3fcf592` (issue #9)
 
