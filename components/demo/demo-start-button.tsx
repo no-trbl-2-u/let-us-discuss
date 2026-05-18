@@ -9,13 +9,13 @@ type Props = {
 
 export function DemoStartButton({ disabled, onStart }: Props) {
   return (
-    <div className="flex items-center gap-[var(--space-4)]">
+    <div className="flex flex-col items-start gap-[var(--space-3)]">
       <Button type="button" variant="primary" disabled={disabled} onClick={onStart}>
         Start demo
       </Button>
-      <span className="font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)]">
-        demo &nbsp;·&nbsp; 3 turns, one persona, no AI calls
-      </span>
+      <p className="font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)]">
+        3 turns &nbsp;·&nbsp; one persona &nbsp;·&nbsp; no AI calls
+      </p>
     </div>
   )
 }
