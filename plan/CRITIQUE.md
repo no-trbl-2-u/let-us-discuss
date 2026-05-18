@@ -9,31 +9,6 @@
 
 ## Pending
 
-### [MED] /about — "Built with nexus" closer leaks build-process meta
-
-- **Pass:** 5 (2026-05-18, commit `fed25d5`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** voice
-- **Severity:** MED
-- **Observation:** The closing line on `/about` ("Built with
-  nexus — the autonomous loop that drives every commit in
-  this repo. See the README for how the build works.") reads
-  as meta-commentary about how the product was made, not what
-  it is. A first-time visitor reading `/about` wants to know
-  what boardroom does for them. Same family of leak as the
-  just-closed `/about/personas` "ship via PR" finding —
-  build-process language on a "what is this" surface.
-- **Evidence:** Closing footnote on `/about` (`app/about/page.tsx`
-  L71-79). The footer already credits "boardroom — a nexus
-  build" on every page, so the meta-context is already
-  attributed; the in-body sentence is redundant.
-- **Suggested fix:** Drop the closing sentence entirely
-  (the footer credit covers it), or replace with a
-  reader-facing pointer (e.g., a single link in the eyebrow
-  footnote without the autonomous-loop framing).
-- **Source:** browser (reader sub-agent — pass 5)
-
 ### [MED] /about/personas — three different meanings of "v1" on one page
 
 - **Pass:** 5 (2026-05-18, commit `fed25d5`)
@@ -279,6 +254,22 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [MED] /about — "Built with nexus" closer leaks build-process meta — addressed at `f6338cb`
+
+- **Original (pass 5, commit `fed25d5`):** Closing eyebrow on
+  /about ("Built with nexus — the autonomous loop that drives
+  every commit in this repo.") read as meta-commentary about
+  how the product was made, not what it is.
+- **Resolution:** /iterate dropped the closing paragraph
+  entirely. The footer's "boardroom — a nexus build" credit
+  on every page covers the attribution; the in-body sentence
+  was redundant and broke the canonical "what is this"
+  surface's voice. Same family of leak as the just-closed
+  /about/personas "ship via PR" finding.
+- **Closed by:** /iterate tick at `f6338cb`. Existing
+  about-page test updated to assert the nexus link's absence
+  (regression guard).
 
 ### [x] [MED] /try — "Want all four?" CTA shifts into pitch-deck register — addressed at `098e24f`
 
