@@ -34,28 +34,6 @@
   footnote without the autonomous-loop framing).
 - **Source:** browser (reader sub-agent — pass 5)
 
-### [MED] /about — raw "/about/personas" path rendered as link text
-
-- **Pass:** 5 (2026-05-18, commit `fed25d5`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** navigation
-- **Severity:** MED
-- **Observation:** The "Try it." section on `/about` includes
-  a link whose visible text is the URL itself
-  (`<Link href="/about/personas">/about/personas</Link>`).
-  Reads as a template/markdown bleed-through; URLs-as-labels
-  belong in monospace code blocks, not editorial prose. The
-  same destination is reachable from the footer's "Personas"
-  link with a proper label.
-- **Evidence:** `app/about/page.tsx` L64-67: `The persona
-  library is on <Link href="/about/personas">/about/personas</Link>.`
-- **Suggested fix:** Replace the bare-path link text with a
-  human label, e.g., "the persona library is on a
-  [dedicated page](/about/personas)." or simply drop the
-  redundant link (footer covers it).
-- **Source:** browser (reader sub-agent — pass 5)
-
 ### [MED] /about/personas — three different meanings of "v1" on one page
 
 - **Pass:** 5 (2026-05-18, commit `fed25d5`)
@@ -376,6 +354,20 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [MED] /about — raw "/about/personas" path rendered as link text — addressed at `9078238`
+
+- **Original (pass 5, commit `fed25d5`):** The "Try it." section
+  on `/about` ended with "The persona library is on
+  /about/personas." where /about/personas was both the href
+  and the visible link text. Read as a template/markdown
+  bleed-through.
+- **Resolution:** /iterate replaced the sentence with "The
+  persona library has the full v1 set." with "persona
+  library" carrying the link. Same destination, real label,
+  adds context about what's there.
+- **Closed by:** /iterate tick at `9078238`. Existing about-page
+  unit test updated to match the new link label.
 
 ### [x] [HIGH] /legal/privacy + /legal/terms — footer links 404 across the whole site — addressed at `6f32cb8` (phase 12)
 
