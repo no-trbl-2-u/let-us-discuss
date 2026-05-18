@@ -36,7 +36,15 @@ export function SignInForm({
         helper="We never use this for anything else."
         error={error}
       />
-      {next ? <input type="hidden" name="next" value={next} /> : null}
+      {next ? (
+        <input
+          type="hidden"
+          name="next"
+          value={next}
+          aria-hidden="true"
+          tabIndex={-1}
+        />
+      ) : null}
       <Button type="submit" variant="primary" className="w-full">
         Send the link
       </Button>
