@@ -66,9 +66,9 @@ commit that ships the phase.
       hermetic e2e — `93c57ff`
 
 **Cross-cutting (phases 14–17):**
-- [ ] Phase 14 — A11y + keyboard sweep (drag-drop has a
+- [x] Phase 14 — A11y + keyboard sweep (drag-drop has a
       keyboard equivalent; transcript is screen-reader
-      navigable)
+      navigable) — `728595b`
 - [ ] Phase 15 — Performance + meta (RSC streaming smooth,
       Lighthouse meta complete, OG image rendered)
 - [ ] Phase 16 — Observability (token-usage + cost-per-session
