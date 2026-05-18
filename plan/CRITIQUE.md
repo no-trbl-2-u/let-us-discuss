@@ -9,34 +9,6 @@
 
 ## Pending
 
-### [MED] /about/personas — three different meanings of "v1" on one page
-
-- **Pass:** 5 (2026-05-18, commit `fed25d5`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** comprehension
-- **Severity:** MED
-- **Observation:** The page uses "v1" three times to mean
-  three different things: (1) the persona-library version
-  ("A curated v1 library"), (2) boardroom-the-product's
-  version ("These four are fixed for v1"), and (3) the
-  user's product's first version ("A v1 ships in weeks, not
-  quarters." on the Product Lead card; "A v1 fits in weeks
-  ... push it to v2" on the Skeptical Engineer card). A
-  reader sees "v1" four times in adjacent reading and asks
-  "whose v1?"
-- **Evidence:** `/about/personas` page header + intro use
-  "v1" twice for the library. `personas/product-lead.md` +
-  `personas/skeptical-engineer.md` system prompts use "v1"
-  for the user's product. All three meanings render in one
-  scroll.
-- **Suggested fix:** Rewrite the in-persona lines to use
-  "first version" / "a first release" for the user's
-  project, and reserve "v1" at the page level for the
-  persona-library version. Touches the persona markdown
-  files (data-layer edit, not app code).
-- **Source:** browser (reader sub-agent — pass 5)
-
 ### [LOW] /about/personas — lede leads with a constraint
 
 - **Pass:** 5 (2026-05-18, commit `fed25d5`)
@@ -254,6 +226,21 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [MED] /about/personas — three different meanings of "v1" on one page — addressed at `4babc35`
+
+- **Original (pass 5, commit `fed25d5`):** Page used "v1" three
+  different ways in one scroll: library version, boardroom-
+  product version, and the user's product's first version (on
+  the Product Lead + Skeptical Engineer cards). A reader saw
+  "v1" four times in adjacent reading and asked "whose v1?"
+- **Resolution:** /iterate rewrote the in-persona references
+  (three on Product Lead, two on Skeptical Engineer) to use
+  "first release" for the user's product. "v1" stays at the
+  page level for the persona-library version, where it's
+  unambiguous.
+- **Closed by:** /iterate tick at `4babc35`. Data-layer edit
+  only; data:validate continues to pass.
 
 ### [x] [MED] /about — "Built with nexus" closer leaks build-process meta — addressed at `f6338cb`
 
