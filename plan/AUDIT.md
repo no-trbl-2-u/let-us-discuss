@@ -38,6 +38,33 @@
 - **/iterate skip:** this row is `[operator]` — `/iterate`
   should leave it pending and move on.
 
+### [operator] Apply phase-16 token-usage migration in Supabase
+
+- **Source:** /iterate audit 2026-05-18 (gap-filling pass —
+  the action was called out in phase 16's commit body at
+  `7171206` but never surfaced in this audit queue).
+- **Score:** 3.0 (medium — without the migration, the
+  `prompt_tokens` / `completion_tokens` / `cost_cents`
+  columns don't exist on `public.sessions`. The Supabase
+  writes from `accumulateSessionUsage` silently fail at the
+  column level; the SessionUsageFooter renders `—` for
+  every session forever. No user-visible error, just silent
+  under-reporting until the migration runs).
+- **Category:** config (operator action)
+- **Summary:** `db/migrations/20260518_phase_16_token_usage.sql`
+  is committed in the repo and adds three columns to
+  `public.sessions` with `default 0`. The app code is
+  cascade-safe and renders fallbacks for the missing data;
+  shipping the migration just lights up the real numbers.
+- **What to do:** Run `pnpm db:migrate` against the production
+  Supabase project (or apply the SQL file directly in the
+  Supabase SQL editor). Verify by opening any post-migration
+  authed session at `/app/sessions/[id]` and confirming the
+  footer shows non-`—` prompt/completion/cost values.
+- **Owner:** user / operator.
+- **/iterate skip:** this row is `[operator]` — `/iterate`
+  should leave it pending and move on.
+
 ### [operator] Populate SUPABASE_E2E_SESSION_COOKIE for /critique
 
 - **Source:** oversight 2026-05-16 (renamed from
