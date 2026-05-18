@@ -70,27 +70,6 @@
   `mcp__claude-in-chrome__*` namespace.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
-### [LOW] /try — "Start demo · 3 turns, one persona, no AI calls" crams meta into the button
-
-- **Pass:** 2 (2026-05-16, commit `337e03e`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** visual
-- **Severity:** LOW
-- **Observation:** The dot-bullet "meta-on-button" pattern is
-  unusual; first-time visitors read it as button + fine-print
-  and may miss that the demo is canned (no AI calls) before
-  they click. The honesty is on-voice — the placement is not.
-- **Evidence:** `components/demo/demo-start-button.tsx`:
-  button label is `Start demo`; the eyebrow span sitting
-  *inside* the same flex row reads `demo · 3 turns, one
-  persona, no AI calls`. Visually they look like one widget.
-- **Suggested fix:** Move the meta line below the button as
-  a single helper, not adjacent. The button stays "Start
-  demo"; the helper reads "3 turns · one persona · no AI calls"
-  in the same eyebrow style.
-- **Source:** web-fetch (reader sub-agent)
-
 ### [needs-user-call] SUPABASE_E2E_SESSION_COOKIE unset — authed /critique cannot walk /app
 
 - **Pass:** 1 (2026-05-16, commit `29e5d62`) — still pending after pass 2
@@ -128,6 +107,18 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [LOW] /try — "Start demo · 3 turns, one persona, no AI calls" crams meta into the button — addressed at `f157f40`
+
+- **Original (pass 2, commit `337e03e`):** Button + meta-text
+  adjacency read as one widget; first-time visitors might
+  miss the "no AI calls" caveat before clicking.
+- **Resolution:** /iterate restructured DemoStartButton from
+  a horizontal flex (button + meta-span) to a vertical stack
+  (button on its own row, meta line below as eyebrow helper).
+  Also dropped the redundant "demo · " prefix from the meta
+  line — the button label already says "Start demo".
+- **Closed by:** /iterate tick at `f157f40`.
 
 ### [x] [LOW] /about/personas — new lede reads as a run-on — addressed at `d86b57a`
 
