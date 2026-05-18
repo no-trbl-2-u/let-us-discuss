@@ -9,38 +9,6 @@
 
 ## Pending
 
-### [MED] /try — locked tiles labeled "Seat N" don't back up the new CTA's "other personas"
-
-- **Pass:** 6 (2026-05-18, commit `1ba4649`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** comprehension
-- **Severity:** MED
-- **Observation:** Knock-on from the pass-2/4 joint fix at
-  `098e24f` that rewrote the locked-seat CTA to "The other
-  personas need a session — sign in to staff the full table."
-  The demo boardroom shows one named persona (Product Lead)
-  plus five generic "Seat 1"…"Seat 5" locked tiles. The CTA
-  promises "other personas" behind the locks, but the tiles
-  show only ordinal numbers — a first-time visitor can't
-  tell whether the other personas exist yet or are
-  to-be-designed. Compounded by the fact that the v1 library
-  documented on `/about/personas` has exactly four personas
-  (PL, SE, EP, GV), so five locked seats also overshoots the
-  documented library size.
-- **Evidence:** `/try` rendered tile order: "Product Lead,
-  Seat 1, Seat 2, Seat 3, Seat 4, Seat 5". Current CTA copy
-  (`components/demo/demo-shelf.tsx`): "The other personas
-  need a session — sign in to staff the full table." Personas
-  dir on disk holds exactly 4 markdown files.
-- **Suggested fix:** Either label the three remaining locked
-  tiles with the real persona names (Skeptical Engineer,
-  End-user Proxy, Growth Voice) and drop the count to 3
-  locked seats, or rename the CTA to talk about "seats"
-  rather than "personas" so the generic tiles stop implying
-  hidden identities. Option (b) is the cheaper change.
-- **Source:** browser (reader sub-agent — pass 6)
-
 ### [LOW] /about — "nexus" appears in the footer with no antecedent on the page
 
 - **Pass:** 6 (2026-05-18, commit `1ba4649`)
@@ -259,6 +227,23 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [MED] /try — locked tiles labeled "Seat N" don't back up the new CTA's "other personas" — addressed at `4fb5663`
+
+- **Original (pass 6, commit `1ba4649`):** Knock-on from the
+  098e24f CTA rewrite — the new "other personas need a
+  session" promised named identities behind the generic
+  "Seat 1…5" locked tiles, which a first-time visitor
+  couldn't reconcile.
+- **Resolution:** /iterate took the reader's cheaper option
+  and renamed the CTA from "other personas" to "other seats
+  are locked" — names the actual UI element (the locked
+  seats), keeps the sign-in CTA, and removes the "personas"
+  word that didn't have a referent. The structural option
+  (rename the locked tiles to the real persona names + trim
+  to 3 seats) stays available if a future critique pass
+  argues for it.
+- **Closed by:** /iterate tick at `4fb5663`.
 
 ### [x] [MED] /try — Product Lead persona card is rendered twice (shelf + boardroom) — addressed at `f4a5ca3`
 
