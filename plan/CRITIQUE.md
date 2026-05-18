@@ -113,34 +113,6 @@
   shelf-side card as the drag source.
 - **Source:** browser (reader sub-agent)
 
-### [MED] /try — seat count (5 locked + 1 staffed) contradicts "Want all four?"
-
-- **Pass:** 4 (2026-05-16, commit `2921fbe`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** comprehension
-- **Observation:** The /try boardroom shows 5 locked seats +
-  1 staffed Product Lead — 6 total seat positions. The locked
-  CTA copy says "Want all four?" referring to the four curated
-  personas. A first-time visitor counting either the seats OR
-  the CTA gets contradictory signals about table size vs
-  persona count. The existing pending "Want all four?" finding
-  is about voice register, not arithmetic — this is a separate
-  observation.
-- **Evidence:** Accessibility tree at /try lists seats with
-  labels "Seat 1 — demo locked" through "Seat 5 — demo
-  locked" + the staffed "Seat 0". CTA text reads "Want all
-  four? to staff the full table." Personas dir on disk holds
-  exactly 4 markdown files.
-- **Suggested fix:** Pick a single anchor for the demo's
-  visible scale. Either: (a) trim the demo boardroom to show 4
-  seats (matching the 4 personas) and keep "Want all four?";
-  or (b) reword the CTA to "Want the full table?" so the
-  number disappears and the 6-seat visual is uncontested.
-  Option (b) is the cheaper change and respects the existing
-  MAX_PERSONAS_SEATED=6 constant.
-- **Source:** browser (reader sub-agent)
-
 ### [LOW] /signin — unlabeled hidden inputs surface to assistive tech
 
 - **Pass:** 4 (2026-05-16, commit `2921fbe`)
@@ -226,28 +198,6 @@
   `mcp__claude-in-chrome__*` namespace.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
-### [MED] /try — "Want all four?" CTA shifts into pitch-deck register
-
-- **Pass:** 2 (2026-05-16, commit `337e03e`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** voice
-- **Severity:** MED
-- **Observation:** The locked-seat CTA below the demo shelf
-  drifts into upsell phrasing mid-page. `/signin` nails the
-  bearings voice ("Enter your email and we'll send a one-time
-  link. No password, no follow-ups."); `/try` should match.
-  "Want all four?" is the kind of phrasing a colleague
-  wouldn't use to another colleague.
-- **Evidence:** `/try` locked-seat copy in
-  `components/demo/demo-shelf.tsx`:
-  `Want all four? Sign in to staff the full table.` vs.
-  `/signin` copy (current bearings-voice exemplar).
-- **Suggested fix:** Reword to a flat statement, e.g.
-  `The other four personas need a session — sign in to staff
-  the full table.`
-- **Source:** web-fetch (reader sub-agent)
-
 ### [LOW] /try — pitch placeholder contradicts the 100-word cap
 
 - **Pass:** 2 (2026-05-16, commit `337e03e`)
@@ -329,6 +279,31 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [MED] /try — "Want all four?" CTA shifts into pitch-deck register — addressed at `098e24f`
+
+- **Original (pass 2, commit `337e03e`):** Locked-seat CTA drifted
+  into upsell register ("Want all four?") mid-page; not the
+  bearings voice (a colleague wouldn't phrase it that way).
+- **Resolution:** /iterate rewrote the CTA to a flat statement:
+  "The other personas need a session — sign in to staff the full
+  table." Drops the upsell phrasing.
+- **Closed by:** /iterate tick at `098e24f`. Same edit also closes
+  the [MED] seat-count contradiction (next entry).
+
+### [x] [MED] /try — seat count (5 locked + 1 staffed) contradicts "Want all four?" — addressed at `098e24f`
+
+- **Original (pass 4, commit `2921fbe`):** Demo boardroom shows
+  6 seat positions (5 locked + 1 staffed) but the CTA said "Want
+  all four?" — contradictory signals about scale.
+- **Resolution:** The same `098e24f` edit removed the number from
+  the CTA entirely ("The other personas need a session — sign in
+  to staff the full table."), so the 6-seat visual is uncontested.
+  Cheaper than trimming the table to 4 seats; respects the
+  existing MAX_PERSONAS_SEATED=6 constant.
+- **Closed by:** /iterate tick at `098e24f` (joint resolution
+  with the voice-register finding above — one CTA edit closed
+  both).
 
 ### [x] [MED] /try — "Real sessions sign in." elided verb mis-parses — addressed at `fb8a264`
 
