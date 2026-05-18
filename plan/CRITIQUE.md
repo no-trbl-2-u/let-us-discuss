@@ -87,31 +87,6 @@
   small note below the cards.
 - **Source:** browser (reader sub-agent — pass 5)
 
-### [MED] /try — "Real sessions sign in." elided verb mis-parses
-
-- **Pass:** 5 (2026-05-18, commit `fed25d5`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** comprehension
-- **Severity:** MED
-- **Observation:** The `/try` lede reads "One persona, three
-  canned turns, three artifact tiles. Real sessions sign in."
-  The closing fragment "Real sessions sign in." is terse to
-  the point of mis-parsing. A first-time visitor reads it as
-  either a command ("real sessions, sign in!") or as a
-  label for something on the page. The intent appears to be
-  "real sessions require sign-in" but the elided verb makes
-  it ambiguous — particularly right under an H1 that already
-  promises a demo.
-- **Evidence:** `app/try/page.tsx` lede sub-headline reads
-  "One persona, three canned turns, three artifact tiles.
-  Real sessions sign in."
-- **Suggested fix:** Restore the verb. Suggested copy:
-  "Full sessions need a sign-in." or "Sign in to run a real
-  session." — keep the terseness but make the parse
-  unambiguous.
-- **Source:** browser (reader sub-agent — pass 5)
-
 ### [MED] /try — Product Lead persona card is rendered twice (shelf + boardroom)
 
 - **Pass:** 4 (2026-05-16, commit `2921fbe`)
@@ -354,6 +329,19 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [MED] /try — "Real sessions sign in." elided verb mis-parses — addressed at `fb8a264`
+
+- **Original (pass 5, commit `fed25d5`):** The /try lede ended
+  with "Real sessions sign in." — terse to the point of
+  mis-parsing as either a command or a label.
+- **Resolution:** /iterate rewrote the closing fragment as
+  "Full sessions need a sign-in." Keeps the sub-headline's
+  terseness, restores the verb, makes the "sign-in is
+  required for full sessions" intent unambiguous.
+- **Closed by:** /iterate tick at `fb8a264`. No tests
+  asserted the old copy; existing /try e2e + unit tests
+  continue to pass.
 
 ### [x] [MED] /about — raw "/about/personas" path rendered as link text — addressed at `9078238`
 
