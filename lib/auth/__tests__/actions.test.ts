@@ -2,11 +2,23 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const signInWithOtp = vi.fn()
 const signOut = vi.fn()
+const deleteUser = vi.fn()
+const getUser = vi.fn()
 
 vi.mock('@/lib/supabase/server', () => ({
   createServerClient: async () => ({
-    auth: { signInWithOtp, signOut },
+    auth: { signInWithOtp, signOut, getUser },
   }),
+  createServiceClient: () => ({
+    auth: { admin: { deleteUser } },
+  }),
+}))
+
+vi.mock('@/lib/supabase/auth', () => ({
+  getCurrentUser: async () => {
+    const { data } = await getUser()
+    return data?.user ?? null
+  },
 }))
 
 vi.mock('next/navigation', () => ({
@@ -93,6 +105,76 @@ describe('signOutAction', () => {
     signOut.mockResolvedValue({ error: null })
     const { signOutAction } = await import('@/lib/auth/actions')
     await expect(signOutAction()).rejects.toThrow('NEXT_REDIRECT:/')
+    expect(signOut).toHaveBeenCalledOnce()
+  })
+})
+
+describe('deleteAccountAction', () => {
+  beforeEach(() => {
+    signOut.mockReset()
+    deleteUser.mockReset()
+    getUser.mockReset()
+  })
+
+  it('rejects when the confirm field is empty', async () => {
+    const { deleteAccountAction } = await import('@/lib/auth/actions')
+    const fd = new FormData()
+    const result = await deleteAccountAction(fd)
+    expect(result).toEqual({ ok: false, error: 'Type delete to confirm.' })
+    expect(deleteUser).not.toHaveBeenCalled()
+  })
+
+  it('rejects when the confirm field is wrong', async () => {
+    const { deleteAccountAction } = await import('@/lib/auth/actions')
+    const fd = new FormData()
+    fd.set('confirm', 'yes')
+    const result = await deleteAccountAction(fd)
+    expect(result).toEqual({ ok: false, error: 'Type delete to confirm.' })
+    expect(deleteUser).not.toHaveBeenCalled()
+  })
+
+  it('rejects when the session has expired (no user)', async () => {
+    getUser.mockResolvedValue({ data: { user: null }, error: null })
+    const { deleteAccountAction } = await import('@/lib/auth/actions')
+    const fd = new FormData()
+    fd.set('confirm', 'delete')
+    const result = await deleteAccountAction(fd)
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.error).toMatch(/sign in expired/i)
+    }
+    expect(deleteUser).not.toHaveBeenCalled()
+  })
+
+  it('surfaces a Supabase admin error', async () => {
+    getUser.mockResolvedValue({
+      data: { user: { id: 'user-1' } },
+      error: null,
+    })
+    deleteUser.mockResolvedValue({
+      error: { message: 'admin delete failed' },
+    })
+    const { deleteAccountAction } = await import('@/lib/auth/actions')
+    const fd = new FormData()
+    fd.set('confirm', 'delete')
+    const result = await deleteAccountAction(fd)
+    expect(result).toEqual({ ok: false, error: 'admin delete failed' })
+    expect(signOut).not.toHaveBeenCalled()
+  })
+
+  it('deletes the user via the admin API, signs out, and redirects', async () => {
+    getUser.mockResolvedValue({
+      data: { user: { id: 'user-1' } },
+      error: null,
+    })
+    deleteUser.mockResolvedValue({ error: null })
+    signOut.mockResolvedValue({ error: null })
+    const { deleteAccountAction } = await import('@/lib/auth/actions')
+    const fd = new FormData()
+    fd.set('confirm', 'delete')
+    const result = await deleteAccountAction(fd)
+    expect(result).toEqual({ ok: true, redirectTo: '/?account=deleted' })
+    expect(deleteUser).toHaveBeenCalledWith('user-1')
     expect(signOut).toHaveBeenCalledOnce()
   })
 })

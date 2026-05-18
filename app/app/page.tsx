@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Heading } from '@/design/primitives/heading'
 import { Button } from '@/design/primitives/button'
+import { Link } from '@/design/primitives/link'
 import { Board } from '@/components/boardroom/board'
 import { signOutAction } from '@/lib/auth/actions'
 import { requireUser } from '@/lib/supabase/auth'
@@ -24,14 +25,19 @@ export default async function AppHomePage() {
           </p>
           <Heading level={1}>Staff a table.</Heading>
         </div>
-        <form action={signOutAction} className="shrink-0">
-          <Button type="submit" variant="secondary" size="sm">
-            Sign out
-            <span className="hidden sm:inline font-[var(--font-mono)] text-[var(--text-2xs)] text-[color:var(--ink-muted)] ml-[var(--space-2)]">
-              {user.email}
-            </span>
-          </Button>
-        </form>
+        <div className="shrink-0 flex items-center gap-[var(--space-4)]">
+          <Link href="/app/settings" variant="quiet">
+            Settings
+          </Link>
+          <form action={signOutAction}>
+            <Button type="submit" variant="secondary" size="sm">
+              Sign out
+              <span className="hidden sm:inline font-[var(--font-mono)] text-[var(--text-2xs)] text-[color:var(--ink-muted)] ml-[var(--space-2)]">
+                {user.email}
+              </span>
+            </Button>
+          </form>
+        </div>
       </header>
       <Board />
     </section>

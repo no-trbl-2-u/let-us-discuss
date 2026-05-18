@@ -75,6 +75,20 @@ export const URL_CONTRACT: ReadonlyArray<UrlContractEntry> = [
     next: `/app/sessions/${SESSION_ID_PLACEHOLDER}/transcript`,
   },
   {
+    url: '/app/settings',
+    method: 'GET',
+    label: 'authed settings',
+    expect: 'redirect-to-signin-with-next',
+    next: '/app/settings',
+  },
+  {
+    url: '/app/settings/delete-account',
+    method: 'GET',
+    label: 'delete-account flow',
+    expect: 'redirect-to-signin-with-next',
+    next: '/app/settings/delete-account',
+  },
+  {
     url: '/api/health',
     method: 'GET',
     label: 'health probe',

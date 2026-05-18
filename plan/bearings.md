@@ -159,6 +159,8 @@ The v1 URL set:
 /app/sessions            List of the signed-in user's past sessions.
 /app/sessions/[id]       A specific past session's results page (read + re-download).
 /app/sessions/[id]/transcript   Full transcript view for a past session.
+/app/settings            Authed settings page (single Account section in v1).
+/app/settings/delete-account  Confirm-then-delete flow that closes the account and cascades the data wipe.
 /about                   What boardroom is and isn't; tone-setter for the persona; links to nexus.
 /about/personas          Read-only library of the curated v1 personas.
 /legal/privacy           Privacy + retention.

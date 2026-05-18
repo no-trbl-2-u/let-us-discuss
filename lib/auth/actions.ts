@@ -2,7 +2,11 @@
 
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { createServerClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/supabase/auth'
+import {
+  createServerClient,
+  createServiceClient,
+} from '@/lib/supabase/server'
 import { safeNextPath } from './safe-next'
 
 const SignInSchema = z.object({
@@ -56,4 +60,47 @@ export async function signOutAction(): Promise<void> {
   const supabase = await createServerClient()
   await supabase.auth.signOut()
   redirect('/')
+}
+
+export type DeleteAccountResult =
+  | { ok: true; redirectTo: string }
+  | { ok: false; error: string }
+
+/**
+ * Phase 18: close an account. Cascade-deletes every row tied
+ * to the auth user via the existing FK chains (sessions →
+ * turns / artifacts / flag_audit), then signs out and
+ * redirects to /?account=deleted.
+ *
+ * Requires the literal string "delete" in the `confirm`
+ * field as a defense-in-depth against accidental clicks.
+ * Operates server-side; the client form mirrors the same
+ * disabled-until-typed guard.
+ */
+export async function deleteAccountAction(
+  formData: FormData,
+): Promise<DeleteAccountResult> {
+  const confirm = formData.get('confirm')?.toString() ?? ''
+  if (confirm !== 'delete') {
+    return { ok: false, error: 'Type delete to confirm.' }
+  }
+
+  const user = await getCurrentUser()
+  if (!user) {
+    return {
+      ok: false,
+      error: 'Sign in expired. Please sign in again.',
+    }
+  }
+
+  const admin = createServiceClient()
+  const { error: deleteError } = await admin.auth.admin.deleteUser(user.id)
+  if (deleteError) {
+    return { ok: false, error: deleteError.message }
+  }
+
+  const supabase = await createServerClient()
+  await supabase.auth.signOut()
+
+  return { ok: true, redirectTo: '/?account=deleted' }
 }
