@@ -74,8 +74,8 @@ commit that ships the phase.
 - [x] Phase 16 — Observability (token-usage + cost-per-session
       surfaced in `/app/sessions/[id]`; basic error logging to
       Vercel's surface) — `7171206`
-- [ ] Phase 17 — Polish (404, error boundaries, empty states,
-      transitions per `design/decisions.md` motion stops)
+- [x] Phase 17 — Polish (404, error boundaries, empty states,
+      transitions per `design/decisions.md` motion stops) — `09e85c2`
 
 > **After phase 17:** the loop transitions to `/iterate` —
 > persona-library refinement, template tuning, fresh-eyes
