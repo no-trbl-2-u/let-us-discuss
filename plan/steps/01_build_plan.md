@@ -60,8 +60,8 @@ commit that ships the phase.
       typeset preview tiles) — `18277f2`
 - [x] Phase 11 — Past-session surface (`/app/sessions`,
       `/app/sessions/[id]`, `/app/sessions/[id]/transcript`) — `f017ff9`
-- [ ] Phase 12 — About + legal (`/about`, `/legal/privacy`,
-      `/legal/terms`)
+- [x] Phase 12 — About + legal (`/about`, `/legal/privacy`,
+      `/legal/terms`) — `6f32cb8`
 - [ ] Phase 13 — `/api/health` + smoke-walker integration into
       hermetic e2e
 
