@@ -9,36 +9,6 @@
 
 ## Pending
 
-### [LOW] /about/personas — new lede reads as a run-on for a first-time visitor
-
-- **Pass:** 7 (2026-05-18, commit `f2d7ad9`)
-- **Viewport:** desktop
-- **Auth state:** anonymous
-- **Category:** comprehension
-- **Severity:** LOW
-- **Observation:** Follow-up critique of `/iterate`'s pass-5
-  lede rewrite at `dd5c0d9`. The new lede crams the
-  definition + staffing mechanic + library scope +
-  roadmap-gap into two dense sentences with em-dash and
-  semicolon hops. Coherent but breathless — the staffing-
-  by-drag mechanic is buried mid-sentence rather than
-  getting its own beat. The pass-5/6 critique progression
-  moved a constraint-first problem to a density problem;
-  this is the next refinement step.
-- **Evidence:** Lede verbatim on `/about/personas`:
-  "A persona brings a fixed role and voice to the boardroom
-  conversation — you staff a table by dragging the ones you
-  want in the discussion. The v1 library is these four;
-  user-defined personas aren't shipped yet."
-- **Suggested fix:** Split the first sentence at the
-  em-dash so the definition stands on its own, then the
-  staffing mechanic gets its own beat. Example: "A persona
-  brings a fixed role and voice to the conversation. You
-  staff a table by dragging the ones you want in. The v1
-  library is these four; user-defined personas aren't
-  shipped yet."
-- **Source:** browser (reader sub-agent — pass 7)
-
 ### [LOW] /signin — unlabeled hidden inputs surface to assistive tech
 
 - **Pass:** 4 (2026-05-16, commit `2921fbe`)
@@ -158,6 +128,24 @@
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ## Done
+
+### [x] [LOW] /about/personas — new lede reads as a run-on — addressed at `d86b57a`
+
+- **Original (pass 7, commit `f2d7ad9`):** The pass-5 lede
+  rewrite at `dd5c0d9` moved the page from constraint-first
+  (pass-5 LOW) to density-of-info (pass-7 LOW). Definition +
+  staffing mechanic + library scope + roadmap-gap all
+  crammed into two em-dash-and-semicolon sentences.
+- **Resolution:** /iterate split at the em-dash. Definition,
+  staffing mechanic, and scope-plus-constraint each get
+  their own beat. Also dropped "boardroom" from "boardroom
+  conversation" — "the conversation" is unambiguous on the
+  boardroom personas page.
+- **Closed by:** /iterate tick at `d86b57a`. Lede is now in
+  its third iteration (pass 2 / pass 5 / pass 7); each
+  refinement closed the previous pass's specific complaint.
+  Quality plateau likely; further critique on this lede
+  hits diminishing returns.
 
 ### [x] [LOW] /about — "nexus" appears in the footer with no antecedent — addressed at `35794eb`
 
