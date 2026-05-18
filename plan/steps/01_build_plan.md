@@ -77,10 +77,20 @@ commit that ships the phase.
 - [x] Phase 17 — Polish (404, error boundaries, empty states,
       transitions per `design/decisions.md` motion stops) — `09e85c2`
 
-> **After phase 17:** the loop transitions to `/iterate` —
-> persona-library refinement, template tuning, fresh-eyes
-> critique findings, audit-driven repairs. `/march` makes that
-> transition automatic.
+**Post-build additions (promoted by `/oversight`):**
+- [ ] Phase 18 — Account deletion + data wipe (settings
+      route to close an account; server action that cascades
+      delete across `sessions`/`turns`/`artifacts`/`flag_audit`
+      + Supabase `auth.deleteUser`; closes the privacy-policy
+      promise from phase 12)
+
+> **After phase 17 (and any later promoted phases):** the loop
+> transitions to `/iterate` — persona-library refinement,
+> template tuning, fresh-eyes critique findings, audit-driven
+> repairs. `/march` makes that transition automatic. Phases
+> promoted via `/oversight` after phase 17 are shipped in
+> order via the standard `/ship-a-phase` flow before iterate
+> resumes.
 
 > **Note on deploys before phase 1 ships:** auto-deploys to
 > Vercel will fail until the bootstrap lands. The deploy gate
@@ -261,6 +271,25 @@ log drain (no third-party APM at v1).
 states for every list, transitions per `design/decisions.md`
 motion stops. Sweep for the "small thing wrong" findings that
 `/iterate` would have surfaced later anyway.
+
+### Phase 18 — Account deletion + data wipe
+
+Promoted by `/oversight` 2026-05-18 (round 6) from
+`plan/PHASE_CANDIDATES.md` `[5.0] Account deletion + data
+wipe`. Phase 12's privacy policy commits to "deletion on
+account close" with email as the manual fallback; this phase
+ships the mechanism so the promise can be kept
+self-service. Scope: `/app/settings/delete-account` (or a
+modal off a settings menu); server action that wraps a
+single transaction cascading delete across `sessions`,
+`turns`, `artifacts`, `flag_audit`, plus the per-account
+quota counter rows from phase 9; followed by
+`auth.deleteUser` via the Supabase admin client; sign-out
+redirect to `/`. Unit test with a seeded session; e2e
+covers the redirect-on-success path. RLS already pins
+session rows to the owning user; cascade-delete relies on
+the existing FK on-delete-cascade chains plus an explicit
+sweep of any rows lacking that chain.
 
 ---
 

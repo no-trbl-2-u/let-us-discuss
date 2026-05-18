@@ -1,6 +1,6 @@
 # Phase candidates
 
-> Last pass: 2026-05-18 at commit 6039bff
+> Last pass: 2026-05-18 at commit 6a7985f
 > Pass count: 2
 > Posture: bold
 
@@ -8,73 +8,6 @@
 > `/oversight`. See `skills/expand.md` for the contract.
 
 ## Pending
-
-### [ ] [score 3.5] /about polish bundle — 3 critique findings on the canonical "what is this" surface
-
-- proposed: 2026-05-18, expand pass 2
-- source signals:
-  - `plan/CRITIQUE.md` pass 5 cluster on `/about` + `/about/personas`:
-    - [MED] /about "Built with nexus" closer leaks
-      build-process meta (same family as the just-closed
-      "ship via PR" leak)
-    - [MED] /about/personas — three different meanings of
-      "v1" on one page (library / boardroom-product / user's
-      product); touches the persona markdown files
-    - [LOW] /about/personas lede leads with a constraint
-      (follow-up critique of the pass-2 fix at `1413406`)
-  - One already closed at `9078238` (raw path as link text),
-    leaving 3 on the cluster.
-- rationale: Same shape as the pass-1 `/try` polish bundle
-  (also pending in this file). The three findings sit on
-  the canonical "what is this" surface — a first-time
-  visitor's main reading destination — and one of them
-  touches the persona content files (data-layer edit), so
-  bundling cuts the round-trip vs. three separate /iterate
-  ticks each re-passing critique. Borderline: oversight may
-  reasonably reject in favor of letting /iterate drain
-  naturally.
-- proposed scope: 1 phase — drop or rewrite the nexus
-  closer on `/about`; rewrite the persona-sheet "v1"
-  references to use "first version" for the user's product;
-  rewrite the `/about/personas` lede to lead with what a
-  persona is (constraint moves to a secondary sentence).
-  Touches `app/about/page.tsx`,
-  `app/about/personas/page.tsx`, and ~2 persona markdown
-  files under `personas/`.
-- estimated phases: 1
-- conflicts: overlaps with /iterate's normal critique-drain
-  responsibility. If oversight rejects, findings still ship
-  via /iterate one per tick.
-
-### [ ] [score 5.0] Account deletion + data wipe (close the privacy-policy promise)
-
-- proposed: 2026-05-18, expand pass 1
-- source signals:
-  - Phase 12 brief (`plan/steps/01_build_plan.md` L222–227)
-    commits the privacy policy to "deletion on account close"
-    — but no phase actually implements account closure.
-  - Spec data architecture (`spec.md` L93–111) lists user
-    accounts + transcripts + artifacts + audit rows in
-    managed Postgres; nothing wipes them.
-  - Standard GDPR / privacy-policy compliance pattern.
-- rationale: Phase 12 will publish a privacy policy promising
-  data deletion. Shipping that copy without a working delete
-  path creates a written promise the product can't keep —
-  surfaces in any future compliance pass or user request. The
-  fix is structural, not polish: settings UI + confirm flow +
-  cascade delete on `sessions`/`turns`/`artifacts`/`flag_audit`
-  + Supabase auth user delete + sign-out redirect.
-- proposed scope: 1 phase — `/app/settings/delete-account`
-  route (or modal off a settings menu), server action that
-  cascades the wipe inside a single transaction, dry-run
-  unit test against a seeded session.
-- estimated phases: 1
-- conflicts: none. Spec is silent on account closure (not a
-  non-goal); phase 12 brief implies it.
-- best slot: as **phase 12b** immediately after phase 12
-  ships, so the policy + the mechanism land in the same
-  release window. Alternative: fold into phase 16 if the
-  observability surface gets a settings page anyway.
 
 ### [ ] [score 4.0] Quota visibility — surface remaining sessions/day before the user starts
 
@@ -105,50 +38,90 @@
   (token usage per session, not quota).
 - best slot: post-phase 13, before phase 16 (so phase 16's
   observability footer can co-locate with quota if useful).
-
-### [ ] [score 3.5] /try polish batch — bundle 6 critique findings into one focused pass
-
-- proposed: 2026-05-18, expand pass 1
-- source signals:
-  - `plan/CRITIQUE.md` /try cluster (6 findings, mixed MED/LOW):
-    - [MED] Product Lead persona card rendered twice (pass 4)
-    - [MED] seat count (5 locked + 1 staffed) contradicts
-      "Want all four?" (pass 4)
-    - [LOW] pitch textbox stacks 3 guidance affordances on
-      mobile (pass 4)
-    - [MED] "Want all four?" CTA shifts into pitch-deck
-      voice (pass 2 carryover)
-    - [LOW] pitch placeholder contradicts the 100-word cap
-      (pass 2 carryover)
-    - [LOW] "Start demo · 3 turns, one persona, no AI calls"
-      crams meta into the button (pass 2 carryover)
-  - All findings touch the same surface (`/try`) and the same
-    file family (`components/demo/*`).
-- rationale: `/iterate` would drain these one per tick (6
-  commits, 6 critique re-passes). A bundled pass ships one
-  coherent demo-surface polish commit — cheaper review,
-  cleaner critique re-pass. Borderline case: oversight may
-  reasonably reject in favor of letting /iterate drain
-  naturally. Filing for the call.
-- proposed scope: 1 phase — touch
-  `components/demo/demo-shelf.tsx`,
-  `components/demo/demo-start-button.tsx`,
-  `components/demo/demo-pitch-input.tsx`, the seat-count or
-  CTA copy. No new routes, no schema, no API.
-- estimated phases: 1
-- conflicts: overlaps with `/iterate`'s normal critique-drain
-  responsibility. If oversight rejects this candidate, the
-  findings still ship — they just trickle through /iterate
-  one at a time.
+- oversight 2026-05-18 round 6: **deferred** — nice-to-have
+  polish, not a v1 blocker. The graceful-wrap UX already
+  handles the hit; proactive visibility is comfort, not
+  safety. Revisit if a real user complains.
 
 ## Promoted
 
-(empty — populated as `/oversight` promotes candidates to the
-build plan)
+### [x] [score 5.0] Account deletion + data wipe — promoted 2026-05-18 as phase 18
+
+- proposed: 2026-05-18, expand pass 1
+- promoted: 2026-05-18 (oversight round 6) → phase 18
+- source signals:
+  - Phase 12 brief (`plan/steps/01_build_plan.md` L222–227)
+    commits the privacy policy to "deletion on account close"
+    — but no phase actually implements account closure.
+  - Spec data architecture (`spec.md` L93–111) lists user
+    accounts + transcripts + artifacts + audit rows in
+    managed Postgres; nothing wipes them.
+  - Standard GDPR / privacy-policy compliance pattern.
+- rationale: Phase 12 published a privacy policy promising
+  data deletion. Shipping that copy without a working delete
+  path creates a written promise the product can't keep —
+  surfaces in any future compliance pass or user request. The
+  fix is structural, not polish: settings UI + confirm flow +
+  cascade delete on `sessions`/`turns`/`artifacts`/`flag_audit`
+  + Supabase auth user delete + sign-out redirect.
+- proposed scope: 1 phase — `/app/settings/delete-account`
+  route (or modal off a settings menu), server action that
+  cascades the wipe inside a single transaction, dry-run
+  unit test against a seeded session.
+- estimated phases: 1
+- conflicts: none. Spec is silent on account closure (not a
+  non-goal); phase 12 brief implies it.
+- oversight 2026-05-18 round 6: **promoted as phase 18.**
+  Build-plan row added; brief generation by next /march tick
+  via ship-a-phase's missing-brief contract. The post-phase-17
+  /iterate transition isn't broken by adding a structural
+  phase — phase 18 is "close the privacy promise" work that
+  /iterate can't surface.
 
 ## Rejected
 
-(empty — populated as `/oversight` rejects candidates)
+### [-] [score 3.5] /about polish bundle — rejected 2026-05-18 (drained by /iterate)
+
+- proposed: 2026-05-18, expand pass 2
+- rejected: 2026-05-18 (oversight round 6)
+- source signals (at proposal time):
+  - [MED] /about "Built with nexus" closer leaks meta
+  - [MED] /about/personas "v1" ambiguity (3 meanings)
+  - [LOW] /about/personas constraint-first lede
+- rejection reason: All three findings have since been
+  individually drained by /iterate:
+  - "Built with nexus" closer → closed at `f6338cb`
+  - "v1" ambiguity in persona sheets → closed at `4babc35`
+  - constraint-first lede → still pending (LOW); /iterate
+    will continue to handle it one finding at a time.
+  The bundle's premise (cut round-trip vs. /iterate drain)
+  didn't materialize because /iterate kept up. Rejecting
+  here rather than re-relitigating each tick.
+
+### [-] [score 3.5] /try polish batch — rejected 2026-05-18 (drained by /iterate)
+
+- proposed: 2026-05-18, expand pass 1
+- rejected: 2026-05-18 (oversight round 6)
+- source signals (at proposal time, 6 findings):
+  - [MED] Product Lead persona card rendered twice
+  - [MED] seat count (5+1) contradicts "Want all four?"
+  - [LOW] pitch textbox 3-affordances density
+  - [MED] "Want all four?" CTA pitch-deck register
+  - [LOW] pitch placeholder vs 100-word cap
+  - [LOW] "Start demo" button crammed meta
+- rejection reason: 3 of 6 findings have since been drained
+  by /iterate:
+  - Product Lead twice → closed at `f4a5ca3`
+  - seat count + Want-all-four voice → joint resolution at
+    `098e24f` (single CTA rewrite closed both MEDs)
+  The remaining 3 LOWs (pitch density, pitch-placeholder
+  cap, Start-demo crammed meta) are small enough for
+  /iterate to drain one at a time. The bundle's premise
+  ("cheaper review, cleaner critique re-pass") didn't
+  pay off because /iterate stayed ahead of the queue.
+  Critique pass 6 also filed a new MED on /try (Seat-
+  vs-personas mismatch) that's a knock-on from the
+  098e24f fix — /iterate will address.
 
 ## Considered (below threshold)
 
