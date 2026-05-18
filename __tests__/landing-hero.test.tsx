@@ -24,6 +24,14 @@ describe('LandingHero', () => {
     expect(cta).toHaveAttribute('href', '/try')
   })
 
+  it('renders the secondary "what is a boardroom session?" CTA pointing at /about', () => {
+    render(<LandingHero />)
+    const secondary = screen.getByRole('link', {
+      name: /what is a boardroom session/i,
+    })
+    expect(secondary).toHaveAttribute('href', '/about')
+  })
+
   it('renders the "how a session runs" notes', () => {
     render(<LandingHero />)
     expect(screen.getByText(/staff the table/i)).toBeInTheDocument()

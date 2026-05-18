@@ -47,7 +47,7 @@ export function LandingHero() {
             >
               Try a demo session
             </NextLink>
-            <Link href="/about/personas" variant="default">
+            <Link href="/about" variant="default">
               What is a boardroom session?
             </Link>
           </div>
