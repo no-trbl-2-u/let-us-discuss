@@ -1,0 +1,42 @@
+{
+  "slug": "pitch-to-spec",
+  "name": "Pitch to spec",
+  "description": "Take a loose pitch and turn it into a concrete spec via a short, opinionated conversation between AI personas.",
+  "phases": [
+    {
+      "id": "clarify",
+      "name": "Clarify",
+      "description": "Lead personas circle once, each asking 1-4 brief clarifying questions. Every question must accept a 1-word or 1-sentence answer.",
+      "lead_round_max_questions": 4
+    },
+    {
+      "id": "confer",
+      "name": "Confer",
+      "description": "Personas extrapolate from the pitch and the clarifying answers. They refine the shape of the spec without escalating back to the user.",
+      "turn_budget": 8
+    },
+    {
+      "id": "exec-summary",
+      "name": "Executive summary",
+      "description": "The team emits a short executive summary. The user accepts or redirects in one sentence; this is the single user-facing checkpoint inside the loop.",
+      "exec_summary_checkpoint": true
+    },
+    {
+      "id": "specialists",
+      "name": "Specialist round",
+      "description": "Specialist personas drill into the spec, contributing depth in their domain. Only escalate back to the user if the team genuinely cannot agree.",
+      "turn_budget": 8
+    },
+    {
+      "id": "artifact",
+      "name": "Artifact",
+      "description": "Render the three artifacts: spec.md, executive summary, call-outs. The conversation ends here.",
+      "turn_budget": 4
+    }
+  ],
+  "escalation": {
+    "exec_summary_checkpoint": true,
+    "convergence_min_agreement": 0.7,
+    "user_redirect_max": 2
+  }
+}
