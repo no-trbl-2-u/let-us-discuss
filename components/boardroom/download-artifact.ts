@@ -5,12 +5,13 @@
 // reducer); we just build a Blob + anchor + click. Filename shape is
 // locked in plan/phases/phase_10_artifact_download.md.
 
-export type ArtifactKind = 'spec' | 'summary' | 'callouts'
+export type ArtifactKind = 'spec' | 'summary' | 'callouts' | 'secretary-log'
 
 const EXTENSION_PER_KIND: Record<ArtifactKind, string> = {
   spec: 'md',
   summary: 'md',
   callouts: 'md',
+  'secretary-log': 'md',
 }
 
 const MIME_PER_KIND: Record<ArtifactKind, string> = {
@@ -19,6 +20,7 @@ const MIME_PER_KIND: Record<ArtifactKind, string> = {
   // Exec summary is prose — opening as markdown would tempt clients to
   // render bullets that aren't there. Keep it plain.
   summary: 'text/plain;charset=utf-8',
+  'secretary-log': 'text/markdown;charset=utf-8',
 }
 
 export type DownloadArtifactInput = {

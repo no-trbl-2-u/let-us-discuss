@@ -49,6 +49,7 @@ export type ConferringHooks = {
     specMd: string
     execSummary: string
     callouts: string
+    secretaryLog: string
     tokensUsed: number
   }): Promise<void>
   markStatus(
@@ -132,6 +133,8 @@ export async function* runConferring(
 
   const leads = personas.filter((p) => p.role === 'lead')
   const specialists = personas.filter((p) => p.role === 'specialist')
+  const secretary = personas.find((p) => p.role === 'secretary') ?? null
+  let secretaryLog = ''
   const phaseById = new Map<string, TemplatePhase>(
     template.phases.map((p) => [p.id, p]),
   )
@@ -238,6 +241,58 @@ export async function* runConferring(
     return turn
   }
 
+  // Phase 21: secretary side-channel. Yields author='secretary' turn events
+  // at each phase boundary; moderation is skipped (the secretary transcribes
+  // what already happened — no novel content to gate). The body is appended
+  // to the running log and returned so the artifact-phase compile can see it.
+  async function* runSecretaryTurn(
+    phase: SessionPhase,
+    directive: string,
+  ): AsyncGenerator<SessionEvent, RecordedTurn | null> {
+    if (!secretary) return null
+    if (budget.willOverflow(700)) return null
+    const turnId = `t-${++turnIdx}`
+    yield {
+      type: 'turn.begin',
+      turnId,
+      phase,
+      author: 'secretary',
+      personaSlug: secretary.slug,
+      replyingTo: null,
+    }
+    const stream = await client.streamCompletion({
+      system: `${secretary.systemPrompt}\n\nDirective: ${directive}`,
+      messages: messagesFor(turns, pitch),
+      model: defaultModel(),
+      maxTokens: 600,
+    })
+    let body = ''
+    for await (const delta of stream.deltas) {
+      body += delta
+      yield { type: 'turn.delta', turnId, delta }
+    }
+    const final = await stream.final
+    if (!body) body = final.text
+    budget.add(final.tokens)
+    const trimmed = body.trim()
+    yield { type: 'turn.end', turnId, tokens: final.tokens }
+    const turn: RecordedTurn = {
+      id: turnId,
+      phase,
+      personaSlug: secretary.slug,
+      author: 'secretary',
+      body: trimmed,
+      replyingTo: null,
+      tokens: final.tokens,
+      promptTokens: final.promptTokens,
+      completionTokens: final.completionTokens,
+    }
+    turns.push(turn)
+    await hooks.persistTurn({ ...turn, idx: turnIdx })
+    secretaryLog += (secretaryLog ? '\n\n' : '') + trimmed
+    return turn
+  }
+
   async function recordUserTurn(
     phase: SessionPhase,
     body: string,
@@ -305,6 +360,10 @@ export async function* runConferring(
     return
   }
   await recordUserTurn('clarify', clarifyAnswer.body)
+  yield* runSecretaryTurn(
+    'clarify',
+    'Phase boundary: clarify. Emit your structured log entry per your persona Mode 1. Output ONLY the structured block.',
+  )
 
   // ----- Confer -----
   await hooks.markStatus('confer')
@@ -331,6 +390,10 @@ export async function* runConferring(
       if (signal.type === 'budget.wrap') wrapped = true
     }
   }
+  yield* runSecretaryTurn(
+    'confer',
+    'Phase boundary: confer. Emit your structured log entry per your persona Mode 1. Output ONLY the structured block.',
+  )
 
   // ----- Exec-summary -----
   await hooks.markStatus('exec-summary')
@@ -346,6 +409,10 @@ export async function* runConferring(
     const ans = await awaitAnswer()
     if (ans.kind === 'exec-summary-accept') {
       await recordUserTurn('exec-summary', ans.body || 'accepted')
+      yield* runSecretaryTurn(
+        'exec-summary',
+        'Phase boundary: exec-summary. Emit your structured log entry per your persona Mode 1. Output ONLY the structured block.',
+      )
       break
     }
     if (ans.kind === 'exec-summary-redirect') {
@@ -399,6 +466,10 @@ export async function* runConferring(
       if (signal.type === 'budget.wrap') break
     }
   }
+  yield* runSecretaryTurn(
+    'specialists',
+    'Phase boundary: specialists. Emit your structured log entry per your persona Mode 1. Output ONLY the structured block.',
+  )
   const agreement = convergenceScore(turns, summaryAtEntry)
   if (
     agreement < template.escalation.convergence_min_agreement &&
@@ -421,16 +492,29 @@ export async function* runConferring(
   await hooks.markStatus('artifact')
   yield { type: 'phase.entered', phase: 'artifact' }
   const artifact = await composeArtifact({ client, pitch, turns, budget })
+  // Final secretary turn: compile the running log into the secretary-log.md
+  // artifact. The compile turn body is the artifact value; per-phase
+  // running log accumulator already holds the inputs.
+  let compiledSecretaryLog = ''
+  if (secretary) {
+    const compileTurn = yield* runSecretaryTurn(
+      'artifact',
+      'Phase boundary: artifact. Compile your running log into the final secretary-log.md artifact. Output ONLY the compiled markdown (no preamble, no surrounding prose).',
+    )
+    compiledSecretaryLog = compileTurn?.body ?? secretaryLog
+  }
   yield {
     type: 'artifact.ready',
     specMd: artifact.specMd,
     execSummary: artifact.execSummary,
     callouts: artifact.callouts,
+    secretaryLog: compiledSecretaryLog,
   }
   await hooks.persistArtifact({
     specMd: artifact.specMd,
     execSummary: artifact.execSummary,
     callouts: artifact.callouts,
+    secretaryLog: compiledSecretaryLog,
     tokensUsed: budget.snapshot().used,
   })
   await hooks.markStatus('done')

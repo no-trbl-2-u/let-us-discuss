@@ -43,6 +43,7 @@ export type SessionEvent =
       specMd: string
       execSummary: string
       callouts: string
+      secretaryLog: string
     }
   | { type: 'session.done' }
   | { type: 'session.error'; code: SessionErrorCode; message: string }

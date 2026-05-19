@@ -35,6 +35,7 @@ export function ArtifactPreviewGrid({
     spec: false,
     summary: false,
     callouts: false,
+    'secretary-log': false,
   })
 
   function handleDownload(kind: ArtifactKind, body: string) {
@@ -55,7 +56,7 @@ export function ArtifactPreviewGrid({
           ended early &nbsp;·&nbsp; token budget reached
         </p>
       )}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--space-4)]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[var(--space-4)]">
         <ArtifactTile
           kind="spec"
           title="spec.md"
@@ -85,6 +86,22 @@ export function ArtifactPreviewGrid({
           downloadable
           downloaded={downloaded.callouts}
           onDownload={() => handleDownload('callouts', artifact.callouts)}
+        />
+        <ArtifactTile
+          kind="secretary-log"
+          title="secretary log"
+          excerpt={
+            artifact.secretaryLog
+              ? firstLines(artifact.secretaryLog)
+              : '— (not tracked for this session)'
+          }
+          tokensUsed={tokensUsed}
+          finishedAt={finishedAtLabel}
+          downloadable={Boolean(artifact.secretaryLog)}
+          downloaded={downloaded['secretary-log']}
+          onDownload={() =>
+            handleDownload('secretary-log', artifact.secretaryLog)
+          }
         />
       </div>
     </section>

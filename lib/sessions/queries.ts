@@ -33,6 +33,7 @@ export type LoadedSession = {
     specMd: string
     execSummary: string
     callouts: string
+    secretaryLog: string
     tokensUsed: number
     finishedAt: string
   } | null
@@ -106,7 +107,9 @@ export async function loadSession(
 
   const { data: artifactRow, error: artErr } = await supabase
     .from('artifacts')
-    .select('spec_md, exec_summary, callouts, tokens_used, finished_at')
+    .select(
+      'spec_md, exec_summary, callouts, secretary_log, tokens_used, finished_at',
+    )
     .eq('session_id', id)
     .maybeSingle()
   if (artErr) {
@@ -139,6 +142,7 @@ export async function loadSession(
           specMd: artifactRow.spec_md,
           execSummary: artifactRow.exec_summary,
           callouts: artifactRow.callouts,
+          secretaryLog: artifactRow.secretary_log,
           tokensUsed: artifactRow.tokens_used,
           finishedAt: artifactRow.finished_at,
         }

@@ -55,6 +55,7 @@ export type AppendTurnInput = {
 
 export type FinalizeArtifactInput = {
   sessionId: string
+  secretaryLog: string
   specMd: string
   execSummary: string
   callouts: string
@@ -108,11 +109,9 @@ export async function markStatus(
 }
 
 // DB-side narrow types — turns.phase / turns.author column constraints
-// only accept the v1 boardroom values. The framework's wider enums
-// (retro-review/retrospective, secretary) are valid in the SessionPhase /
-// TurnAuthor types from @framework/schemas, but the current orchestrator
-// provably doesn't emit them. Phase 21 lands the DB migration that allows
-// the new values; until then, narrow at the persistence boundary.
+// only accept the v1 + phase-21 boardroom values. The framework's wider
+// SessionPhase enum (retro-review / retrospective) is valid at the type
+// layer but not yet at the DB layer; phase 22 will widen turns.phase.
 type DbTurnPhase =
   | 'clarify'
   | 'confer'
@@ -120,7 +119,7 @@ type DbTurnPhase =
   | 'specialists'
   | 'artifact'
   | 'moderator'
-type DbTurnAuthor = 'persona' | 'user' | 'moderator'
+type DbTurnAuthor = 'persona' | 'user' | 'moderator' | 'secretary'
 
 export async function appendTurn(
   supabase: SupabaseServerClient,
@@ -209,6 +208,7 @@ export async function finalizeArtifact(
     spec_md: input.specMd,
     exec_summary: input.execSummary,
     callouts: input.callouts,
+    secretary_log: input.secretaryLog,
     tokens_used: input.tokensUsed,
   })
   if (error) {

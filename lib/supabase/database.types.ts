@@ -49,7 +49,7 @@ type TurnRow = {
     | 'artifact'
     | 'moderator'
   persona_slug: string | null
-  author: 'persona' | 'user' | 'moderator'
+  author: 'persona' | 'user' | 'moderator' | 'secretary'
   body: string
   replying_to: string | null
   tokens: number
@@ -62,6 +62,7 @@ type ArtifactRow = {
   spec_md: string
   exec_summary: string
   callouts: string
+  secretary_log: string
   tokens_used: number
   finished_at: string
 }
@@ -90,8 +91,12 @@ type TurnInsert = Omit<TurnRow, 'id' | 'created_at'> & {
   created_at?: string
 }
 
-type ArtifactInsert = Omit<ArtifactRow, 'id' | 'finished_at'> & {
+type ArtifactInsert = Omit<
+  ArtifactRow,
+  'id' | 'finished_at' | 'secretary_log'
+> & {
   id?: string
+  secretary_log?: string
   finished_at?: string
 }
 

@@ -30,6 +30,7 @@ export type SessionArtifact = {
   specMd: string
   execSummary: string
   callouts: string
+  secretaryLog: string
 }
 
 export type SessionBudget = {
@@ -145,6 +146,7 @@ export function sessionReducer(
           specMd: event.specMd,
           execSummary: event.execSummary,
           callouts: event.callouts,
+          secretaryLog: event.secretaryLog,
         },
       }
     case 'session.done':

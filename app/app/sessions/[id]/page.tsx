@@ -61,6 +61,7 @@ export default async function SessionResultsPage({
             specMd: session.artifact.specMd,
             execSummary: session.artifact.execSummary,
             callouts: session.artifact.callouts,
+            secretaryLog: session.artifact.secretaryLog,
           }}
           tokensUsed={session.artifact.tokensUsed}
           sessionId={session.id}

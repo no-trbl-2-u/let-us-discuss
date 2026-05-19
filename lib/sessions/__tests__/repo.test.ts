@@ -167,7 +167,7 @@ describe('appendTurn', () => {
 })
 
 describe('finalizeArtifact', () => {
-  it('inserts artifact row with all three fields', async () => {
+  it('inserts artifact row with all four fields plus the secretary log', async () => {
     const { client, insertSpy } = mockClient({
       insertResult: { data: null, error: null },
     })
@@ -176,6 +176,7 @@ describe('finalizeArtifact', () => {
       specMd: '# spec',
       execSummary: 'summary',
       callouts: '- one',
+      secretaryLog: '=== Secretary log ===',
       tokensUsed: 1234,
     })
     expect(insertSpy).toHaveBeenCalledWith(
@@ -184,6 +185,7 @@ describe('finalizeArtifact', () => {
         spec_md: '# spec',
         exec_summary: 'summary',
         callouts: '- one',
+        secretary_log: '=== Secretary log ===',
         tokens_used: 1234,
       }),
     )

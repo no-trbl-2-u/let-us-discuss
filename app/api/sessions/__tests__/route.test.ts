@@ -57,6 +57,16 @@ vi.mock('@/lib/personas/load', async () => {
       summary: 'x'.repeat(40),
       systemPrompt: 'x'.repeat(80),
     },
+    {
+      slug: 'secretary',
+      name: 'Secretary',
+      role: 'secretary',
+      voice: 'append-only',
+      lead: false,
+      tools: [],
+      summary: 'x'.repeat(40),
+      systemPrompt: 'x'.repeat(80),
+    },
   ]
   return { loadPersonas: () => personas }
 })

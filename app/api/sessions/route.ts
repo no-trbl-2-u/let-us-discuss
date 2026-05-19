@@ -10,6 +10,7 @@ import {
 import { writeFlagAudit } from '@/lib/moderation/audit'
 import { moderate } from '@/lib/moderation/client'
 import { logError } from '@/lib/observability/log'
+import { ensureSecretary } from '@/lib/personas/cast-guard'
 import { loadPersonas } from '@/lib/personas/load'
 import {
   appendTurn,
@@ -86,6 +87,9 @@ export async function POST(req: NextRequest) {
   if (seatedPersonas.length < MIN_PERSONAS_SEATED) {
     return jsonError(400, 'unknown personas')
   }
+  // Phase 21: the cast guard auto-injects the secretary so the user never
+  // has to pick it. The secretary is framework-mandatory, not user-choice.
+  const augmentedCast = ensureSecretary(seatedPersonas, allPersonas)
   let template
   try {
     template = loadTemplate(body.templateSlug)
@@ -200,7 +204,7 @@ export async function POST(req: NextRequest) {
       try {
         const generator = runConferring({
           pitch: body.pitch,
-          personas: seatedPersonas,
+          personas: augmentedCast,
           template,
           awaitAnswer: () => waitForAnswer(sessionId),
           async moderateOutput(text) {
@@ -250,6 +254,7 @@ export async function POST(req: NextRequest) {
                   specMd: artifact.specMd,
                   execSummary: artifact.execSummary,
                   callouts: artifact.callouts,
+                  secretaryLog: artifact.secretaryLog,
                   tokensUsed: artifact.tokensUsed,
                 })
               } catch {

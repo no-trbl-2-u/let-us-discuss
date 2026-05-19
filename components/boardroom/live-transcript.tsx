@@ -52,13 +52,17 @@ export function LiveTranscript({ turns, personasBySlug }: Props) {
             ? 'You'
             : turn.author === 'moderator'
               ? 'Boardroom'
-              : (persona?.name ?? turn.personaSlug ?? 'Persona')
+              : turn.author === 'secretary'
+                ? 'Secretary'
+                : (persona?.name ?? turn.personaSlug ?? 'Persona')
         const voice =
           turn.author === 'user'
             ? 'pitch author'
             : turn.author === 'moderator'
               ? 'moderator'
-              : (persona?.voice ?? '')
+              : turn.author === 'secretary'
+                ? (persona?.voice ?? 'logs the conversation')
+                : (persona?.voice ?? '')
         const monogram = turn.author === 'user' ? 'YOU' : monogramFor(name)
         const isLast = i === turns.length - 1
         return (
@@ -67,7 +71,11 @@ export function LiveTranscript({ turns, personasBySlug }: Props) {
             name={name}
             voice={voice}
             monogram={monogram}
-            register={turn.author === 'moderator' ? 'moderator' : 'lead'}
+            register={
+              turn.author === 'moderator' || turn.author === 'secretary'
+                ? 'moderator'
+                : 'lead'
+            }
             body={turn.body}
             streaming={!turn.closed && isLast}
           />

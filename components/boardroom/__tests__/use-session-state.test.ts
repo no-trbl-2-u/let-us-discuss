@@ -119,12 +119,14 @@ describe('sessionReducer', () => {
         specMd: '# spec',
         execSummary: 'sum',
         callouts: '- x',
+        secretaryLog: '=== Secretary log ===',
       },
     ])
     expect(s.artifact).toEqual({
       specMd: '# spec',
       execSummary: 'sum',
       callouts: '- x',
+      secretaryLog: '=== Secretary log ===',
     })
   })
 

@@ -15,7 +15,7 @@
 import * as React from "react";
 import { cn } from "@/lib/cn";
 
-export type ArtifactKind = "spec" | "summary" | "callouts";
+export type ArtifactKind = "spec" | "summary" | "callouts" | "secretary-log";
 
 interface ArtifactTileProps {
   kind: ArtifactKind;
@@ -37,6 +37,7 @@ const kindLabel: Record<ArtifactKind, string> = {
   spec: "spec.md",
   summary: "exec summary",
   callouts: "call-outs",
+  "secretary-log": "secretary-log.md",
 };
 
 export function ArtifactTile({

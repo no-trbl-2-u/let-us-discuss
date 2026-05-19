@@ -15,13 +15,14 @@ vi.mock('@/components/boardroom/download-artifact', async () => {
 })
 
 describe('ArtifactPreviewGrid', () => {
-  it('renders three artifact tiles with the spec/summary/callouts kinds', () => {
+  it('renders four artifact tiles including the secretary log', () => {
     render(
       <ArtifactPreviewGrid
         artifact={{
           specMd: '# Spec\n## Overview\nThis is the spec.',
           execSummary: 'Two-paragraph summary.',
           callouts: '- one\n- two',
+          secretaryLog: '=== Secretary log — phase: clarify ===\nDecisions: (none)',
         }}
         tokensUsed={4321}
         sessionId="sid-12345678-aaaa"
@@ -30,6 +31,7 @@ describe('ArtifactPreviewGrid', () => {
     expect(screen.getAllByText('spec.md').length).toBeGreaterThan(0)
     expect(screen.getAllByText('exec summary').length).toBeGreaterThan(0)
     expect(screen.getAllByText('call-outs').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('secretary-log.md').length).toBeGreaterThan(0)
   })
 
   it('forwards downloads to the helper with the right kind + body', () => {
@@ -40,6 +42,7 @@ describe('ArtifactPreviewGrid', () => {
           specMd: '# spec body',
           execSummary: 'summary body',
           callouts: '- one',
+          secretaryLog: '=== Secretary log ===\nDecisions: (none)',
         }}
         tokensUsed={42}
         sessionId="sid-12345678-aaaa"
@@ -49,14 +52,38 @@ describe('ArtifactPreviewGrid', () => {
     fireEvent.click(buttons[0]!)
     fireEvent.click(buttons[1]!)
     fireEvent.click(buttons[2]!)
-    expect(downloadArtifact).toHaveBeenCalledTimes(3)
+    fireEvent.click(buttons[3]!)
+    expect(downloadArtifact).toHaveBeenCalledTimes(4)
     const kinds = downloadArtifact.mock.calls.map(
       (c) => (c[0] as { kind: string }).kind,
     )
-    expect(kinds).toEqual(['spec', 'summary', 'callouts'])
+    expect(kinds).toEqual(['spec', 'summary', 'callouts', 'secretary-log'])
     const bodies = downloadArtifact.mock.calls.map(
       (c) => (c[0] as { body: string }).body,
     )
-    expect(bodies).toEqual(['# spec body', 'summary body', '- one'])
+    expect(bodies).toEqual([
+      '# spec body',
+      'summary body',
+      '- one',
+      '=== Secretary log ===\nDecisions: (none)',
+    ])
+  })
+
+  it('renders the secretary log tile in non-downloadable state when empty', () => {
+    render(
+      <ArtifactPreviewGrid
+        artifact={{
+          specMd: '# spec',
+          execSummary: 'summary',
+          callouts: '- one',
+          secretaryLog: '',
+        }}
+        tokensUsed={0}
+        sessionId="sid-12345678-aaaa"
+      />,
+    )
+    expect(
+      screen.getByText(/not tracked for this session/i),
+    ).toBeInTheDocument()
   })
 })

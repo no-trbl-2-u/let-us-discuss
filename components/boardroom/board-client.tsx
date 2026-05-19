@@ -128,7 +128,15 @@ export function BoardClient({
       onDragEnd={onDragEnd}
     >
       <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-[var(--space-6)]">
-        <PersonaShelf personas={personas} boardState={state} />
+        <div className="flex flex-col gap-[var(--space-3)]">
+          <PersonaShelf personas={personas} boardState={state} />
+          <p
+            aria-label="secretary at the table"
+            className="font-[var(--font-mono)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)]"
+          >
+            Plus the Secretary &nbsp;·&nbsp; logs every phase boundary
+          </p>
+        </div>
         <section className="flex flex-col gap-[var(--space-5)]">
           <BoardroomSurface
             boardState={state}
