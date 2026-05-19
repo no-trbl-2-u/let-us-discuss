@@ -21,11 +21,13 @@ type SessionRow = {
   persona_slugs: string[]
   model: string
   status:
+    | 'retro-review'
     | 'clarify'
     | 'confer'
     | 'exec-summary'
     | 'specialists'
     | 'artifact'
+    | 'retrospective'
     | 'done'
     | 'aborted'
   total_tokens: number
@@ -42,11 +44,13 @@ type TurnRow = {
   session_id: string
   idx: number
   phase:
+    | 'retro-review'
     | 'clarify'
     | 'confer'
     | 'exec-summary'
     | 'specialists'
     | 'artifact'
+    | 'retrospective'
     | 'moderator'
   persona_slug: string | null
   author: 'persona' | 'user' | 'moderator' | 'secretary'
@@ -123,6 +127,22 @@ type IpRateLimitRow = {
 
 type IpRateLimitInsert = IpRateLimitRow & { count?: number }
 
+type RetroRow = {
+  id: string
+  session_id: string
+  user_id: string
+  pitch_excerpt: string
+  entry_md: string
+  for_next_time: string[]
+  created_at: string
+}
+
+type RetroInsert = Omit<RetroRow, 'id' | 'created_at'> & {
+  id?: string
+  for_next_time?: string[]
+  created_at?: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -154,6 +174,12 @@ export type Database = {
         Row: IpRateLimitRow
         Insert: IpRateLimitInsert
         Update: Partial<IpRateLimitRow>
+        Relationships: []
+      }
+      retros: {
+        Row: RetroRow
+        Insert: RetroInsert
+        Update: Partial<RetroRow>
         Relationships: []
       }
     }

@@ -49,6 +49,10 @@ function makeHooks(): {
       async markStatus(status) {
         statusCalls.push(status)
       },
+      async loadRetros() {
+        return []
+      },
+      async appendRetro() {},
     },
     statusCalls,
   }
@@ -103,12 +107,15 @@ describe('orchestrator — reference cast + reference template via stub', () => 
         e.type === 'phase.entered',
       )
       .map((e) => e.phase)
+    // retro-review is silently skipped when loadRetros returns [];
+    // retrospective fires when the template includes it (it does).
     expect(phaseEntered).toEqual([
       'clarify',
       'confer',
       'exec-summary',
       'specialists',
       'artifact',
+      'retrospective',
     ])
 
     // Each phase produced at least one turn (begin/delta/end triple)

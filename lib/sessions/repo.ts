@@ -3,20 +3,24 @@ import { estimateCostCents } from '@/lib/observability/pricing'
 import type { SessionPhase, TurnAuthor } from '@framework/schemas/events'
 
 export type SessionStatus =
+  | 'retro-review'
   | 'clarify'
   | 'confer'
   | 'exec-summary'
   | 'specialists'
   | 'artifact'
+  | 'retrospective'
   | 'done'
   | 'aborted'
 
 const STATUSES: readonly SessionStatus[] = [
+  'retro-review',
   'clarify',
   'confer',
   'exec-summary',
   'specialists',
   'artifact',
+  'retrospective',
   'done',
   'aborted',
 ]
@@ -109,15 +113,15 @@ export async function markStatus(
 }
 
 // DB-side narrow types — turns.phase / turns.author column constraints
-// only accept the v1 + phase-21 boardroom values. The framework's wider
-// SessionPhase enum (retro-review / retrospective) is valid at the type
-// layer but not yet at the DB layer; phase 22 will widen turns.phase.
+// match the framework enums after phase 22's migration widens both.
 type DbTurnPhase =
+  | 'retro-review'
   | 'clarify'
   | 'confer'
   | 'exec-summary'
   | 'specialists'
   | 'artifact'
+  | 'retrospective'
   | 'moderator'
 type DbTurnAuthor = 'persona' | 'user' | 'moderator' | 'secretary'
 

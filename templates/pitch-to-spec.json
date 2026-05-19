@@ -1,8 +1,14 @@
 {
   "slug": "pitch-to-spec",
   "name": "Pitch to spec",
-  "description": "Take a loose pitch and turn it into a concrete spec via a short, opinionated conversation between AI personas.",
+  "description": "Take a loose pitch and turn it into a concrete spec via a short, opinionated conversation between AI personas. Wraps the conferring loop with cross-session learning: retro-review opens each session by surfacing 'for next time' items from prior runs; retrospective closes each session by writing the next 'for next time' items to retros.",
   "phases": [
+    {
+      "id": "retro-review",
+      "name": "Recent retros",
+      "description": "Surface unresolved 'for next time' items from the most recent N retros. User picks zero/one/several to address this session; their answers feed forward to clarify. Skipped silently when retros is empty (first session for this project).",
+      "retro_review_recent_n": 5
+    },
     {
       "id": "clarify",
       "name": "Clarify",
@@ -30,8 +36,14 @@
     {
       "id": "artifact",
       "name": "Artifact",
-      "description": "Render the three artifacts: spec.md, executive summary, call-outs. The conversation ends here.",
+      "description": "Render the four artifacts: spec.md, executive summary, call-outs, and secretary-log.md (the four-taxonomy in-session log compiled). The conferring conversation ends here.",
       "turn_budget": 4
+    },
+    {
+      "id": "retrospective",
+      "name": "Retro",
+      "description": "Secretary writes a single retrospective entry (3 bullets each of what went well / what didn't / for next time) appended to project-level retros. The next session's retro-review reads this.",
+      "turn_budget": 1
     }
   ],
   "escalation": {

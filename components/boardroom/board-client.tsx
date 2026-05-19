@@ -17,6 +17,7 @@ import { BoardroomSurface } from './boardroom-surface'
 import { BudgetBanner } from './budget-banner'
 import { ClarifyPrompt } from './clarify-prompt'
 import { ExecSummaryCard } from './exec-summary-card'
+import { RetroReviewCheckpoint } from './retro-review-checkpoint'
 import { LiveTranscript } from './live-transcript'
 import { PersonaShelf } from './persona-shelf'
 import { PitchInput } from './pitch-input'
@@ -116,6 +117,13 @@ export function BoardClient({
     },
     [sessionId],
   )
+  const submitRetroReview = useCallback(
+    (picked: string[]) => {
+      if (!sessionId) return
+      void sendAnswer(sessionId, { kind: 'retro-review', picked })
+    },
+    [sessionId],
+  )
 
   const checkpoint = session.currentCheckpoint
   const showError = session.error !== null
@@ -171,6 +179,12 @@ export function BoardClient({
                   summary={checkpoint.body}
                   onAccept={submitAccept}
                   onRedirect={submitRedirect}
+                />
+              )}
+              {checkpoint?.kind === 'retro-review' && !showError && (
+                <RetroReviewCheckpoint
+                  items={checkpoint.items}
+                  onSubmit={submitRetroReview}
                 />
               )}
               {showArtifact && session.artifact && (

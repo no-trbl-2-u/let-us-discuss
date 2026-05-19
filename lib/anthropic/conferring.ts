@@ -7,6 +7,7 @@
 import { MAX_SESSION_TOKENS } from '@/lib/limits'
 import type { Persona } from '@framework/schemas/persona'
 import type { Template, TemplatePhase } from '@framework/schemas/template'
+import { parseForNextTimeBullets } from '@/lib/retros/repo'
 import { BudgetTracker } from '@/lib/sessions/budget'
 import type {
   SessionEvent,
@@ -24,10 +25,26 @@ export type ExecSummaryRedirect = {
   kind: 'exec-summary-redirect'
   body: string
 }
+export type RetroReviewAnswer = {
+  kind: 'retro-review'
+  picked: string[]
+}
 export type AnswerInput =
   | ClarifyAnswer
   | ExecSummaryAccept
   | ExecSummaryRedirect
+  | RetroReviewAnswer
+
+export type RetroForOrchestrator = {
+  id: string
+  forNextTime: string[]
+}
+
+export type AppendRetroInput = {
+  pitchExcerpt: string
+  entryMd: string
+  forNextTime: string[]
+}
 
 export type RecordedTurn = {
   id: string
@@ -54,14 +71,18 @@ export type ConferringHooks = {
   }): Promise<void>
   markStatus(
     status:
+      | 'retro-review'
       | 'clarify'
       | 'confer'
       | 'exec-summary'
       | 'specialists'
       | 'artifact'
+      | 'retrospective'
       | 'done'
       | 'aborted',
   ): Promise<void>
+  loadRetros(): Promise<RetroForOrchestrator[]>
+  appendRetro(input: AppendRetroInput): Promise<void>
 }
 
 // Lightweight interface over the SDK so tests can mock without touching the
@@ -322,6 +343,42 @@ export async function* runConferring(
     return null
   }
 
+  // ----- Retro-review (template-controlled; silently skipped on empty) -----
+  const retroReviewPhase = phaseById.get('retro-review')
+  if (retroReviewPhase) {
+    try {
+      const recent = await hooks.loadRetros()
+      const items = mergeForNextTimeItems(recent)
+      if (items.length > 0) {
+        await hooks.markStatus('retro-review')
+        yield { type: 'phase.entered', phase: 'retro-review' }
+        yield { type: 'retro-review.prompt', items }
+        const retroAnswer = await awaitAnswer()
+        if (retroAnswer.kind !== 'retro-review') {
+          yield {
+            type: 'session.error',
+            code: 'internal',
+            message: `expected retro-review answer, got ${retroAnswer.kind}`,
+          }
+          await hooks.markStatus('aborted')
+          return
+        }
+        const pickedTexts = retroAnswer.picked
+          .map((id) => items.find((it) => it.id === id)?.text ?? '')
+          .filter(Boolean)
+        const body =
+          pickedTexts.length > 0
+            ? `User picked these carry-forwards: \n- ${pickedTexts.join('\n- ')}`
+            : 'User picked no carry-forwards.'
+        await recordUserTurn('retro-review', body)
+      }
+    } catch (err) {
+      // Load-retros failed; proceed without the wrapper. The orchestrator
+      // is resilient — a flaky retros table shouldn't block a session.
+      void err
+    }
+  }
+
   // ----- Clarify -----
   await hooks.markStatus('clarify')
   yield { type: 'phase.entered', phase: 'clarify' }
@@ -517,6 +574,32 @@ export async function* runConferring(
     secretaryLog: compiledSecretaryLog,
     tokensUsed: budget.snapshot().used,
   })
+
+  // ----- Retrospective (template-controlled) -----
+  const retrospectivePhase = phaseById.get('retrospective')
+  if (retrospectivePhase && secretary) {
+    await hooks.markStatus('retrospective')
+    yield { type: 'phase.entered', phase: 'retrospective' }
+    const retroTurn = yield* runSecretaryTurn(
+      'retrospective',
+      'Mode 2: compile a retrospective entry per your persona Mode 2 instructions. Three bullets each for What went well / What didn’t / For next time. Output ONLY the retrospective block (no preamble, no surrounding prose).',
+    )
+    if (retroTurn) {
+      const entryMd = retroTurn.body
+      const forNextTime = parseForNextTimeBullets(entryMd)
+      try {
+        await hooks.appendRetro({
+          pitchExcerpt: pitch.slice(0, 200),
+          entryMd,
+          forNextTime,
+        })
+      } catch {
+        // Best-effort; the retro write failure doesn't abort the session.
+      }
+      yield { type: 'retrospective.complete', sessionId: '' }
+    }
+  }
+
   await hooks.markStatus('done')
   yield { type: 'session.done' }
 }
@@ -547,6 +630,33 @@ function messagesFor(
 function estimateTokens(text: string): number {
   if (!text) return 0
   return Math.max(1, Math.ceil(text.length / 4))
+}
+
+/**
+ * Builds the retro-review prompt items by collapsing duplicate
+ * "for next time" bullets across recent retros. Exact-string match
+ * is the v1 dedup; semantic-similarity dedup is a follow-up.
+ * `seen_in_retros` counts how many of the recent retros surfaced
+ * the same bullet.
+ */
+function mergeForNextTimeItems(
+  retros: RetroForOrchestrator[],
+): Array<{ id: string; text: string; seen_in_retros: number }> {
+  const counts = new Map<string, number>()
+  for (const r of retros) {
+    const unique = new Set(r.forNextTime.map((t) => t.trim()).filter(Boolean))
+    for (const text of unique) {
+      counts.set(text, (counts.get(text) ?? 0) + 1)
+    }
+  }
+  const items: Array<{ id: string; text: string; seen_in_retros: number }> = []
+  let i = 0
+  for (const [text, seen] of counts) {
+    items.push({ id: `retro-item-${++i}`, text, seen_in_retros: seen })
+  }
+  // Sort by recurrence desc so the most-recurring carry-forwards lead.
+  items.sort((a, b) => b.seen_in_retros - a.seen_in_retros)
+  return items
 }
 
 function topBullets(text: string, max = 3): string[] {

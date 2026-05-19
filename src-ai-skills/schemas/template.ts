@@ -7,6 +7,7 @@ export const TemplatePhaseSchema = z.object({
   lead_round_max_questions: z.number().int().min(1).max(8).optional(),
   turn_budget: z.number().int().min(1).max(60).optional(),
   exec_summary_checkpoint: z.boolean().optional(),
+  retro_review_recent_n: z.number().int().min(1).max(20).optional(),
 })
 
 export type TemplatePhase = z.infer<typeof TemplatePhaseSchema>

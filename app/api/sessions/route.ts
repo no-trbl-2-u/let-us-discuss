@@ -12,6 +12,8 @@ import { moderate } from '@/lib/moderation/client'
 import { logError } from '@/lib/observability/log'
 import { ensureSecretary } from '@/lib/personas/cast-guard'
 import { loadPersonas } from '@/lib/personas/load'
+import { appendRetro, loadRecentRetros } from '@/lib/retros/repo'
+import { RETRO_REVIEW_RECENT_N } from '@/lib/limits'
 import {
   appendTurn,
   createSession,
@@ -266,6 +268,41 @@ export async function POST(req: NextRequest) {
                 await markStatus(supabase, sessionId, status)
               } catch {
                 // ignored
+              }
+            },
+            async loadRetros() {
+              try {
+                const rows = await loadRecentRetros(
+                  supabase,
+                  session.user.id,
+                  RETRO_REVIEW_RECENT_N,
+                )
+                return rows.map((r) => ({
+                  id: r.id,
+                  forNextTime: r.forNextTime,
+                }))
+              } catch (err) {
+                logError('orchestrator', err, {
+                  sessionId,
+                  step: 'loadRetros',
+                })
+                return []
+              }
+            },
+            async appendRetro(input) {
+              try {
+                await appendRetro(supabase, {
+                  sessionId,
+                  userId: session.user.id,
+                  pitchExcerpt: input.pitchExcerpt,
+                  entryMd: input.entryMd,
+                  forNextTime: input.forNextTime,
+                })
+              } catch (err) {
+                logError('orchestrator', err, {
+                  sessionId,
+                  step: 'appendRetro',
+                })
               }
             },
           },

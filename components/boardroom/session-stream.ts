@@ -74,6 +74,7 @@ export type AnswerPayload =
   | { kind: 'clarify'; body: string }
   | { kind: 'exec-summary-accept'; body?: string }
   | { kind: 'exec-summary-redirect'; body: string }
+  | { kind: 'retro-review'; picked: string[] }
 
 export async function sendAnswer(
   sessionId: string,

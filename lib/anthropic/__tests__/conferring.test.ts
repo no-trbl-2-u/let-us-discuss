@@ -110,6 +110,10 @@ function makeHooks(): {
     async markStatus(status) {
       statusCalls.push(status)
     },
+    async loadRetros() {
+      return []
+    },
+    async appendRetro() {},
   }
   return {
     hooks,

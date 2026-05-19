@@ -25,6 +25,10 @@ export type SessionCheckpoint =
       questions: { id: string; personaSlug: string; body: string }[]
     }
   | { kind: 'exec-summary'; body: string }
+  | {
+      kind: 'retro-review'
+      items: { id: string; text: string; seen_in_retros: number }[]
+    }
 
 export type SessionArtifact = {
   specMd: string
@@ -129,6 +133,13 @@ export function sessionReducer(
         ...state,
         currentCheckpoint: { kind: 'exec-summary', body: event.body },
       }
+    case 'retro-review.prompt':
+      return {
+        ...state,
+        currentCheckpoint: { kind: 'retro-review', items: event.items },
+      }
+    case 'retrospective.complete':
+      return state
     case 'budget.warn':
       return {
         ...state,

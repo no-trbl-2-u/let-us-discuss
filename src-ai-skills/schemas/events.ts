@@ -22,6 +22,11 @@ export type SessionEvent =
   | { type: 'session.started'; sessionId: string }
   | { type: 'phase.entered'; phase: SessionPhase }
   | {
+      type: 'retro-review.prompt'
+      items: Array<{ id: string; text: string; seen_in_retros: number }>
+    }
+  | { type: 'retrospective.complete'; sessionId: string }
+  | {
       type: 'turn.begin'
       turnId: string
       phase: SessionPhase

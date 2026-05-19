@@ -21,6 +21,10 @@ const BodySchema = z.discriminatedUnion('kind', [
     kind: z.literal('exec-summary-redirect'),
     body: z.string().min(1).max(2000),
   }),
+  z.object({
+    kind: z.literal('retro-review'),
+    picked: z.array(z.string().min(1).max(200)).max(20),
+  }),
 ])
 
 function jsonError(status: number, code: string, message: string) {
@@ -69,9 +73,14 @@ export async function POST(
   // Phase 8 input gate: moderate the answer body before delivering it to
   // the orchestrator. On flagged: write the audit row, do NOT call
   // deliverAnswer (the orchestrator stays awaiting), respond 409 so the
-  // client surfaces the moderation halt.
-  if (parsedBody.data.body && parsedBody.data.body.trim().length > 0) {
-    const verdict = await moderate(parsedBody.data.body, {
+  // client surfaces the moderation halt. The retro-review variant carries
+  // a `picked` ID list, not a freeform body — skip moderation for it
+  // (the picked items are bullet texts pulled from prior secretary
+  // outputs that were already moderated when written).
+  const moderatable =
+    parsedBody.data.kind !== 'retro-review' ? parsedBody.data.body : ''
+  if (moderatable && moderatable.trim().length > 0) {
+    const verdict = await moderate(moderatable, {
       sessionId,
       surface: 'input',
     })
@@ -79,7 +88,7 @@ export async function POST(
       await writeFlagAudit(session.supabase, {
         sessionId,
         surface: 'input',
-        text: parsedBody.data.body,
+        text: moderatable,
         verdict,
       })
       return jsonError(

@@ -17,3 +17,8 @@ export const MAX_SESSIONS_PER_DAY = 10
 export const MAX_DEMO_SESSIONS_PER_IP_PER_DAY = 3
 // Documented but enforced by a phase 16 ops job, not v1 code.
 export const IP_HASH_RETENTION_DAYS = 30
+
+// Phase 22: number of recent retros surfaced in the retro-review
+// checkpoint. Tighter than the standard top-N=10 cap so the prompt
+// list stays scannable in a single screen.
+export const RETRO_REVIEW_RECENT_N = 5
