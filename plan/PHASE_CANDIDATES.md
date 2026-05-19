@@ -1,6 +1,6 @@
 # Phase candidates
 
-> Last pass: 2026-05-19 at commit 047cdc0
+> Last pass: 2026-05-19 at commit c505729
 > Pass count: 5
 > Posture: bold
 
@@ -43,10 +43,73 @@
   framework-extraction work). The promotion wasn't load-
   bearing; cleaner to keep it as a pending candidate that
   surfaces when oversight or /expand re-evaluates.
+- oversight 2026-05-19 round 11: **still deferred** — the
+  newly-promoted usage-estimator phase 25 covers the
+  motivating "tell the user what they're about to spend"
+  use case (pre-session forecast + cross-session aggregates).
+  If the daily-quota-remaining number still feels missing
+  after phase 25 ships, re-evaluate.
 
-### [ ] [score 6.5] Model picker for the boardroom session — user-selectable model (single model across personas)
+## Promoted
+
+### [x] [score 7.0] Admin / dev dashboard — promoted 2026-05-19 as phase 23
 
 - proposed: 2026-05-19, expand pass 5
+- promoted: 2026-05-19 (oversight round 11) → phase 23
+- source signals:
+  - User chat 2026-05-19: explicit feature request for an
+    "admin account" with a developer dashboard surfacing
+    actual usage.
+  - **Phase 16 explicit follow-up** (`plan/phases/phase_16_observability.md`
+    L313–315): "Per-account aggregate dashboard ('you used X
+    tokens this week') — separate phase if user demand
+    surfaces." User demand has now surfaced.
+  - Phase 16 persists `prompt_tokens`, `completion_tokens`,
+    `cost_cents`, `model` per session row + `flag_audit`
+    moderation rows; the data needed is already in Postgres,
+    only the read surface is missing.
+- rationale: Two independent signals (user request + phase 16's
+  filed follow-up) make this real. The dashboard is read-only,
+  authed via an env-pinned admin email (no new role schema
+  needed in v1), and answers operator questions the loop's
+  built-in observability can't: sessions/day, tokens/day,
+  top-cost sessions, flag rate, error rate. The bearings'
+  URL contract (locked) doesn't list `/admin`, so this
+  candidate **adds a new URL family** — that's allowed for
+  new phases but the contract entry has to land alongside.
+- proposed scope: 1 phase —
+  - `lib/auth/admin.ts`: `isAdmin(user)` reads
+    `ADMIN_EMAILS` env (comma-sep). One bootstrap admin in
+    v1; pinned in Vercel project env.
+  - `app/admin/page.tsx`: server-rendered single page with
+    five tiles (sessions/day for 7d, tokens/day for 7d,
+    top-10 cost sessions, flag rate this week, error rate
+    this week). Layout: stacked tiles, no charts, monospace
+    counters (per design decisions).
+  - `app/admin/layout.tsx`: redirect to `/signin` for
+    anonymous, 404 for non-admin authed.
+  - `lib/admin/queries.ts`: SQL aggregations over `sessions`
+    and `flag_audit`; covered by unit tests against a
+    seeded fixture.
+  - `bearings.md` URL contract: add `/admin` row (admin-only,
+    read-only, env-gated).
+  - **No write actions** in v1 — keeps blast radius zero.
+- estimated phases: 1
+- conflicts: adds a new URL (`/admin`) — needs bearings URL
+  contract update in the same PR. No spec non-goal collision
+  (spec is silent on admin surfaces; the v1 audit posture in
+  spec L120–125 implies "retrospective review" is a desired
+  capability without specifying a surface).
+- oversight 2026-05-19 round 11: **promoted as phase 23.**
+  Strongest signal of the pass-5 candidates (user request +
+  phase 16's own filed follow-up = two independent signals).
+  Build-plan row added; brief generation by next /march tick
+  via ship-a-phase's missing-brief contract.
+
+### [x] [score 6.5] Model picker for the boardroom session — promoted 2026-05-19 as phase 24
+
+- proposed: 2026-05-19, expand pass 5
+- promoted: 2026-05-19 (oversight round 11) → phase 24
 - source signals:
   - User chat 2026-05-19: explicit feature request to let
     the user choose which model powers a boardroom session.
@@ -92,10 +155,16 @@
 - conflicts: none with spec non-goals. Pairs with phase 9
   (cost runaway gated by existing auth + token cap) and
   phase 16 (pricing table already model-aware).
+- oversight 2026-05-19 round 11: **promoted as phase 24.**
+  Sequenced before phases 25 (estimator) and 27 (BYO Phase B)
+  because both depend on user-selectable model id to be
+  meaningful. 1-phase clean scope, well-aligned with phase
+  16's existing model-aware infrastructure.
 
-### [ ] [score 6.0] Loose usage estimator — pre-session forecast + cross-session aggregates
+### [x] [score 6.0] Loose usage estimator — promoted 2026-05-19 as phase 25
 
 - proposed: 2026-05-19, expand pass 5
+- promoted: 2026-05-19 (oversight round 11) → phase 25
 - source signals:
   - User chat 2026-05-19: explicit feature request for a
     "loose usage estimator" with a UI disclaimer that it's a
@@ -142,58 +211,17 @@
   footer that already ships. Brief must call this out to keep
   scope from leaking back into phase-16 territory. No spec
   non-goal collision.
+- oversight 2026-05-19 round 11: **promoted as phase 25.**
+  Sequenced after phase 24 (model picker) so the forecast
+  tile can read the user's selected model id. Also subsumes
+  the motivating use case of [[quota-visibility]] (the
+  pending candidate above) — re-evaluate that one after
+  phase 25 ships.
 
-### [ ] [score 7.0] Admin / dev dashboard — read-only `/admin` for usage insight
-
-- proposed: 2026-05-19, expand pass 5
-- source signals:
-  - User chat 2026-05-19: explicit feature request for an
-    "admin account" with a developer dashboard surfacing
-    actual usage.
-  - **Phase 16 explicit follow-up** (`plan/phases/phase_16_observability.md`
-    L313–315): "Per-account aggregate dashboard ('you used X
-    tokens this week') — separate phase if user demand
-    surfaces." User demand has now surfaced.
-  - Phase 16 persists `prompt_tokens`, `completion_tokens`,
-    `cost_cents`, `model` per session row + `flag_audit`
-    moderation rows; the data needed is already in Postgres,
-    only the read surface is missing.
-- rationale: Two independent signals (user request + phase 16's
-  filed follow-up) make this real. The dashboard is read-only,
-  authed via an env-pinned admin email (no new role schema
-  needed in v1), and answers operator questions the loop's
-  built-in observability can't: sessions/day, tokens/day,
-  top-cost sessions, flag rate, error rate. The bearings'
-  URL contract (locked) doesn't list `/admin`, so this
-  candidate **adds a new URL family** — that's allowed for
-  new phases but the contract entry has to land alongside.
-- proposed scope: 1 phase —
-  - `lib/auth/admin.ts`: `isAdmin(user)` reads
-    `ADMIN_EMAILS` env (comma-sep). One bootstrap admin in
-    v1; pinned in Vercel project env.
-  - `app/admin/page.tsx`: server-rendered single page with
-    five tiles (sessions/day for 7d, tokens/day for 7d,
-    top-10 cost sessions, flag rate this week, error rate
-    this week). Layout: stacked tiles, no charts, monospace
-    counters (per design decisions).
-  - `app/admin/layout.tsx`: redirect to `/signin` for
-    anonymous, 404 for non-admin authed.
-  - `lib/admin/queries.ts`: SQL aggregations over `sessions`
-    and `flag_audit`; covered by unit tests against a
-    seeded fixture.
-  - `bearings.md` URL contract: add `/admin` row (admin-only,
-    read-only, env-gated).
-  - **No write actions** in v1 — keeps blast radius zero.
-- estimated phases: 1
-- conflicts: adds a new URL (`/admin`) — needs bearings URL
-  contract update in the same PR. No spec non-goal collision
-  (spec is silent on admin surfaces; the v1 audit posture in
-  spec L120–125 implies "retrospective review" is a desired
-  capability without specifying a surface).
-
-### [ ] [score 4.0] BYO Anthropic API key — user pays from their own key
+### [x] [score 4.0] BYO Anthropic API key — promoted 2026-05-19 as phases 26 + 27
 
 - proposed: 2026-05-19, expand pass 5
+- promoted: 2026-05-19 (oversight round 11) → phase 26 (foundation) + phase 27 (orchestrator integration)
 - source signals:
   - User chat 2026-05-19: feature request originally framed as
     "connect a user's Claude.ai subscription so they spend
@@ -221,47 +249,56 @@
   and a clear "you're paying now" UI handoff. This is the
   honest 2–3 phase candidate of the four, not 1.
 - proposed scope: 2–3 phases (honest) —
-  - **Phase A (foundation):** schema for encrypted keys
+  - **Phase 26 (foundation):** schema for encrypted keys
     (Supabase Vault `vault.create_secret` or pgsodium-based
     encryption); `lib/byok/encrypt.ts` + `decrypt.ts` with
     server-only access; settings UI to paste/rotate/revoke a
     key (`/app/settings/api-key`); audit trail of when the
     key was added/rotated/revoked.
-  - **Phase B (orchestrator integration):** the active session
-    reads the user's key (if present) and instantiates a
-    second Anthropic client; falls back to the project key
+  - **Phase 27 (orchestrator integration):** the active
+    session reads the user's key (if present) and instantiates
+    a second Anthropic client; falls back to the project key
     when absent; per-session log records *which* key was used
     for honest accounting; the "you're paying now" banner
     renders on the boardroom shelf when a user-key session
     runs.
-  - **Phase C (polish, optional):** model allowlist scoped to
-    the user's key (graceful degrade if their Anthropic
-    account can't access Opus, etc.); per-key spend tile in
-    settings; explicit warning copy + checkbox before the
-    first user-key session ("you're about to spend from your
-    own Anthropic account; per-session cap of N tokens still
-    applies").
-- estimated phases: 2 (A + B); C is polish that can land
-  later as a small iterate batch.
+  - **Phase C (polish, deferred to /iterate batch):** model
+    allowlist scoped to the user's key (graceful degrade if
+    their Anthropic account can't access Opus, etc.); per-key
+    spend tile in settings; explicit warning copy + checkbox
+    before the first user-key session ("you're about to spend
+    from your own Anthropic account; per-session cap of N
+    tokens still applies"). Not a separate phase — fold into
+    /iterate after phases 26 + 27 land.
+- estimated phases: 2 (26 + 27); polish folded into /iterate.
 - conflicts:
-  - **Spec ambiguity**, not a non-goal collision: spec is
-    silent on BYO keys (not listed in "Out of v1"). The
-    audience ("solo builders, indie devs, early-stage PMs new
-    to multi-agent AI workflows" — spec L20–26) leans toward
-    *not* requiring BYO; the typical user of this product
-    would prefer the project pay. **Recommend `/oversight`
-    consider** whether BYO is a v1 feature or a v2 feature
-    before promoting. Score reflects this uncertainty.
-  - Bearings: would add `/app/settings/api-key` to the locked
-    URL contract — same precedent as [[admin-dashboard]];
-    requires a bearings update in the promoting PR.
+  - **Spec ambiguity resolved in round 11:** spec is silent on
+    BYO keys (not listed in "Out of v1"). The audience ("solo
+    builders, indie devs, early-stage PMs new to multi-agent
+    AI workflows" — spec L20–26) leans toward *not* requiring
+    BYO; the typical user of this product would prefer the
+    project pay. Oversight round 11 resolved this as **v1
+    scope** — BYO is opt-in (project key is the default), so
+    the audience assumption isn't violated; the feature gives
+    the power-user escape valve and shifts cost-runaway risk
+    off the project for those who opt in.
+  - Bearings: adds `/app/settings/api-key` to the locked URL
+    contract — same precedent as [[admin-dashboard]];
+    requires a bearings update in phase 26's PR.
   - Operationally: Supabase Vault is the cleanest path
     (the project already runs Supabase) but doubles the
     secret-management surface. Worth a `scout` pass during
-    brief generation to confirm Vault is the right primitive
-    vs. application-level KMS.
-
-## Promoted
+    phase 26's brief generation to confirm Vault is the right
+    primitive vs. application-level KMS.
+- oversight 2026-05-19 round 11: **promoted as phases 26 + 27.**
+  Split per the honest scope assessment in the proposal —
+  shipping foundation (key storage + settings UI) before
+  orchestrator integration keeps each phase's blast radius
+  small. Phase 26 must ship before phase 27 because phase 27
+  reads the encrypted key. The "v1 vs v2" question (raised
+  in the candidate's conflicts section) was resolved in favor
+  of v1: BYO is opt-in, the project key remains the default,
+  so the v1 audience assumption holds.
 
 ### [x] [score 5.0] Account deletion + data wipe — promoted 2026-05-18 as phase 18
 

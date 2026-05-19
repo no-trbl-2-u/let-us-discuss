@@ -107,6 +107,52 @@ commit that ships the phase.
       phase to the template + the UI that surfaces past
       "for next time" items before clarify; the user picks
       zero/some, their answers feed into clarify context)
+- [ ] Phase 23 — Admin / dev dashboard (read-only `/admin`
+      route, env-gated via `ADMIN_EMAILS`; surfaces
+      sessions/day, tokens/day, top-cost sessions, flag rate,
+      error rate as monospace tiles. Adds `/admin` to the
+      bearings URL contract in the same PR. No write actions
+      in v1; reads from phase 16's existing observability
+      columns + the `flag_audit` table. Closes phase 16's
+      filed follow-up "per-account aggregate dashboard.")
+- [ ] Phase 24 — Model picker for the boardroom session
+      (user-selectable model used by all personas in a
+      session; `AVAILABLE_MODELS` allowlist in
+      `lib/anthropic/models.ts`; `<ModelPicker>` in the
+      boardroom shelf; `/api/sessions` accepts + validates
+      `model` on create with allowlist fallback. Authed-only
+      so phase 9's auth boundary bounds cost runaway;
+      per-model caps deferred. Per-persona model selection
+      is a later follow-on.)
+- [ ] Phase 25 — Loose usage estimator (pre-session forecast
+      tile in the boardroom shelf reads phase 24's selected
+      model + a hand-pinned "typical session" range; renders
+      `~X–Y tokens · ~$A–$B (rough estimate)` with locked
+      disclaimer copy. Cross-session aggregate
+      `getUserUsageSummary(userId, window)` tile on `/app`
+      or `/app/settings` for `today | 7d | 30d`. Explicitly
+      excludes the per-session footer already shipped by
+      phase 16; the brief calls that out to prevent scope
+      leak.)
+- [ ] Phase 26 — BYO Anthropic API key (foundation:
+      encrypted-key schema via Supabase Vault or pgsodium;
+      `lib/byok/encrypt.ts` + `decrypt.ts` server-only;
+      `/app/settings/api-key` UI to paste/rotate/revoke;
+      audit trail of add/rotate/revoke events. Adds
+      `/app/settings/api-key` to the bearings URL contract.
+      Scout pass during brief generation confirms Vault vs.
+      application-level KMS choice. Ship before phase 27 —
+      phase 27 reads the encrypted key.)
+- [ ] Phase 27 — BYO Anthropic API key (orchestrator
+      integration: active session reads the user's key when
+      present and instantiates a second Anthropic client;
+      falls back to the project key when absent; per-session
+      log records *which* key was used for honest accounting;
+      "you're paying now" banner on the boardroom shelf for
+      user-key sessions. Polish (model-allowlist intersection
+      with user's account permissions, per-key spend tile,
+      first-run warning checkbox) folded into /iterate after
+      this ships.)
 
 > **Phase numbering note:** Phase 19 (Quota visibility) was
 > promoted in round 7 but never shipped; oversight round 10
