@@ -1,7 +1,7 @@
 # Critique log
 
-> Last pass: 2026-05-18 at commit 6dd0c39
-> Pass count: 8
+> Last pass: 2026-05-19 at commit 363aa2a
+> Pass count: 9
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
@@ -83,6 +83,111 @@
   `[operator] Populate SUPABASE_E2E_SESSION_COOKIE` row holds
   the same context with score 3.0.
 - **Source:** web-fetch (reader sub-agent + grep)
+
+### [MED] /try — demo opens with no drag affordance, contradicting marketing-side "drop personas onto the table"
+
+- **pass:** 9 (commit `363aa2a`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** Landing copy promises "Drop a few personas
+  onto the table, hand them your pitch, and let them confer";
+  `/about` repeats "You drag personas, hand over a pitch...".
+  The visitor arrives at `/try` expecting the staffing affordance
+  the marketing surface just sold, and finds a static layout
+  with the Product Lead pre-seated and five "demo · locked"
+  seats. The drag affordance is intentionally an authed-only
+  feature, but the demo doesn't acknowledge the gap — the
+  expectation mismatch reads as the demo being broken or
+  shallow, not as a deliberate scope choice.
+- **evidence:** Landing body — "Drop a few personas onto the
+  table, hand them your pitch, and let them confer." `/about`
+  — "You drag personas, hand over a pitch...". `/try` body —
+  "One persona, three canned turns, three artifact tiles" +
+  "The Product Lead is already at the table" + five locked
+  seat tiles.
+- **suggested fix:** Add one explicit framing line to the
+  `/try` opener: e.g. "Full sessions let you staff the table
+  yourself — the demo skips that and seats the Product Lead
+  for you." Sets the expectation that drag is a signed-in
+  affordance without selling-then-pulling.
+- **source:** web-fetch
+
+### [MED] /about/personas — no link back to /about, breaks the explainer → library traversal
+
+- **pass:** 9 (commit `363aa2a`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** navigation
+- **observation:** Reader landed on `/about/personas` directly
+  (via footer link from another page) and found no path back
+  to the parent `/about` explainer. Header nav exposes
+  "Personas" (current page) and "Sign in"; footer repeats
+  Personas, Privacy, Terms. The only way to reach `/about`
+  from `/about/personas` is the browser back button or
+  retyping the URL.
+- **evidence:** Full anchor inventory on `/about/personas`:
+  skip-link, boardroom logo (→ /), Personas (self), Sign in,
+  Privacy, Terms. No `/about` link anywhere on the page.
+- **suggested fix:** Add `/about` to the global header nav
+  (alongside "Personas" + "Sign in"), OR ship a breadcrumb
+  matching the "boardroom · about" pattern already used on
+  `/about` — render "boardroom · about · personas" at the top
+  of `/about/personas`. Either closes the loop; the breadcrumb
+  is the smaller diff.
+- **source:** web-fetch
+
+### [LOW] /about/personas — all four persona system prompts share the templated "You are the X at the boardroom table. Your job is to..." opener
+
+- **pass:** 9 (commit `363aa2a`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** voice
+- **observation:** Page lede promises "personas each layer their
+  own voice on top." The voice descriptors above each prompt
+  ("Sharp-edged, technical, doubt-driven" / "Plain, curious,
+  inexpert-friendly") set the expectation that the prompts
+  themselves will sound different. They don't — all four open
+  with the identical "You are the [role] at the boardroom
+  table. Your job is to..." scaffold. The reader hears the
+  voice *claim* in the descriptor but doesn't see it modeled
+  in the prompt text.
+- **evidence:** PL — "You are the product lead at the boardroom
+  table. Your job is to turn a fuzzy pitch..." SE — "You are
+  the skeptical engineer at the boardroom table. Your job is
+  to make the spec survive..." EP / GV follow the same first-
+  line cadence.
+- **suggested fix:** Either lean into the scaffold — frame it
+  on the page as a stable opener that the persona's voice
+  rides on (one explanatory line near the lede) — or vary the
+  first-line cadence on at least one persona's prompt body so
+  the page demonstrates the layered-voice claim it makes. The
+  framing call is cheaper; the rewrite is the truer fix. Prompt
+  edits ship via PR per bearings rule 10.
+- **source:** web-fetch
+
+### [LOW] /legal/privacy — "Plain version:" label primes a legal counterpart the page doesn't provide
+
+- **pass:** 9 (commit `363aa2a`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** voice
+- **observation:** Opening sentence "Plain version: we keep
+  your sessions while your account is open and delete them
+  when you close it" implies a non-plain (legal-prose) version
+  follows for contrast. The rest of the page is also plain
+  prose — no formal restatement pairs with the labeled one.
+  The label primes an expectation the page never fulfills.
+- **evidence:** Opening line of `/legal/privacy`: "Plain
+  version: we keep your sessions while your account is open
+  and delete them when you close it." No subsequent "Legal
+  version" or formalized block appears.
+- **suggested fix:** Drop "Plain version:" — the page is
+  already plainspoken throughout per the bearings voice
+  ("plainspoken, terse, no marketing fluff"), so the framing
+  is redundant. Alternative: ship the pair (plain + legal
+  restatement) if a formal legal voice is on the roadmap.
+- **source:** web-fetch
 
 ## Done
 
