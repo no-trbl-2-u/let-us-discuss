@@ -83,14 +83,14 @@ commit that ships the phase.
       delete across `sessions`/`turns`/`artifacts`/`flag_audit`
       + Supabase `auth.deleteUser`; closes the privacy-policy
       promise from phase 12) — `e2c10eb`
-- [ ] Phase 20 — Framework engine refactor + standalone test
+- [x] Phase 20 — Framework engine refactor + standalone test
       harness (move orchestrator schemas to
       `src-ai-skills/schemas/` as the single source of truth;
       boardroom imports from there; vitest suite in
       `src-ai-skills/__tests__/` validates reference personas +
       template + orchestrator behavior against a stub LLM
       client. Closes the framework-vs-impl-drift risk before
-      phases 21–22 ship the secretary work.)
+      phases 21–22 ship the secretary work.) — `358c84d`
 - [ ] Phase 21 — Secretary persona + Mode 1 (in-session)
       (extend persona role enum to include `secretary` with a
       cast guard requiring exactly one; ship the secretary.md
