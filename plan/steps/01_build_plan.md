@@ -99,14 +99,14 @@ commit that ships the phase.
       log prompt; compile into a `secretary-log.md` fourth
       artifact at the artifact phase; authed e2e walks one
       secretary turn end-to-end) — `fada1d9`
-- [ ] Phase 22 — Secretary Mode 2 + cross-session retros
+- [x] Phase 22 — Secretary Mode 2 + cross-session retros
       (orchestrator invokes secretary one final time after
       the artifact phase to write a retrospective entry;
       `loadRetros()` / `appendRetro()` hooks back the project-
       level `retros.md` file; add the `retro-review` checkpoint
       phase to the template + the UI that surfaces past
       "for next time" items before clarify; the user picks
-      zero/some, their answers feed into clarify context)
+      zero/some, their answers feed into clarify context) — `3465e5c`
 - [ ] Phase 23 — Admin / dev dashboard (read-only `/admin`
       route, env-gated via `ADMIN_EMAILS`; surfaces
       sessions/day, tokens/day, top-cost sessions, flag rate,
