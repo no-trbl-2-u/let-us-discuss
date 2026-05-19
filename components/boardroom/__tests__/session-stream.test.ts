@@ -1,5 +1,5 @@
 import { startSession } from '@/components/boardroom/session-stream'
-import type { SessionEvent } from '@/lib/sessions/events'
+import type { SessionEvent } from '@framework/schemas/events'
 import { encodeSseEvent } from '@/lib/sessions/sse'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 

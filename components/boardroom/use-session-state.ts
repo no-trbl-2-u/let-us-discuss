@@ -4,14 +4,15 @@ import type {
   SessionErrorCode,
   SessionEvent,
   SessionPhase,
-} from '@/lib/sessions/events'
+  TurnAuthor,
+} from '@framework/schemas/events'
 import { useReducer } from 'react'
 
 export type SessionTurn = {
   id: string
   phase: SessionPhase
   personaSlug: string | null
-  author: 'persona' | 'user' | 'moderator'
+  author: TurnAuthor
   replyingTo: string | null
   body: string
   tokens: number

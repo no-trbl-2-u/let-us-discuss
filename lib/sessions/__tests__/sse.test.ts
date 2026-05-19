@@ -1,4 +1,4 @@
-import type { SessionEvent } from '@/lib/sessions/events'
+import type { SessionEvent } from '@framework/schemas/events'
 import { encodeSseEvent, parseSseChunk } from '@/lib/sessions/sse'
 import { describe, expect, it } from 'vitest'
 

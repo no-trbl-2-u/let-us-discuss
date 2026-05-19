@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const PersonaRoleSchema = z.enum(['lead', 'specialist'])
+export const PersonaRoleSchema = z.enum(['lead', 'specialist', 'secretary'])
 export type PersonaRole = z.infer<typeof PersonaRoleSchema>
 
 export const PersonaFrontmatterSchema = z.object({

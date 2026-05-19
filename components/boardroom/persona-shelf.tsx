@@ -1,6 +1,6 @@
 'use client'
 
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import { DraggablePersonaCard } from './draggable-persona-card'
 import { seatedPersonas } from './use-board-state'
 import type { BoardState } from './types'

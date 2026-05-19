@@ -1,7 +1,7 @@
 'use client'
 
 import { useDroppable } from '@dnd-kit/core'
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import { cn } from '@/lib/cn'
 import { monogramFor } from '@/lib/personas/monogram'
 import { PersonaCard } from '@/design/primitives/persona-card'

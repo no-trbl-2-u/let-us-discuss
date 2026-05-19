@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   PersonaFrontmatterSchema,
   PersonaSchema,
-} from '@/lib/schemas/persona'
+} from '@framework/schemas/persona'
 
 const good = {
   slug: 'product-lead',
@@ -25,6 +25,17 @@ describe('PersonaFrontmatterSchema', () => {
     const result = PersonaFrontmatterSchema.safeParse(rest)
     expect(result.success).toBe(true)
     if (result.success) expect(result.data.tools).toEqual([])
+  })
+
+  it('accepts the secretary role', () => {
+    const result = PersonaFrontmatterSchema.safeParse({
+      ...good,
+      slug: 'secretary',
+      name: 'Secretary',
+      role: 'secretary',
+      lead: false,
+    })
+    expect(result.success).toBe(true)
   })
 
   it('rejects an unknown role', () => {

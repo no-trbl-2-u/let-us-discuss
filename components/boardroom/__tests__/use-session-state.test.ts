@@ -3,7 +3,7 @@ import {
   initialSessionState,
   sessionReducer,
 } from '@/components/boardroom/use-session-state'
-import type { SessionEvent } from '@/lib/sessions/events'
+import type { SessionEvent } from '@framework/schemas/events'
 import { describe, expect, it } from 'vitest'
 
 function apply(events: SessionEvent[]) {

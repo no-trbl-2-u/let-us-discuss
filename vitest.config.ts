@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('.', import.meta.url)),
+      '@framework': fileURLToPath(new URL('./src-ai-skills', import.meta.url)),
     },
   },
   test: {

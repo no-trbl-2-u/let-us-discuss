@@ -5,14 +5,14 @@
 // user answers back via the awaitAnswer promise.
 
 import { MAX_SESSION_TOKENS } from '@/lib/limits'
-import type { Persona } from '@/lib/schemas/persona'
-import type { Template, TemplatePhase } from '@/lib/schemas/template'
+import type { Persona } from '@framework/schemas/persona'
+import type { Template, TemplatePhase } from '@framework/schemas/template'
 import { BudgetTracker } from '@/lib/sessions/budget'
 import type {
   SessionEvent,
   SessionPhase,
   TurnAuthor,
-} from '@/lib/sessions/events'
+} from '@framework/schemas/events'
 import Anthropic from '@anthropic-ai/sdk'
 import { AnthropicConfigError, getAnthropicClient } from './client'
 

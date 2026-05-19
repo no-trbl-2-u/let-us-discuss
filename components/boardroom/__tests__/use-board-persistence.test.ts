@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import {
   encodePersonasParam,
   parsePersonasParam,

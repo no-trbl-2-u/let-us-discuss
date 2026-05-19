@@ -1,5 +1,6 @@
 import type { SupabaseServerClient } from '@/lib/supabase/server'
 import { estimateCostCents } from '@/lib/observability/pricing'
+import type { SessionPhase, TurnAuthor } from '@framework/schemas/events'
 
 export type SessionStatus =
   | 'clarify'
@@ -39,15 +40,9 @@ export type CreateSessionInput = {
 export type AppendTurnInput = {
   sessionId: string
   idx: number
-  phase:
-    | 'clarify'
-    | 'confer'
-    | 'exec-summary'
-    | 'specialists'
-    | 'artifact'
-    | 'moderator'
+  phase: SessionPhase | 'moderator'
   personaSlug: string | null
-  author: 'persona' | 'user' | 'moderator'
+  author: TurnAuthor
   body: string
   replyingTo?: string | null
   tokens: number
@@ -112,6 +107,21 @@ export async function markStatus(
   }
 }
 
+// DB-side narrow types — turns.phase / turns.author column constraints
+// only accept the v1 boardroom values. The framework's wider enums
+// (retro-review/retrospective, secretary) are valid in the SessionPhase /
+// TurnAuthor types from @framework/schemas, but the current orchestrator
+// provably doesn't emit them. Phase 21 lands the DB migration that allows
+// the new values; until then, narrow at the persistence boundary.
+type DbTurnPhase =
+  | 'clarify'
+  | 'confer'
+  | 'exec-summary'
+  | 'specialists'
+  | 'artifact'
+  | 'moderator'
+type DbTurnAuthor = 'persona' | 'user' | 'moderator'
+
 export async function appendTurn(
   supabase: SupabaseServerClient,
   input: AppendTurnInput,
@@ -119,9 +129,9 @@ export async function appendTurn(
   const { error } = await supabase.from('turns').insert({
     session_id: input.sessionId,
     idx: input.idx,
-    phase: input.phase,
+    phase: input.phase as DbTurnPhase,
     persona_slug: input.personaSlug,
-    author: input.author,
+    author: input.author as DbTurnAuthor,
     body: input.body,
     replying_to: input.replyingTo ?? null,
     tokens: input.tokens,

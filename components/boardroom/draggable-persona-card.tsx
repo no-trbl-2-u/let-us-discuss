@@ -2,7 +2,7 @@
 
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import { monogramFor } from '@/lib/personas/monogram'
 import { PersonaCard } from '@/design/primitives/persona-card'
 

@@ -4,7 +4,7 @@ import {
   DEMO_AUTO_ADVANCE_MS,
   MAX_DEMO_SESSIONS_PER_IP_PER_DAY,
 } from '@/lib/limits'
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { DemoAlreadyUsed } from './demo-already-used'
 import { DemoArtifactPreview } from './demo-artifact-preview'

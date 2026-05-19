@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { cache } from 'react'
 import { TEMPLATES_DIR } from '@/lib/content/paths'
-import { type Template, TemplateSchema } from '@/lib/schemas/template'
+import { type Template, TemplateSchema } from '@framework/schemas/template'
 
 export const DEFAULT_TEMPLATE_SLUG = 'pitch-to-spec'
 

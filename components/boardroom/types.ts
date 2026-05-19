@@ -1,4 +1,4 @@
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 
 export type SeatId = 0 | 1 | 2 | 3 | 4 | 5
 

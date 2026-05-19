@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import { DemoShelf } from '@/components/demo/demo-shelf'
 import { DemoSurface } from '@/components/demo/demo-surface'
 import { DemoStartButton } from '@/components/demo/demo-start-button'

@@ -7,7 +7,7 @@ import {
   type Persona,
   PersonaFrontmatterSchema,
   PersonaSchema,
-} from '@/lib/schemas/persona'
+} from '@framework/schemas/persona'
 
 function readDir(dir: string): string[] {
   if (!fs.existsSync(dir)) return []

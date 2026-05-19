@@ -1,5 +1,5 @@
-import type { Persona } from '@/lib/schemas/persona'
-import type { Template } from '@/lib/schemas/template'
+import type { Persona } from '@framework/schemas/persona'
+import type { Template } from '@framework/schemas/template'
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 

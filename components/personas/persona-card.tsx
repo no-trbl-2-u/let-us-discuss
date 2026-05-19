@@ -1,4 +1,4 @@
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import { cn } from '@/lib/cn'
 
 function monogramFor(name: string): string {

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { DndContext } from '@dnd-kit/core'
 import { describe, expect, it } from 'vitest'
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import { DraggablePersonaCard } from '@/components/boardroom/draggable-persona-card'
 
 const PERSONA: Persona = {

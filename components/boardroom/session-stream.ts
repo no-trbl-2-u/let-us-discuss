@@ -1,6 +1,6 @@
 'use client'
 
-import type { SessionEvent } from '@/lib/sessions/events'
+import type { SessionEvent } from '@framework/schemas/events'
 import { parseSseChunk } from '@/lib/sessions/sse'
 
 export type StartSessionInput = {

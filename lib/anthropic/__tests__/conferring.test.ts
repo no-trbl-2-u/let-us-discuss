@@ -4,9 +4,9 @@ import {
   type ConferringHooks,
   runConferring,
 } from '@/lib/anthropic/conferring'
-import type { Persona } from '@/lib/schemas/persona'
-import type { Template } from '@/lib/schemas/template'
-import type { SessionEvent } from '@/lib/sessions/events'
+import type { Persona } from '@framework/schemas/persona'
+import type { Template } from '@framework/schemas/template'
+import type { SessionEvent } from '@framework/schemas/events'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 function makeClient(replies: string[]): AnthropicStreamClient {

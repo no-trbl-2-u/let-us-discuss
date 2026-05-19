@@ -1,4 +1,4 @@
-import type { SessionEvent } from '@/lib/sessions/events'
+import type { SessionEvent } from '@framework/schemas/events'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const getRouteUser = vi.fn()

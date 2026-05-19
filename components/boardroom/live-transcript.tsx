@@ -1,7 +1,7 @@
 'use client'
 
 import { TurnBubble } from '@/design/primitives/turn-bubble'
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import { useEffect, useRef } from 'react'
 import type { SessionTurn } from './use-session-state'
 

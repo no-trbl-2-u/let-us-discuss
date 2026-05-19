@@ -1,4 +1,4 @@
-import type { SessionEvent } from './events'
+import type { SessionEvent } from '@framework/schemas/events'
 
 // Encodes one SSE message: a single `event:` line, one `data:` line per
 // newline in the JSON payload, and the trailing blank line that terminates

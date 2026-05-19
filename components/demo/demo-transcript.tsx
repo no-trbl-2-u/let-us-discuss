@@ -1,6 +1,6 @@
 'use client'
 
-import type { Persona } from '@/lib/schemas/persona'
+import type { Persona } from '@framework/schemas/persona'
 import { monogramFor } from '@/lib/personas/monogram'
 import { TurnBubble } from '@/design/primitives/turn-bubble'
 import { Button } from '@/design/primitives/button'

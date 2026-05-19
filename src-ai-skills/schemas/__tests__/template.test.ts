@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { TemplateSchema } from '@/lib/schemas/template'
+import { TemplateSchema } from '@framework/schemas/template'
 
 const good = {
   slug: 'pitch-to-spec',

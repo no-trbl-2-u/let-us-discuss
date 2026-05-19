@@ -1,17 +1,13 @@
-// SSE event union for /api/sessions.
-//
-// Final shape — phase 7b adds no new variants. The reducer in
-// components/boardroom/use-session-state.ts handles every variant; 7a only
-// exercises the not-implemented path.
-
 export type SessionPhase =
+  | 'retro-review'
   | 'clarify'
   | 'confer'
   | 'exec-summary'
   | 'specialists'
   | 'artifact'
+  | 'retrospective'
 
-export type TurnAuthor = 'persona' | 'user' | 'moderator'
+export type TurnAuthor = 'persona' | 'user' | 'moderator' | 'secretary'
 
 export type SessionErrorCode =
   | 'not-implemented'

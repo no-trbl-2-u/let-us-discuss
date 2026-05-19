@@ -18,7 +18,8 @@
     "plugins": [{ "name": "next" }],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@framework/*": ["./src-ai-skills/*"]
     }
   },
   "include": [
