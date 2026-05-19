@@ -38,42 +38,66 @@ Persisted state:
   moderation rows    (flag_audit table, only on suspect verdict)
 ```
 
-## The five-phase loop
+## The full loop
 
 ```
-┌───────────────┐
-│   clarify     │  Leads ask 1-4 brief questions each.
-│               │  User answers each in ≤1 sentence.
-│               │  → emits ClarifyPrompt events; awaits answers
-└───────┬───────┘
-        ▼
-┌───────────────┐
-│    confer     │  Personas take turns; auto turn-taking by LLM.
-│               │  Bounded by template.turn_budget.
-│               │  → emits turn.begin / turn.delta / turn.end
-└───────┬───────┘
-        ▼
-┌───────────────┐
-│  exec-summary │  Orchestrator emits a moderator turn summarizing
-│   (CHECKPOINT)│  the conferred shape. Pauses for user.
-│               │  → user accepts → continue to specialists
-│               │  → user redirects → loop back to confer
-│               │     (max user_redirect_max rounds)
-└───────┬───────┘
-        ▼
-┌───────────────┐
-│  specialists  │  Specialist personas drill in. Same turn-budget
-│               │  shape as confer.
-└───────┬───────┘
-        ▼
-┌───────────────┐
-│   artifact    │  Orchestrator (as moderator) assembles three
-│               │  outputs: spec.md + exec summary + call-outs.
-│               │  → emits artifact event
-└───────────────┘
-        ▼
-   session.done
+┌─────────────────┐
+│  retro-review   │  Read project-level retros.md; surface recent
+│   (OPTIONAL)    │  "for next time" items to the user as a pre-
+│                 │  clarify checkpoint. User picks zero/one/several
+│                 │  to address this session.
+│                 │  → emits retro-review.prompt; awaits answers
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│   clarify       │  Leads ask 1-4 brief questions each.
+│                 │  User answers each in ≤1 sentence.
+│                 │  → emits ClarifyPrompt; awaits answers
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│    confer       │  Personas take turns; auto turn-taking by LLM.
+│                 │  Bounded by template.turn_budget.
+│                 │  → emits turn.begin / turn.delta / turn.end
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│  exec-summary   │  Orchestrator emits a moderator turn summarizing
+│   (CHECKPOINT)  │  the conferred shape. Pauses for user.
+│                 │  → user accepts → continue to specialists
+│                 │  → user redirects → loop back to confer
+│                 │     (max user_redirect_max rounds)
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│  specialists    │  Specialist personas drill in. Same turn-budget
+│                 │  shape as confer.
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│   artifact      │  Orchestrator (as moderator) assembles four
+│                 │  outputs: spec.md + exec summary + call-outs +
+│                 │  secretary-log.md (in-session log compiled).
+│                 │  → emits artifact event
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ retrospective   │  Secretary in Mode 2 — single turn reflecting
+│   (OPTIONAL)    │  on what went well / didn't / for next time.
+│                 │  Orchestrator appends to project-level retros.md.
+│                 │  → emits retrospective.complete event
+└────────┬────────┘
+         ▼
+    session.done
 ```
+
+The **five core phases** (clarify → confer → exec-summary →
+specialists → artifact) are the conferring loop proper. The
+**two wrapper phases** (retro-review at the start, retrospective
+at the end) close the cross-session learning loop. Templates can
+include all seven, only the five core, or any subset that makes
+sense for the domain. The framework requires `clarify` and
+`artifact`; everything else is per-template.
 
 ## Contract — what the engine must provide
 
@@ -84,11 +108,11 @@ TypeScript shape:
 ```ts
 type RunConferringInput = {
   pitch: string
-  personas: Persona[]
+  personas: Persona[]              // must include exactly one role: secretary
   template: Template
   hooks: ConferringHooks
   awaitAnswer(): Promise<AnswerInput>
-  client?: LLMStreamClient        // Anthropic SDK by default
+  client?: LLMStreamClient         // Anthropic SDK by default
   moderateOutput?: (text: string) => Promise<ModerationCheck>
   onFlaggedOutput?: (text: string, verdict: unknown) => Promise<void>
 }
@@ -99,9 +123,15 @@ type ConferringHooks = {
     specMd: string
     execSummary: string
     callouts: string
+    secretaryLog: string           // always present (secretary required)
     tokensUsed: number
   }): Promise<void>
   markStatus(status: SessionStatus): Promise<void>
+
+  // Cross-session retros (required when template includes retro-review
+  // or retrospective phase; can be no-ops otherwise).
+  loadRetros(): Promise<Retro[]>
+  appendRetro(entry: Retro): Promise<void>
 }
 
 async function* runConferring(
@@ -128,6 +158,8 @@ Events to the client. The locked event shapes:
 ```ts
 type SessionEvent =
   | { type: 'session.start'; sessionId: string }
+  | { type: 'retro-review.prompt';
+      items: Array<{ id: string; text: string; seen_in_retros: number }> }
   | { type: 'turn.begin'; turnId: string; phase: SessionPhase;
       author: TurnAuthor; personaSlug: string | null;
       replyingTo: string | null }
@@ -136,10 +168,28 @@ type SessionEvent =
   | { type: 'clarify.prompt'; questions: string[] }
   | { type: 'exec-summary'; body: string }
   | { type: 'artifact'; specMd: string; execSummary: string;
-      callouts: string }
+      callouts: string; secretaryLog: string }
+  | { type: 'retrospective.complete'; sessionId: string }
   | { type: 'session.error'; code: ErrorCode; message: string }
   | { type: 'session.done' }
 ```
+
+`TurnAuthor` extends to include `'secretary'`:
+```ts
+type TurnAuthor = 'persona' | 'user' | 'moderator' | 'secretary'
+```
+
+`SessionPhase` extends to include the wrapper phases:
+```ts
+type SessionPhase =
+  | 'retro-review' | 'clarify' | 'confer' | 'exec-summary'
+  | 'specialists' | 'artifact' | 'retrospective'
+```
+
+The `secretaryLog` field on `artifact` is now **always present**
+(the secretary is required; the four-artifact shape is the
+canonical output). Hosts that previously consumed the
+three-artifact shape need a one-time update.
 
 The client renders `turn.delta` chunks into a live transcript
 bubble; `clarify.prompt` and `exec-summary` events surface as
@@ -240,12 +290,219 @@ other turn. Budget-conscious products can set a sub-cap on
 secretary tokens (e.g., 10% of the session budget) and have the
 secretary emit shorter entries when approaching the sub-cap.
 
-### Skipping the secretary
+### Required, not optional
 
-Sessions don't need a secretary. If the cast lacks a
-`role: secretary` persona, the orchestrator never yields the
-side channel; the session runs identically to its no-secretary
-form. The fourth artifact is omitted.
+**Every session must staff exactly one secretary persona.** The
+orchestrator validates the cast on session start and refuses to
+proceed if no `role: secretary` is present (or if more than one
+is). This is a framework rule, not a per-template option. See
+PERSONA-FORMAT.md §Role/secretary for the rationale.
+
+## Cross-session retros
+
+When the template includes a `retro-review` phase (first) and/or
+a `retrospective` phase (last), the orchestrator wires the
+**cross-session learning loop** through a project-level
+`retros.md` file.
+
+### The file
+
+`retros.md` lives at the project root by default (path is
+configurable). Append-only. Format:
+
+```markdown
+# Session retrospectives
+
+> Append-only. One entry per concluded session. The orchestrator
+> reads recent entries on session start; the secretary appends a
+> new entry on session end.
+
+---
+
+## 2026-05-19T14:32:00Z — session abc123…
+
+Pitch: "What we're building is a..."
+
+### What went well
+- ...
+- ...
+- ...
+
+### What didn't
+- ...
+- ...
+
+### For next time
+- ...
+- ...
+- ...
+
+---
+
+## 2026-05-18T11:05:00Z — session xyz789…
+...
+```
+
+The file does NOT live in the database — it lives in the
+filesystem (or equivalent durable store) so it survives
+DB resets, schema migrations, and operator hand-offs. Treat it
+as a textual artifact of the same class as `spec.md`.
+
+### Pre-session: the `retro-review` phase
+
+If the template includes a `retro-review` phase as the first
+phase, the orchestrator:
+
+1. Reads `retros.md` (host provides via the `loadRetros()` hook).
+2. Extracts the most-recent N retros' "for next time" items
+   (N = `template.phases[retro-review].retro_review_recent_n`,
+   default 5).
+3. Deduplicates by string-similarity (so the same carry-forward
+   appearing across multiple retros surfaces once with a count).
+4. Emits a `retro-review.prompt` event listing up to 6 items.
+5. Awaits a `RetroReviewAnswer` (which items to address +
+   one sentence each on how).
+
+```ts
+type RetroReviewPrompt = {
+  type: 'retro-review.prompt'
+  items: Array<{
+    id: string             // hash-of-text
+    text: string           // the "for next time" line
+    seen_in_retros: number // 1+ if repeated across sessions
+  }>
+}
+
+type RetroReviewAnswer = {
+  kind: 'retro-review'
+  picks: Array<{
+    item_id: string
+    response: string       // 1 sentence
+  }>
+}
+```
+
+The user's picks become **prepended context** for the clarify
+phase. Lead personas see:
+
+```
+The user is starting a new session. From recent retros:
+- "<item.text>" → user wants to address: "<item.response>"
+- ...
+
+The pitch is: "<pitch>"
+```
+
+If `retros.md` is empty (first session for this project) or the
+hook returns no recent items, the orchestrator skips the phase
+silently and jumps to clarify.
+
+### Post-session: the `retrospective` phase
+
+If the template includes a `retrospective` phase as the final
+phase, the orchestrator:
+
+1. Yields control to the secretary in Mode 2.
+2. Constructs the prompt:
+   ```
+   SYSTEM: <secretary persona's systemPrompt>
+   USER:   Mode: retrospective.
+           Session ID: <id>
+           Pitch: <pitch>
+           Transcript: <full transcript>
+           In-session log: <accumulated secretary log>
+           Artifacts: <spec.md + exec summary + call-outs>
+           Now emit a single retrospective entry per Mode 2.
+   ```
+3. Streams the response (one turn).
+4. Calls `hooks.appendRetro(entry)` to persist to `retros.md`.
+5. Emits a `retrospective.complete` event.
+6. `session.done` follows.
+
+### The hooks
+
+Two new hooks complete the cross-session contract:
+
+```ts
+type ConferringHooks = {
+  // ...existing hooks (persistTurn / persistArtifact / markStatus)
+
+  loadRetros(): Promise<Retro[]>           // pre-session read
+  appendRetro(entry: Retro): Promise<void> // post-session write
+}
+
+type Retro = {
+  session_id: string
+  written_at: string  // ISO timestamp
+  pitch_excerpt: string  // first 60 chars
+  went_well: string[]
+  didnt: string[]
+  for_next_time: string[]
+}
+```
+
+The host implements `loadRetros` / `appendRetro` against
+`retros.md` directly (`fs.readFile` / `fs.appendFile` in a
+Node.js host; equivalent in any other stack). Both can be no-ops
+if the host doesn't want cross-session memory; the orchestrator
+treats empty returns as "no prior context."
+
+### Why a file, not a database
+
+Three reasons:
+
+1. **Survives DB resets.** A session log that lives in Postgres
+   gets wiped if you reset the DB. The retros file is the
+   audit trail — losing it negates the system's ability to
+   learn over time. Filesystem is more durable than the DB
+   schema across migrations and resets.
+
+2. **Human-readable.** A user can `cat retros.md` and see what
+   their last 10 sessions tried to learn. They can edit by hand
+   to suppress noise or add their own carry-forwards.
+
+3. **Git-trackable.** The retros file commits to the repo
+   alongside the code. Project history captures both what was
+   built and what was learned along the way.
+
+### How the loop closes
+
+```
+Session N starts
+  └─ retro-review reads retros.md (sessions 1..N-1)
+     └─ surfaces "for next time" to user
+        └─ user picks zero/some
+           └─ picks become clarify context
+              └─ ... session runs normally ...
+                 └─ retrospective writes new entry
+                    └─ appended to retros.md
+                       └─ feeds session N+1's retro-review
+```
+
+The first session for a project sees an empty file → the phase
+skips silently. The tenth session sees nine prior retros → the
+phase has rich context to surface. The **value of the framework
+compounds with use**: each session makes the next one start
+smarter.
+
+### Pre-session bypass
+
+Templates can opt out of `retro-review` by simply omitting the
+phase. Common reasons:
+
+- The session is intentionally independent (one-off
+  post-mortems, where prior post-mortems shouldn't bias the
+  current one).
+- The user is starting a fresh experiment and explicitly wants
+  to ignore prior learning.
+- The product is in a content-creation domain (writers' room,
+  screenplay arc) where retros from prior arcs would derail the
+  creative flow.
+
+When omitted, the cross-session loop is half-closed: the
+`retrospective` phase still writes new retros, but they don't
+get surfaced. This is fine; the file is still a useful audit
+trail even without the read side.
 
 ## Turn-taking inside a phase
 

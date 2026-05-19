@@ -69,9 +69,20 @@ You typically staff 2–4 specialists per session.
 
 ### `secretary`
 
+**The secretary is required.** Every boardroom-style session
+staffs exactly one. The orchestrator refuses to start a session
+that lacks a `role: secretary` persona. This is a framework
+rule, not a per-template option.
+
 The secretary does **not argue, propose, or take a position**. It
-runs a side-channel log capturing four taxonomies the team
-produces in passing:
+runs two distinct logging modes:
+
+#### Mode 1 — in-session (per phase)
+
+The orchestrator yields control to the secretary at **phase
+boundaries** (after `clarify`, after `confer`, after the
+`exec-summary` checkpoint resolves, after `specialists`). It
+harvests into four taxonomies:
 
 1. **Critiques** — open issues raised but not resolved.
 2. **Audits** — factual claims that need verification.
@@ -79,23 +90,44 @@ produces in passing:
 4. **Decisions** — concrete trade-offs made, with the
    alternative-not-taken.
 
-The orchestrator yields control to the secretary at **phase
-boundaries** (after `clarify`, after `confer`, after the
-`exec-summary` checkpoint resolves, after `specialists`). The
-secretary never speaks during regular turn-taking. Its output is
-structured (four taxonomies, each as a bullet list) and
-append-only — the cumulative log is the session's audit trail.
+At the `artifact` phase, the secretary compiles its in-session
+log into a `secretary-log.md` artifact alongside the spec, exec
+summary, and call-outs.
 
-At the `artifact` phase, the secretary compiles its running log
-into a fourth artifact (`secretary-log.md`) alongside the spec,
-exec summary, and call-outs.
+#### Mode 2 — post-session retrospective
 
-You typically staff **at most one** secretary per session. Two
-secretaries would duplicate output and fight over the same
-taxonomy slots; if you need broader coverage, expand the
-secretary's prompt rather than adding another instance.
+After the artifact phase concludes, the orchestrator invokes the
+secretary one final time. It steps out of the session's content
+and reflects on the session itself — how the team worked, not
+what they decided. Output is three bullets each of:
 
-See `personas/secretary.md` for the reference implementation.
+- **What went well** — process observations, not content praise.
+- **What didn't** — process failures, not content critiques.
+- **For next time** — concrete carry-forwards a future session
+  could act on.
+
+The entry is appended to a **project-level `retros.md` file**
+maintained across sessions.
+
+#### Cross-session learning loop
+
+The next session's invocation reads the most recent retros and
+surfaces the "for next time" items to the user as a
+**`retro-review`** checkpoint before clarify. The user picks
+zero/one/several to address this session; their answers
+become context for the persona cast.
+
+This is how the system gets better with use. The first session
+runs blind; the tenth session has 9 prior retros' worth of
+"things this user-and-cast struggle with" already in mind.
+
+See `personas/secretary.md` for the reference implementation
+covering both modes.
+
+Why one per session, not more: two secretaries would duplicate
+output, fight over taxonomy slots, and split the retro into two
+conflicting reflections. If you need broader coverage, expand
+the secretary's prompt; don't add a second instance.
 
 ## System prompt body conventions
 
@@ -174,16 +206,30 @@ export const PersonaFrontmatterSchema = z.object({
 export const PersonaSchema = PersonaFrontmatterSchema.extend({
   systemPrompt: z.string().min(40),
 })
+
+// Session-cast guard: exactly one secretary, required
+export const SessionCastSchema = z.array(PersonaSchema).refine(
+  (cast) => cast.filter((p) => p.role === 'secretary').length === 1,
+  { message: 'Session cast must include exactly one secretary persona.' },
+)
 ```
 
 **Note on implementations:** the boardroom reference impl at
 `lib/schemas/persona.ts` currently uses the two-role enum
 (`['lead', 'specialist']`) shipped with phase 4. Adopting the
-secretary role in a production codebase is a schema migration
-plus an orchestrator update (see `ORCHESTRATOR.md` §Secretary
-turns) — it's a real ship, not just a docs edit. The framework
-spec documents the three-role shape; implementations migrate
-when they want to ship the secretary.
+required-secretary contract in a production codebase is a real
+shipper:
+
+1. Schema migration: extend role enum + add the cast guard.
+2. Orchestrator update: add Mode-2 retrospective invocation +
+   the `retros.md` read/append hooks (see `ORCHESTRATOR.md`
+   §Secretary turns and §Cross-session retros).
+3. UI update: surface the `retro-review` pre-clarify checkpoint
+   when the template includes that phase.
+
+The framework spec documents the canonical shape; production
+codebases migrate when they're ready to ship the cross-session
+learning loop.
 
 Persona files are validated at boot (the orchestrator refuses to
 start a session if any file fails). Validation should be wired

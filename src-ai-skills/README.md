@@ -46,15 +46,15 @@ persona cast and the template.
 
 ---
 
-## The three artifacts of an AI-skill workflow
+## The three building blocks
 
 Everything in this directory is one of three things:
 
-| Artifact | Where | What it is |
+| Building block | Where | What it is |
 |---|---|---|
-| **Personas** | `personas/<slug>.md` | The cast. One markdown file = one persona = one system prompt + identity + role. |
-| **Templates** | `templates/<slug>.json` | The choreography. JSON config: phases, turn budgets, escalation thresholds. |
-| **Orchestrator** | `ORCHESTRATOR.md` (spec) + reference impl in any product | The engine. Runs the conversation; emits SSE events; persists turns; gates moderation; tracks budget. |
+| **Personas** | `personas/<slug>.md` | The cast. One markdown file = one persona = one system prompt + identity + role. Always includes exactly one secretary. |
+| **Templates** | `templates/<slug>.json` | The choreography. JSON config: phases, turn budgets, escalation thresholds. May opt into the cross-session wrapper phases. |
+| **Orchestrator** | `ORCHESTRATOR.md` (spec) + reference impl in any product | The engine. Runs the conversation; emits SSE events; persists turns; gates moderation; tracks budget; reads/writes the cross-session retros file. |
 
 The boundary is sharp on purpose:
 
@@ -66,17 +66,35 @@ You can ship a new product by swapping any two of the three and
 keeping the third. Most products will swap the personas + the
 template and reuse the orchestrator engine.
 
+A single session produces up to **four artifacts**:
+
+1. `spec.md` — the structured output.
+2. Executive summary — short, share-friendly.
+3. Call-outs — explicitly-deferred items.
+4. `secretary-log.md` — the in-session four-taxonomy log.
+
+…and updates a fifth **cross-session** artifact:
+
+- `retros.md` (project-level, append-only) — one entry per
+  concluded session, fed forward into the next.
+
 ---
 
 ## How a session runs
 
 ```
 User staffs the table       ┌─────────────────────────┐
-(picks 2-6 personas)   ───▶ │  pitch + personas[] +   │
-                             │  template            ───┼─▶  Orchestrator
-                             └─────────────────────────┘            │
+(picks 2-6 personas;   ───▶ │  pitch + personas[] +   │
+secretary always         │  template            ───┼─▶  Orchestrator
+included)                    └─────────────────────────┘            │
                                                                     ▼
    ┌────────────────────────────────────────────────────────────────┐
+   │                                                                │
+   │  PHASE 0 — Retro-review (CROSS-SESSION)  ◀── USER CHECKPOINT   │
+   │    Orchestrator reads retros.md (last N sessions); surfaces    │
+   │    unresolved "for next time" items. User picks zero/some;     │
+   │    answers each in 1 sentence.                                 │
+   │    Skipped silently if retros.md is empty (1st session).       │
    │                                                                │
    │  PHASE 1 — Clarify                                              │
    │    Lead personas circle once. Each asks 1-4 brief questions.   │
@@ -85,34 +103,78 @@ User staffs the table       ┌────────────────�
    │  PHASE 2 — Confer                                               │
    │    Personas extrapolate, refine, push back. Auto turn-taking.  │
    │    Bounded by turn_budget.                                     │
+   │    Secretary logs the 4 taxonomies at phase end.                │
    │                                                                │
    │  PHASE 3 — Executive summary  ◀── USER CHECKPOINT              │
    │    Team emits a 2-paragraph summary.                            │
    │    User: "accept" → continues to specialists.                  │
    │    User: "redirect (one sentence)" → loop back to Confer.       │
+   │    Secretary logs at phase end.                                 │
    │                                                                │
    │  PHASE 4 — Specialists                                          │
    │    Domain personas drill in. Same shape as Confer.             │
+   │    Secretary logs at phase end.                                 │
    │                                                                │
    │  PHASE 5 — Artifact                                             │
-   │    Orchestrator (as moderator) compiles three outputs:          │
-   │    spec.md + executive summary + call-outs.                    │
+   │    Orchestrator (as moderator) compiles four outputs:           │
+   │    spec.md + exec summary + call-outs + secretary-log.md.       │
+   │                                                                │
+   │  PHASE 6 — Retrospective (CROSS-SESSION)                        │
+   │    Secretary in Mode 2: 3 bullets each of what went well /     │
+   │    what didn't / for next time. Appended to retros.md.          │
    │                                                                │
    └────────────────────────────────────────────────────────────────┘
                               │
                               ▼
                     User downloads artifacts.
+                    retros.md ready for next session's Phase 0.
 ```
 
 The user's total attention budget is ~3 minutes:
 
-- ~30s to staff the table + paste the pitch
+- ~20s reviewing/picking retro-review items (if any)
+- ~30s staffing the table + pasting the pitch
 - ~45s answering clarify questions
 - ~45s reading the exec summary, accepting or redirecting
 - ~30s reviewing artifacts before download
 
 The orchestrator's job is to fit a useful conversation inside
 that window.
+
+## The cross-session learning loop
+
+The phase-0 retro-review and phase-6 retrospective are how
+**the system gets better with use**. Each concluded session
+appends an entry to a project-level `retros.md` file:
+
+```markdown
+## 2026-05-19T14:32:00Z — session abc123…
+
+### What went well
+- ...
+
+### What didn't
+- ...
+
+### For next time
+- ...
+```
+
+The next session's invocation reads recent retros, surfaces
+"for next time" items to the user, and feeds the answers into
+the clarify phase. **The tenth session starts with nine prior
+retros' worth of context.** The first session runs blind;
+subsequent sessions get smarter automatically.
+
+The retros file lives at the project root (not in the
+database) — that's deliberate. It survives DB resets, lives in
+git, and is human-readable / human-editable. Treat it as a
+textual artifact alongside `spec.md`.
+
+See `ORCHESTRATOR.md` §Cross-session retros for the engine
+contract; `PERSONA-FORMAT.md` §Role/secretary for the Mode-2
+retrospective behavior; the reference `templates/pitch-to-spec.json`
+for a template that opts into both wrapper phases.
 
 ---
 

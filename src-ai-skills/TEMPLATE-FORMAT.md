@@ -48,8 +48,9 @@ in order and reads `escalation` thresholds at runtime.
   name: string,                      // display name
   description: string,               // what this phase does
   lead_round_max_questions?: number, // for clarify phase: 1-8
-  turn_budget?: number,              // for confer/specialists: 1-60
-  exec_summary_checkpoint?: boolean  // true on exec-summary phase
+  turn_budget?: number,              // for confer/specialists/artifact/retrospective: 1-60
+  exec_summary_checkpoint?: boolean, // true on exec-summary phase
+  retro_review_recent_n?: number     // for retro-review phase: 1-20 (default 5)
 }
 ```
 
@@ -59,9 +60,43 @@ which canonical phase this is.
 
 ## Canonical phases
 
-The orchestrator recognizes five phase types by `id`. You can
-shorten, extend, or rename them per template, but the canonical
-flow is:
+The orchestrator recognizes **seven** phase types by `id`. Five
+are the core conferring flow (clarify / confer / exec-summary /
+specialists / artifact); two wrap the loop with cross-session
+learning (retro-review at the start, retrospective at the end).
+You can shorten, extend, or rename them per template, but the
+canonical flow is:
+
+### 0. `retro-review` (optional, runs first)
+
+If present **as the first phase**, the orchestrator reads the
+project-level `retros.md` file (cumulative across sessions),
+extracts the most-recent N retros' "for next time" items, and
+surfaces them to the user before clarify starts.
+
+The user picks zero/one/several to address this session; their
+answers (1 sentence each) become context passed forward to the
+clarify phase's lead personas. Items not picked stay in
+`retros.md` and re-appear in future sessions until they're
+addressed or the orchestrator's retention window rolls them off.
+
+Knob: `retro_review_recent_n` — how many recent retros to scan
+(default 5). Older retros stay in `retros.md` as history but
+don't surface to the user.
+
+```json
+{
+  "id": "retro-review",
+  "name": "Recent retros",
+  "description": "Surface unresolved 'for next time' items from recent sessions...",
+  "retro_review_recent_n": 5
+}
+```
+
+If the template omits this phase, the orchestrator skips the
+read entirely; the session runs without cross-session context.
+That's a valid choice for templates where each session is
+independent (e.g., one-off post-mortems).
 
 ### 1. `clarify`
 
@@ -138,8 +173,10 @@ Knob: `turn_budget` — same shape as `confer`.
 ### 5. `artifact`
 
 The orchestrator (acting as a "moderator" pseudo-persona) compiles
-the three artifacts: `spec.md`, executive summary, call-outs. The
-conversation ends here.
+the three artifacts: `spec.md`, executive summary, call-outs. If
+the session staffed a secretary (always, by framework rule), the
+secretary's compiled log becomes a fourth artifact
+(`secretary-log.md`).
 
 Knob: `turn_budget` — usually low (3–6); just enough to assemble
 the artifacts in clean form.
@@ -148,10 +185,42 @@ the artifacts in clean form.
 {
   "id": "artifact",
   "name": "Artifact",
-  "description": "Render the three artifacts...",
+  "description": "Render the artifacts (spec.md, exec summary, call-outs, secretary-log.md)...",
   "turn_budget": 4
 }
 ```
+
+### 6. `retrospective` (optional, runs last)
+
+If present **as the final phase**, the orchestrator invokes the
+secretary in Mode 2 (retrospective). The secretary reads the
+transcript + the cumulative in-session log + the artifacts, and
+emits three bullets each of "what went well / what didn't / for
+next time."
+
+The entry is appended to the project-level `retros.md` file.
+That file feeds the **next session's** `retro-review` phase — the
+cross-session learning loop closes here.
+
+```json
+{
+  "id": "retrospective",
+  "name": "Retro",
+  "description": "Secretary writes a session retrospective appended to retros.md...",
+  "turn_budget": 1
+}
+```
+
+Knob: `turn_budget: 1` — the secretary produces a single
+retrospective turn; budget of 1 is the right shape.
+
+If the template omits this phase, the cross-session learning
+loop is broken: future sessions will never have "for next time"
+items to surface. The orchestrator does NOT enforce that retro
+phase + retro-review come as a pair — that's the template
+author's call. Pairing them is the canonical choice; un-pairing
+is valid if a particular template intentionally lacks
+cross-session memory (e.g., truly one-shot post-mortems).
 
 ## Escalation block
 
@@ -206,6 +275,7 @@ export const TemplatePhaseSchema = z.object({
   lead_round_max_questions: z.number().int().min(1).max(8).optional(),
   turn_budget: z.number().int().min(1).max(60).optional(),
   exec_summary_checkpoint: z.boolean().optional(),
+  retro_review_recent_n: z.number().int().min(1).max(20).optional(),
 })
 
 export const TemplateEscalationSchema = z.object({
