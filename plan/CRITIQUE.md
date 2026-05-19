@@ -1,7 +1,7 @@
 # Critique log
 
-> Last pass: 2026-05-19 at commit 363aa2a
-> Pass count: 9
+> Last pass: 2026-05-19 at commit f21399e
+> Pass count: 10
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
@@ -46,6 +46,14 @@
   the existing Supabase server. Row stays pending until the next
   /critique pass confirms the reader inherits the
   `mcp__claude-in-chrome__*` namespace.
+- **Pass-10 re-check (2026-05-19, commit `f21399e`):** Reader
+  was re-spawned with explicit instructions to enumerate its
+  tool list. Tools available: `WebFetch`, `WebSearch`, `Read`,
+  `Grep`, `Glob` only — no `mcp__claude-in-chrome__*` namespace.
+  10 consecutive critique passes have been WebFetch-only;
+  interactive /try states + mobile reflow + console + network
+  timing remain unreachable. Status unchanged; row stays
+  pending.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
 ### [needs-user-call] SUPABASE_E2E_SESSION_COOKIE unset — authed /critique cannot walk /app
@@ -164,6 +172,39 @@
   the page demonstrates the layered-voice claim it makes. The
   framing call is cheaper; the rewrite is the truer fix. Prompt
   edits ship via PR per bearings rule 10.
+- **source:** web-fetch
+
+### [MED] /about/personas — lede says "these four" but the library now lists five personas (Secretary went public in phase 21)
+
+- **pass:** 10 (commit `f21399e`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** voice
+- **observation:** Phase 21 added `personas/secretary.md` to the
+  deployed cast so `loadPersonas()` returns five entries; the
+  `/about/personas` page now renders five persona cards (PL,
+  SE, EP, GV, Secretary). The page lede was never updated and
+  still reads "The v1 library is these four; user-defined
+  personas aren't shipped yet." A first-time visitor counting
+  cards immediately catches the contradiction — the surface
+  undermines its own plainspoken voice.
+- **evidence:** Verbatim lede on `/about/personas`: "The v1
+  library is these four; user-defined personas aren't shipped
+  yet." Actual cards rendered: Product Lead, Skeptical
+  Engineer, End-user Proxy, Growth Voice, Secretary — five
+  total. Phase 21's brief explicitly anticipated this in its
+  Follow-ups section: "Cast-guard exposure on /about/personas
+  — currently the page lists all four user-pickable personas;
+  secretary rendering on that page is a small follow-up so
+  the public library is honest about the full cast." Filed
+  here per that anticipation.
+- **suggested fix:** Two compatible options; either works.
+  (1) Change "these four" → "these five" and adjust trailing
+  copy if needed. (2) Reframe Secretary as a meta-role
+  distinct from the four conferring personas — e.g. "Four
+  personas confer; a Secretary keeps the log." Option 2 is
+  more honest about the cast guard's "exactly one secretary,
+  auto-injected" UX shape; option 1 is the smaller diff.
 - **source:** web-fetch
 
 ### [LOW] /legal/privacy — "Plain version:" label primes a legal counterpart the page doesn't provide
