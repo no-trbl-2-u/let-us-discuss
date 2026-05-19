@@ -91,14 +91,14 @@ commit that ships the phase.
       template + orchestrator behavior against a stub LLM
       client. Closes the framework-vs-impl-drift risk before
       phases 21–22 ship the secretary work.) — `358c84d`
-- [ ] Phase 21 — Secretary persona + Mode 1 (in-session)
+- [x] Phase 21 — Secretary persona + Mode 1 (in-session)
       (extend persona role enum to include `secretary` with a
       cast guard requiring exactly one; ship the secretary.md
       persona to `personas/`; orchestrator invokes secretary
       at every phase boundary with the 4-taxonomy structured-
       log prompt; compile into a `secretary-log.md` fourth
       artifact at the artifact phase; authed e2e walks one
-      secretary turn end-to-end)
+      secretary turn end-to-end) — `fada1d9`
 - [ ] Phase 22 — Secretary Mode 2 + cross-session retros
       (orchestrator invokes secretary one final time after
       the artifact phase to write a retrospective entry;
