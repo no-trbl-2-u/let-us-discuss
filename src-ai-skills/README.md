@@ -241,6 +241,25 @@ fork them for your domain.
 
 ---
 
+## Sync with the boardroom implementation
+
+The spec in this directory documents what the framework can do.
+Boardroom-the-product implements a subset of it; **closing that
+gap is on the build plan** as phases 20–22 (see
+`plan/steps/01_build_plan.md`):
+
+| Phase | Closes |
+|---|---|
+| 20 — Framework engine refactor + standalone test harness | Moves schemas to `src-ai-skills/schemas/` (single source of truth); adds `src-ai-skills/__tests__/` so the framework is testable in isolation; drift between spec and impl trips the verify gate. |
+| 21 — Secretary persona + Mode 1 | Ships the secretary persona to boardroom's `personas/` and updates the orchestrator to invoke it at phase boundaries. |
+| 22 — Secretary Mode 2 + cross-session retros | Adds the post-session retrospective + the `retros.md` read/write hooks + the `retro-review` checkpoint UI. |
+
+Until those phases ship, `lib/schemas/persona.ts` and the
+orchestrator at `lib/anthropic/conferring.ts` lag the spec. That
+gap is documented (PERSONA-FORMAT.md flags it explicitly) and
+intentional: the framework spec moves first; impl follows
+through normal phase work.
+
 ## Local testing
 
 Two paths, depending on what "test" means to you:

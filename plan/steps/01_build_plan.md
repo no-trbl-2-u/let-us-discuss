@@ -83,11 +83,39 @@ commit that ships the phase.
       delete across `sessions`/`turns`/`artifacts`/`flag_audit`
       + Supabase `auth.deleteUser`; closes the privacy-policy
       promise from phase 12) — `e2c10eb`
-- [ ] Phase 19 — Quota visibility (small "N/10 sessions left
-      today" tile in the boardroom shelf or on `/app`; reads
-      from the same `quota.ts` helper phase 9 ships; no
-      migration; surfaces the existing anti-abuse cap before
-      the user hits it)
+- [ ] Phase 20 — Framework engine refactor + standalone test
+      harness (move orchestrator schemas to
+      `src-ai-skills/schemas/` as the single source of truth;
+      boardroom imports from there; vitest suite in
+      `src-ai-skills/__tests__/` validates reference personas +
+      template + orchestrator behavior against a stub LLM
+      client. Closes the framework-vs-impl-drift risk before
+      phases 21–22 ship the secretary work.)
+- [ ] Phase 21 — Secretary persona + Mode 1 (in-session)
+      (extend persona role enum to include `secretary` with a
+      cast guard requiring exactly one; ship the secretary.md
+      persona to `personas/`; orchestrator invokes secretary
+      at every phase boundary with the 4-taxonomy structured-
+      log prompt; compile into a `secretary-log.md` fourth
+      artifact at the artifact phase; authed e2e walks one
+      secretary turn end-to-end)
+- [ ] Phase 22 — Secretary Mode 2 + cross-session retros
+      (orchestrator invokes secretary one final time after
+      the artifact phase to write a retrospective entry;
+      `loadRetros()` / `appendRetro()` hooks back the project-
+      level `retros.md` file; add the `retro-review` checkpoint
+      phase to the template + the UI that surfaces past
+      "for next time" items before clarify; the user picks
+      zero/some, their answers feed into clarify context)
+
+> **Phase numbering note:** Phase 19 (Quota visibility) was
+> promoted in round 7 but never shipped; oversight round 10
+> demoted it back to deferred in
+> `plan/PHASE_CANDIDATES.md`. The phase number 19 stays
+> reserved as a marker for "this slot was once promoted";
+> phases 20+ continue the post-build sequence. If quota
+> visibility is re-promoted later it'll get a new number,
+> not phase 19.
 
 > **After phase 17 (and any later promoted phases):** the loop
 > transitions to `/iterate` — persona-library refinement,
@@ -313,6 +341,125 @@ covers the redirect-on-success path. RLS already pins
 session rows to the owning user; cascade-delete relies on
 the existing FK on-delete-cascade chains plus an explicit
 sweep of any rows lacking that chain.
+
+### Phase 20 — Framework engine refactor + standalone test harness
+
+Promoted by `/oversight` 2026-05-19 (round 10). Closes the
+framework-vs-impl drift before the secretary work lands in
+phases 21 + 22.
+
+Two halves:
+
+**(a) Shared schemas.** Move the Zod schemas currently at
+`lib/schemas/persona.ts` and `lib/schemas/template.ts` into
+`src-ai-skills/schemas/` (new). The framework spec docs
+(PERSONA-FORMAT.md, TEMPLATE-FORMAT.md) reference these as
+the canonical schemas. Boardroom imports from
+`src-ai-skills/schemas/` going forward (one `@/lib/schemas`
+re-export alias to avoid churning all the existing imports).
+This makes src-ai-skills/ the **single source of truth** for
+the framework contract; any future schema change happens
+once and propagates.
+
+**(b) Standalone test harness.** Add
+`src-ai-skills/__tests__/` with vitest specs that exercise
+the framework alone:
+
+- `personas.test.ts` — validate each reference persona under
+  `src-ai-skills/personas/` parses against the schema.
+- `templates.test.ts` — validate the reference template.
+- `orchestrator.test.ts` — run the orchestrator engine
+  (extracted as a pure function, no boardroom imports)
+  against a stub LLM client that echoes a small fixture
+  transcript; assert the SSE event stream matches the
+  documented shape (turn.begin / turn.delta / turn.end /
+  clarify.prompt / exec-summary / artifact / session.done).
+- `secretary-mode.test.ts` — placeholder spec, skipped, to
+  light up in phase 21.
+- `retros.test.ts` — placeholder spec, skipped, to light up
+  in phase 22.
+
+The harness runs under `pnpm test:run src-ai-skills` and is
+also included in the verify gate. Drift between the
+framework spec and what the engine actually does trips the
+gate.
+
+No user-facing change. No new routes, no migrations. Builds
+the foundation for 21 and 22 to land cleanly.
+
+### Phase 21 — Secretary persona + Mode 1 (in-session)
+
+Promoted by `/oversight` 2026-05-19 (round 10). The first
+half of the secretary contract: in-session structured
+logging at phase boundaries.
+
+Scope:
+
+- Extend `PersonaRoleSchema` in `src-ai-skills/schemas/`
+  to include `'secretary'` plus the cast-guard `refine`
+  (exactly one secretary per session; secretary always has
+  `lead: false`).
+- Copy `src-ai-skills/personas/secretary.md` to
+  `personas/secretary.md` (boardroom runtime location).
+- Update the orchestrator at `lib/anthropic/conferring.ts`
+  (now consuming `src-ai-skills/schemas`) to:
+  - Validate cast on session start; emit
+    `session.error code=cast-invalid` if no secretary.
+  - Yield to the secretary at each phase boundary
+    (after clarify, confer, exec-summary, specialists).
+  - Stream the secretary's turn with `author: 'secretary'`.
+- Update the `artifact` event to include `secretaryLog`
+  (compiled cumulative log).
+- UI: render secretary turns in a collapsed/secondary
+  panel on `/app` so the conferring transcript stays
+  readable.
+- E2E (operator-gated, behind Mailosaur): authed session
+  walk that fires one full conferring loop, asserts a
+  secretary turn at the end of `confer` phase.
+- Unit tests in `src-ai-skills/__tests__/secretary-mode.test.ts`
+  light up (no longer skipped).
+
+Does NOT yet add Mode 2 or retros.md; that's phase 22.
+
+### Phase 22 — Secretary Mode 2 + cross-session retros
+
+Promoted by `/oversight` 2026-05-19 (round 10). The second
+half of the secretary contract: post-session retrospective
++ cross-session learning loop.
+
+Scope:
+
+- Orchestrator: after the `artifact` phase, invoke the
+  secretary in Mode 2. Stream the retrospective turn;
+  parse the structured output into a `Retro` object.
+- New hooks: `loadRetros()` / `appendRetro(entry)`.
+  Implementation reads / appends to a project-root
+  `retros.md` file via the Node fs API (server-only).
+  The file lives at the repository root in dev; in prod
+  it lives in a mounted volume or a Supabase Storage
+  bucket (operator decides; the hook abstraction lets
+  either work).
+- Update the template loader to recognize the new
+  `retro-review` (first) and `retrospective` (last)
+  phases.
+- Add the `retro-review` checkpoint UI: a small panel
+  shown before clarify on `/app`, listing up to 6 recent
+  "for next time" items. User picks zero/one/several,
+  each pick gets a 1-sentence response. Picks feed into
+  clarify context.
+- Emit `retro-review.prompt` and `retrospective.complete`
+  SSE events per the spec.
+- E2E (operator-gated): authed walk that completes a
+  session, verifies a row appended to retros.md, and
+  re-runs to verify the next session surfaces it.
+- Unit tests in `src-ai-skills/__tests__/retros.test.ts`
+  light up.
+
+After phase 22 ships, the framework spec and boardroom
+implementation are in sync. Future framework changes get
+their own phase pairs (spec edit + impl ship); the
+src-ai-skills/__tests__/ harness catches drift if either
+side moves alone.
 
 ---
 

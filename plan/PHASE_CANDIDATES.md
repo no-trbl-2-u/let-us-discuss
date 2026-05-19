@@ -1,6 +1,6 @@
 # Phase candidates
 
-> Last pass: 2026-05-18 at commit d186bf2
+> Last pass: 2026-05-19 at commit 23a72e7
 > Pass count: 4
 > Posture: bold
 
@@ -9,14 +9,9 @@
 
 ## Pending
 
-(empty — all proposed candidates have been resolved)
-
-## Promoted
-
-### [x] [score 4.0] Quota visibility — promoted 2026-05-18 as phase 19
+### [ ] [score 4.0] Quota visibility — surface remaining sessions/day before the user starts
 
 - proposed: 2026-05-18, expand pass 1
-- promoted: 2026-05-18 (oversight round 7) → phase 19
 - source signals:
   - Phase 9 ships per-account session quota (10/day, pinned
     in `config/limits.ts`) and graceful wrap UX at the cap —
@@ -38,15 +33,18 @@
   `components/boardroom/quota-tile.tsx` (or equivalent);
   unit test the count + reset boundary; no migrations.
 - estimated phases: 1
-- conflicts: none. Lives inside the boardroom surface;
-  doesn't compete with phase 16's observability footer
-  (token usage per session, not quota).
+- conflicts: none.
 - oversight 2026-05-18 round 6: **deferred** — nice-to-have
   polish, not a v1 blocker.
-- oversight 2026-05-18 round 7: **promoted as phase 19** —
-  ship while context is fresh, before the loop fully drains.
-  Brief generation by the next /march tick via
-  ship-a-phase's missing-brief contract.
+- oversight 2026-05-18 round 7: **promoted as phase 19**.
+- oversight 2026-05-19 round 10: **demoted back to deferred**
+  — promotion didn't lead to a ship across rounds 8/9/10
+  (cron cancelled, no manual /march dispatch during the
+  framework-extraction work). The promotion wasn't load-
+  bearing; cleaner to keep it as a pending candidate that
+  surfaces when oversight or /expand re-evaluates.
+
+## Promoted
 
 ### [x] [score 5.0] Account deletion + data wipe — promoted 2026-05-18 as phase 18
 
