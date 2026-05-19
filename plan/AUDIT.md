@@ -72,6 +72,63 @@
 - **/iterate skip:** this row is `[operator]` — `/iterate`
   should leave it pending and move on.
 
+### [operator] Apply phase-21 secretary migration in Supabase
+
+- **Source:** oversight 2026-05-19 round 12 (backfill — phase 21's
+  commit body at `fada1d9` promised this row but the shipping
+  never filed it).
+- **Score:** 4.0 (medium-high — phase 21's secretary turns can't
+  persist until the migration runs. The orchestrator catches the
+  DB error via the existing `appendTurn` try/catch and logs to
+  the structured drain, then proceeds — sessions complete the
+  five core phases, but the secretary's structured-log turns are
+  silently dropped at the DB boundary and `artifacts.secretary_log`
+  is unwritable, so the fourth artifact tile renders the `—`
+  sentinel forever).
+- **Category:** config (operator action)
+- **Summary:** `db/migrations/20260519_phase_21_secretary.sql`
+  widens the `turns.author` check constraint to allow
+  `'secretary'` and adds an `artifacts.secretary_log text not
+  null default ''` column. Additive only; existing rows get the
+  empty-string default.
+- **What to do:** Run `pnpm db:migrate` against the production
+  Supabase project (or paste the SQL into the Supabase SQL
+  editor). Verify by walking one full authed session and
+  confirming the boardroom shelf shows the "Plus the Secretary"
+  eyebrow + the artifact grid surfaces a non-empty
+  "secretary-log.md" tile.
+- **Owner:** user / operator.
+- **/iterate skip:** this row is `[operator]` — `/iterate`
+  should leave it pending and move on.
+
+### [operator] Apply phase-22 retros migration in Supabase
+
+- **Source:** oversight 2026-05-19 round 12 (backfill — phase 22's
+  commit body at `3465e5c` promised this row but the shipping
+  never filed it).
+- **Score:** 4.0 (medium-high — phase 22's wrapper phases write
+  to the `retros` table + extended `turns.phase` / `sessions.status`
+  values. Without the migration: the retro-review prompt is
+  silently skipped because `loadRetros` returns `[]` on the
+  failed query; the retrospective turn fires but `appendRetro`
+  fails at the DB boundary and the orchestrator logs + proceeds
+  to `session.done`. The cross-session learning loop is
+  effectively a no-op in prod until the SQL lands).
+- **Category:** config (operator action)
+- **Summary:** `db/migrations/20260519_phase_22_retros.sql`
+  creates `public.retros` with RLS + a user-scoped index, and
+  widens the `turns.phase` + `sessions.status` check constraints
+  to accept `'retro-review'` and `'retrospective'`.
+- **What to do:** Run `pnpm db:migrate` against the production
+  Supabase project (or paste the SQL into the Supabase SQL
+  editor). This migration depends on no prior phase-21 SQL —
+  the two are independent. Verify by walking two consecutive
+  authed sessions and confirming the second session opens with
+  a "Recent retros" checkpoint listing items from the first.
+- **Owner:** user / operator.
+- **/iterate skip:** this row is `[operator]` — `/iterate`
+  should leave it pending and move on.
+
 ### [operator] Populate SUPABASE_E2E_SESSION_COOKIE for /critique
 
 - **Source:** oversight 2026-05-16 (renamed from
