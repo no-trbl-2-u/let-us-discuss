@@ -21,13 +21,13 @@ against a schema; the body is the system prompt verbatim.
 
 ```yaml
 ---
-slug: kebab-case-id              # 2-60 chars, /^[a-z][a-z0-9-]*[a-z0-9]$/
-name: Display Name               # 2-80 chars, human-readable
-role: lead | specialist          # see "Role" below
-voice: One short clause          # 4-200 chars, voice-cue for the persona
-lead: true | false               # true → this persona drives the clarify phase
-tools: []                        # array of tool names; [] for v1
-summary: One line               # 8-200 chars, why you'd staff them
+slug: kebab-case-id                          # 2-60 chars, /^[a-z][a-z0-9-]*[a-z0-9]$/
+name: Display Name                           # 2-80 chars, human-readable
+role: lead | specialist | secretary          # see "Role" below
+voice: One short clause                      # 4-200 chars, voice-cue for the persona
+lead: true | false                           # true → this persona drives the clarify phase
+tools: []                                    # array of tool names; [] for v1
+summary: One line                            # 8-200 chars, why you'd staff them
 ---
 ```
 
@@ -43,7 +43,7 @@ summary: One line               # 8-200 chars, why you'd staff them
 
 ## Role
 
-Two roles. The distinction is structural, not hierarchical.
+Three roles. The distinction is structural, not hierarchical.
 
 ### `lead`
 
@@ -66,6 +66,36 @@ whatever). They do **not** speak in clarify; they enter during the
 the depth in the final artifact.
 
 You typically staff 2–4 specialists per session.
+
+### `secretary`
+
+The secretary does **not argue, propose, or take a position**. It
+runs a side-channel log capturing four taxonomies the team
+produces in passing:
+
+1. **Critiques** — open issues raised but not resolved.
+2. **Audits** — factual claims that need verification.
+3. **Out-of-scope call-outs** — items deliberately deferred.
+4. **Decisions** — concrete trade-offs made, with the
+   alternative-not-taken.
+
+The orchestrator yields control to the secretary at **phase
+boundaries** (after `clarify`, after `confer`, after the
+`exec-summary` checkpoint resolves, after `specialists`). The
+secretary never speaks during regular turn-taking. Its output is
+structured (four taxonomies, each as a bullet list) and
+append-only — the cumulative log is the session's audit trail.
+
+At the `artifact` phase, the secretary compiles its running log
+into a fourth artifact (`secretary-log.md`) alongside the spec,
+exec summary, and call-outs.
+
+You typically staff **at most one** secretary per session. Two
+secretaries would duplicate output and fight over the same
+taxonomy slots; if you need broader coverage, expand the
+secretary's prompt rather than adding another instance.
+
+See `personas/secretary.md` for the reference implementation.
 
 ## System prompt body conventions
 
@@ -130,17 +160,30 @@ export const PersonaFrontmatterSchema = z.object({
   slug: z.string().min(2).max(60)
     .regex(/^[a-z][a-z0-9-]*[a-z0-9]$/),
   name: z.string().min(2).max(80),
-  role: z.enum(['lead', 'specialist']),
+  role: z.enum(['lead', 'specialist', 'secretary']),
   voice: z.string().min(4).max(200),
   lead: z.boolean(),
   tools: z.array(z.string().min(1)).default([]),
   summary: z.string().min(8).max(200),
-})
+}).refine(
+  // secretary personas are never "lead" — they don't drive clarify
+  (p) => p.role !== 'secretary' || p.lead === false,
+  { message: 'secretary personas must have lead: false' },
+)
 
 export const PersonaSchema = PersonaFrontmatterSchema.extend({
   systemPrompt: z.string().min(40),
 })
 ```
+
+**Note on implementations:** the boardroom reference impl at
+`lib/schemas/persona.ts` currently uses the two-role enum
+(`['lead', 'specialist']`) shipped with phase 4. Adopting the
+secretary role in a production codebase is a schema migration
+plus an orchestrator update (see `ORCHESTRATOR.md` §Secretary
+turns) — it's a real ship, not just a docs edit. The framework
+spec documents the three-role shape; implementations migrate
+when they want to ship the secretary.
 
 Persona files are validated at boot (the orchestrator refuses to
 start a session if any file fails). Validation should be wired

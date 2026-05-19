@@ -145,6 +145,108 @@ The client renders `turn.delta` chunks into a live transcript
 bubble; `clarify.prompt` and `exec-summary` events surface as
 forms.
 
+## Secretary turns
+
+When the persona cast includes a `role: secretary` persona, the
+orchestrator runs a **side-channel turn** at each phase boundary
+(after `clarify`, after `confer`, after the `exec-summary`
+checkpoint resolves, after `specialists`). The secretary does NOT
+participate in regular turn-taking inside a phase.
+
+### Invocation pattern
+
+```
+phase ends
+  → orchestrator yields control to the secretary
+  → constructs prompt:
+       SYSTEM: <secretary persona's systemPrompt>
+       USER:   <transcript-since-last-secretary-turn>
+               + "phase: <name>. Emit your structured log entry."
+  → streams the response as a secretary turn
+  → persists it with `phase: 'secretary'` and the regular turn shape
+  → next phase begins
+```
+
+The secretary's stream goes out as `turn.begin` / `turn.delta` /
+`turn.end` events with `author: 'secretary'` (a new author value
+alongside `persona`, `user`, `moderator`). Hosts that don't want
+the secretary turns rendered in the live transcript can filter on
+`author === 'secretary'` and route those to a side panel instead.
+
+### Output shape
+
+The secretary's turn body is a single structured-log block:
+
+```
+=== Secretary log — phase: confer ===
+
+Critiques:
+- SE noted: token cost at 100 sessions/day is unbudgeted [open]
+- (or: "(none)")
+
+Audits:
+- Claim: Anthropic Claude 4.7 input rate is $15/MTOK. Source: cited. Confidence: high
+- (or: "(none)")
+
+Out-of-scope:
+- Deferred: per-account quota dashboard. Reason: out of v1. Revisit: post-v1
+- (or: "(none)")
+
+Decisions:
+- Q: how many personas per session? A: 2-6 staffed. Alternative: unlimited
+- (or: "(none)")
+```
+
+The four-taxonomy shape is locked. The persona's system prompt
+enforces the format; the orchestrator does NOT post-process or
+re-format the output.
+
+### Artifact phase — the secretary log
+
+At the `artifact` phase, the orchestrator yields control to the
+secretary one more time with the instruction "compile the running
+log." The secretary emits the cumulative `secretary-log.md`
+content, which the orchestrator surfaces as a **fourth artifact**
+alongside `spec.md`, the executive summary, and call-outs.
+
+The artifact event becomes:
+
+```ts
+{
+  type: 'artifact',
+  specMd: string,
+  execSummary: string,
+  callouts: string,
+  secretaryLog?: string   // present iff the session staffed a secretary
+}
+```
+
+The `secretaryLog?` field is optional so sessions without a
+secretary keep the three-artifact shape.
+
+### Why a side channel, not a regular turn
+
+A secretary persona that takes regular turns inside `confer` /
+`specialists` would derail the personas' arguments — the
+record-keeper interrupting to confirm what was just said. The
+side-channel design keeps the conferring flow intact while still
+producing the audit trail.
+
+### Counting against budgets
+
+Secretary turns consume tokens (input: transcript so far; output:
+the log entry). They count against `MAX_SESSION_TOKENS` like any
+other turn. Budget-conscious products can set a sub-cap on
+secretary tokens (e.g., 10% of the session budget) and have the
+secretary emit shorter entries when approaching the sub-cap.
+
+### Skipping the secretary
+
+Sessions don't need a secretary. If the cast lacks a
+`role: secretary` persona, the orchestrator never yields the
+side channel; the session runs identically to its no-secretary
+form. The fourth artifact is omitted.
+
 ## Turn-taking inside a phase
 
 Inside `confer` and `specialists`, who speaks next is decided by

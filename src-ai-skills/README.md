@@ -159,7 +159,8 @@ src-ai-skills/
 │   ├── product-lead.md         ← reference persona (lead role)
 │   ├── skeptical-engineer.md   ← reference persona (lead role)
 │   ├── growth-voice.md         ← reference persona (specialist role)
-│   └── end-user-proxy.md       ← reference persona (specialist role)
+│   ├── end-user-proxy.md       ← reference persona (specialist role)
+│   └── secretary.md            ← side-channel record-keeper (secretary role)
 └── templates/
     └── pitch-to-spec.json      ← reference template (5-phase classic)
 ```
@@ -237,6 +238,7 @@ lead + 1–2 specialists per session.
 | **Skeptical Engineer** | lead | Sharp-edged, evidence-first, hostile to magic. | Cost, latency, failure modes, the boring-and-correct alternative to elegance. |
 | **Growth Voice** | specialist | Scrappy, channel-aware, indifferent to marketing fluff. | First-touch, first-value, first-share — the three growth moments. |
 | **End-user Proxy** | specialist | Plain, curious, didn't-read-the-spec. | "what is this? what do I do next? what happens if I get it wrong?" — represents the user who landed cold. |
+| **Secretary** | secretary | Quiet, append-only, taxonomy-driven. | Side-channel record-keeper. Doesn't argue or propose; harvests critiques / audits / out-of-scope call-outs / decisions into a structured log emitted at every phase boundary, compiled into a `secretary-log.md` artifact at the end. |
 
 They're tuned to argue productively with each other. The Product
 Lead defends scope; the Skeptical Engineer defends feasibility;
@@ -244,6 +246,15 @@ the Growth Voice defends the funnel; the End-user Proxy defends
 the moment of first contact. A well-staffed session has at least
 3 of these (or your domain equivalents) pulling in different
 directions.
+
+The **Secretary** is structurally different — it doesn't argue.
+It runs alongside the conversation, harvesting four taxonomies
+(critiques / audits / out-of-scope / decisions) at each phase
+boundary and compiling a `secretary-log.md` artifact at the end.
+Staff one secretary when you want the session's audit trail
+preserved; skip it when the spec + exec-summary + call-outs are
+enough. See `personas/secretary.md` for the reference impl and
+`ORCHESTRATOR.md` §Secretary turns for the engine pattern.
 
 ---
 
