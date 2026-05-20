@@ -124,7 +124,7 @@ commit that ships the phase.
       so phase 9's auth boundary bounds cost runaway;
       per-model caps deferred. Per-persona model selection
       is a later follow-on.) — `d0ba0f0`
-- [ ] Phase 25 — Loose usage estimator (pre-session forecast
+- [x] Phase 25 — Loose usage estimator (pre-session forecast
       tile in the boardroom shelf reads phase 24's selected
       model + a hand-pinned "typical session" range; renders
       `~X–Y tokens · ~$A–$B (rough estimate)` with locked
@@ -133,7 +133,7 @@ commit that ships the phase.
       or `/app/settings` for `today | 7d | 30d`. Explicitly
       excludes the per-session footer already shipped by
       phase 16; the brief calls that out to prevent scope
-      leak.)
+      leak.) — `740d7ad`
 - [ ] Phase 26 — BYO Anthropic API key (foundation:
       encrypted-key schema via Supabase Vault or pgsodium;
       `lib/byok/encrypt.ts` + `decrypt.ts` server-only;
@@ -634,6 +634,17 @@ side moves alone.
   robots Disallow + url-contract walker; new [operator] AUDIT
   row for ADMIN_EMAILS; closes phase 16 follow-up "per-account
   aggregate dashboard")
+- phase 25 — 740d7ad — usage estimator + account usage summary
+  (lib/usage/typical-session.ts with hand-pinned TYPICAL_SESSION
+  + estimateSessionUsage pure helper; lib/usage/summary.ts with
+  getUserUsageSummary single-query 30d window sliced client-side
+  into today/7d/30d; <UsageEstimate> mono panel between
+  ModelPicker and StartSessionButton on /app, hidden in-flight;
+  <AccountUsageSummary> three-row tile above the existing
+  Account section on /app/settings; locked disclaimer copy
+  referencing MAX_SESSION_TOKENS; stored cost_cents for
+  summaries / live MODEL_RATES for estimates; SessionUsageFooter
+  unchanged per explicit scope-leak guard; no migration)
 - phase 24 — d0ba0f0 — model picker (lib/anthropic/models.ts
   with 3-model allowlist Opus 4.7 default / Sonnet 4.6 /
   Haiku 4.5, MODEL_LABELS + MODEL_BLURBS + resolveModel safe
