@@ -9,6 +9,63 @@
 
 ## Pending
 
+### [ ] [score 8.0] Scope-driven artifact output — let the session pick what to produce (Spec / PRD / Roadmap / Call-outs / …)
+
+- proposed: 2026-05-20, oversight round 13 (user free-form
+  during /oversight questionnaire)
+- source signals:
+  - User chat 2026-05-20: "I originally scoped the output to
+    'Specs' and 'Call-outs'. But I realize now that I think
+    it would be better to make the output dependent upon the
+    scope and user request (ie. Roadmap? PRD? Spec?, etc.)."
+  - Current artifact contract (phase 10 + phase 21) is fixed:
+    `spec.md`, `exec-summary`, `call-outs.md`,
+    `secretary-log.md`. The template + orchestrator + render
+    grid all assume that exact set.
+  - Phase 7b's clarify round already collects intent; the
+    output shape could be selected from that signal instead
+    of being hard-coded.
+- rationale: The pitch-to-spec template is one of many
+  possible end-shapes. A user asking "what's the roadmap
+  here?" gets a spec back — a small mismatch but a real one.
+  Letting the session pick the artifact shape (Spec, PRD,
+  Roadmap, Call-outs, custom) makes the boardroom serve more
+  intents without changing the conferring core. Composes
+  with the existing template machinery; doesn't fight phase
+  20's framework split.
+- proposed scope: likely 2 phases.
+  - **(a) Template variants + selector.** Add
+    `templates/pitch-to-prd.json`, `templates/pitch-to-
+    roadmap.json` alongside `pitch-to-spec.json`; surface a
+    template picker in the boardroom shelf (defaults to
+    pitch-to-spec to preserve current UX). Each template
+    declares its own artifact list. Orchestrator already
+    reads template phase lists — extends naturally.
+  - **(b) Adaptive shape from intent.** Lead-persona clarify
+    round can suggest a template swap if the user's pitch
+    reads as a different intent ("this sounds like a
+    roadmap ask — switch?"). User accepts/declines. Keeps
+    the explicit picker but auto-suggests from signal.
+- estimated phases: 2 (a first, b as follow-on; b could
+  also fold into /iterate once a/b is in flight).
+- conflicts:
+  - Phase 25 (usage estimator) renders a "typical session"
+    range — needs per-template ranges if templates diverge
+    significantly in token usage. Manageable; pin per
+    template.
+  - Phase 23 (admin dashboard) currently assumes one shape
+    of session; aggregate tiles stay shape-agnostic but
+    per-template breakouts may emerge as a follow-on.
+- proposed phase numbers: 28 (template variants + picker),
+  29 (intent-driven suggestion). Slots after the BYOK pair
+  (phases 26–27) so multi-template doesn't entangle with
+  per-key plumbing.
+- next step: when oversight or /expand promotes, write
+  `plan/phases/phase_28_template_variants.md` from this
+  candidate + a fresh read of `templates/pitch-to-spec.json`
+  + `lib/anthropic/conferring.ts` + the current artifact
+  render grid.
+
 ### [ ] [score 4.0] Quota visibility — surface remaining sessions/day before the user starts
 
 - proposed: 2026-05-18, expand pass 1

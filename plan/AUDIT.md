@@ -4,6 +4,16 @@
 > pass. Manual entries are allowed; `/iterate audit` should
 > preserve rows whose source is `[oversight]` or `[user]`.
 
+> **Operator migration batch (oversight 2026-05-20, round 13):**
+> Three `[operator]` rows below queue Supabase migrations
+> (phase 16 token usage, phase 21 secretary, phase 22 retros).
+> Decision this round: **apply all three in one batch after
+> phase 23 ships** — phase 23's admin dashboard reads from the
+> phase-16 columns, so the migrations and the new admin tiles
+> light up together. Until then phase 22's retro loop is a
+> no-op in prod and SessionUsageFooter renders `—`. `/iterate`
+> continues to skip these rows per the `[operator]` contract.
+
 ## Pending
 
 ### [operator] Wire magic-link inbox credentials for e2e walk
