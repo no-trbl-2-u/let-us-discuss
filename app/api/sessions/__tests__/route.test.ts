@@ -260,4 +260,72 @@ describe('POST /api/sessions', () => {
     expect(body).toContain('"code":"internal"')
     expect(body).toContain('"message":"orchestrator boom"')
   })
+
+  it('honors a valid model from the request body', async () => {
+    getRouteUser.mockResolvedValue({
+      user: { id: 'u-1' },
+      supabase: {} as never,
+    })
+    createSession.mockResolvedValue({ id: 'sid-301' })
+    runConferringSpy.mockImplementation(() =>
+      emit([{ type: 'session.done' }])(),
+    )
+    const { POST } = await import('@/app/api/sessions/route')
+    await POST(
+      jsonRequest({
+        pitch: 'short pitch',
+        personaSlugs: ['product-lead', 'skeptical-engineer'],
+        templateSlug: 'pitch-to-spec',
+        model: 'claude-sonnet-4-6',
+      }) as never,
+    )
+    const callArg = createSession.mock.calls[0]?.[1] as { model?: string }
+    expect(callArg.model).toBe('claude-sonnet-4-6')
+  })
+
+  it('falls back to DEFAULT_MODEL when body omits model', async () => {
+    getRouteUser.mockResolvedValue({
+      user: { id: 'u-1' },
+      supabase: {} as never,
+    })
+    createSession.mockResolvedValue({ id: 'sid-302' })
+    runConferringSpy.mockImplementation(() =>
+      emit([{ type: 'session.done' }])(),
+    )
+    const { POST } = await import('@/app/api/sessions/route')
+    const { DEFAULT_MODEL } = await import('@/lib/anthropic/models')
+    await POST(
+      jsonRequest({
+        pitch: 'short pitch',
+        personaSlugs: ['product-lead', 'skeptical-engineer'],
+        templateSlug: 'pitch-to-spec',
+      }) as never,
+    )
+    const callArg = createSession.mock.calls[0]?.[1] as { model?: string }
+    expect(callArg.model).toBe(DEFAULT_MODEL)
+  })
+
+  it('falls back to DEFAULT_MODEL for an unknown model (graceful, not 400)', async () => {
+    getRouteUser.mockResolvedValue({
+      user: { id: 'u-1' },
+      supabase: {} as never,
+    })
+    createSession.mockResolvedValue({ id: 'sid-303' })
+    runConferringSpy.mockImplementation(() =>
+      emit([{ type: 'session.done' }])(),
+    )
+    const { POST } = await import('@/app/api/sessions/route')
+    const { DEFAULT_MODEL } = await import('@/lib/anthropic/models')
+    const res = await POST(
+      jsonRequest({
+        pitch: 'short pitch',
+        personaSlugs: ['product-lead', 'skeptical-engineer'],
+        templateSlug: 'pitch-to-spec',
+        model: 'gpt-4-turbo',
+      }) as never,
+    )
+    expect(res.status).toBe(200)
+    const callArg = createSession.mock.calls[0]?.[1] as { model?: string }
+    expect(callArg.model).toBe(DEFAULT_MODEL)
+  })
 })

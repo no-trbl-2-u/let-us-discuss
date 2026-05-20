@@ -11,7 +11,9 @@ import {
   useSensors,
 } from '@dnd-kit/core'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { DEFAULT_MODEL, resolveModel } from '@/lib/anthropic/models'
 import { ArtifactPreviewGrid } from './artifact-preview-grid'
+import { ModelPicker } from './model-picker'
 import { BoardroomEmptyHint } from './boardroom-empty-hint'
 import { BoardroomSurface } from './boardroom-surface'
 import { BudgetBanner } from './budget-banner'
@@ -46,6 +48,7 @@ export function BoardClient({
   const [state, dispatch] = useBoardState()
   const [session, sessionDispatch] = useSessionState()
   const [hydrated, setHydrated] = useState(false)
+  const [model, setModel] = useState<string>(DEFAULT_MODEL)
   const personasBySlug = useMemo(
     () => new Map(personas.map((p) => [p.slug, p])),
     [personas],
@@ -88,10 +91,11 @@ export function BoardClient({
         pitch: state.pitch,
         personaSlugs: seatedPersonas(state.seats),
         templateSlug,
+        model: resolveModel(model),
       },
       (ev) => sessionDispatch({ type: 'event', event: ev }),
     )
-  }, [dispatch, sessionDispatch, state.pitch, state.seats, templateSlug])
+  }, [dispatch, sessionDispatch, state.pitch, state.seats, templateSlug, model])
 
   const handleReset = useCallback(() => {
     dispatch({ type: 'RESET' })
@@ -155,6 +159,11 @@ export function BoardClient({
             value={state.pitch}
             disabled={state.tag === 'running'}
             onChange={(pitch) => dispatch({ type: 'SET_PITCH', pitch })}
+          />
+          <ModelPicker
+            value={model}
+            onChange={setModel}
+            disabled={state.tag === 'running'}
           />
           <StartSessionButton
             disabled={state.tag !== 'ready'}

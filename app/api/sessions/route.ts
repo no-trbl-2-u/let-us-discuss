@@ -1,4 +1,5 @@
 import { runConferring } from '@/lib/anthropic/conferring'
+import { resolveModel } from '@/lib/anthropic/models'
 import { hashIp } from '@/lib/anti-abuse/ip-hash'
 import { countSessionsLast24h } from '@/lib/anti-abuse/quota'
 import {
@@ -48,6 +49,7 @@ const BodySchema = z.object({
     .min(MIN_PERSONAS_SEATED)
     .max(MAX_PERSONAS_SEATED),
   templateSlug: z.string().min(1),
+  model: z.string().min(1).optional(),
 })
 
 function jsonError(
@@ -172,7 +174,7 @@ export async function POST(req: NextRequest) {
   }
 
   const ipHash = hashIp(req)
-  const model = process.env.ANTHROPIC_MODEL ?? 'claude-opus-4-7'
+  const model = resolveModel(body.model)
   let created: { id: string }
   try {
     created = await createSession(session.supabase, {

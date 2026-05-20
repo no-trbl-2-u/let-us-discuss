@@ -7,6 +7,7 @@ export type StartSessionInput = {
   pitch: string
   personaSlugs: string[]
   templateSlug: string
+  model?: string
 }
 
 export type StartSessionResult =
