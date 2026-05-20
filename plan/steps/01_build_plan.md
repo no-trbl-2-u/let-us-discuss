@@ -115,7 +115,7 @@ commit that ships the phase.
       in v1; reads from phase 16's existing observability
       columns + the `flag_audit` table. Closes phase 16's
       filed follow-up "per-account aggregate dashboard.") — `1a6bcf0`
-- [ ] Phase 24 — Model picker for the boardroom session
+- [x] Phase 24 — Model picker for the boardroom session
       (user-selectable model used by all personas in a
       session; `AVAILABLE_MODELS` allowlist in
       `lib/anthropic/models.ts`; `<ModelPicker>` in the
@@ -123,7 +123,7 @@ commit that ships the phase.
       `model` on create with allowlist fallback. Authed-only
       so phase 9's auth boundary bounds cost runaway;
       per-model caps deferred. Per-persona model selection
-      is a later follow-on.)
+      is a later follow-on.) — `d0ba0f0`
 - [ ] Phase 25 — Loose usage estimator (pre-session forecast
       tile in the boardroom shelf reads phase 24's selected
       model + a hand-pinned "typical session" range; renders
@@ -634,3 +634,13 @@ side moves alone.
   robots Disallow + url-contract walker; new [operator] AUDIT
   row for ADMIN_EMAILS; closes phase 16 follow-up "per-account
   aggregate dashboard")
+- phase 24 — d0ba0f0 — model picker (lib/anthropic/models.ts
+  with 3-model allowlist Opus 4.7 default / Sonnet 4.6 /
+  Haiku 4.5, MODEL_LABELS + MODEL_BLURBS + resolveModel safe
+  fallback; <ModelPicker> client component with native <select>
+  and one-line blurb wired into board-client.tsx between
+  PitchInput and StartSessionButton; POST /api/sessions
+  BodySchema grows by optional model with allowlist fallback
+  not 400; create handler stops reading ANTHROPIC_MODEL env at
+  session-create time; vitest guard asserts every allowlist
+  model has MODEL_RATES + label + blurb; no migration)
