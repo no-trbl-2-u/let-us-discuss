@@ -16,6 +16,30 @@
 
 ## Pending
 
+### [operator] Set `ADMIN_EMAILS` for the /admin dashboard
+
+- **Source:** phase 23 ship (commit pending)
+- **Score:** 3.0 (medium — without `ADMIN_EMAILS`, the
+  `/admin` route 404s for every authed user. The page is
+  the operator surface for usage / cost / flag-rate visibility;
+  no UX regression for end-users, but operators can't see
+  the dashboard until this env is set).
+- **Category:** config (operator action)
+- **Summary:** Phase 23 ships an env-gated admin dashboard.
+  `lib/auth/admin.ts` reads `ADMIN_EMAILS` (comma-separated)
+  and renders `/admin` only for matching email addresses;
+  every other authed user gets a 404. With the env unset,
+  no one is admin and the route is functionally a 404 to
+  everyone.
+- **What to do:** Set `ADMIN_EMAILS` in `.env` (local) and
+  in the Vercel Project Env (Production + Preview).
+  Comma-separated list of admin emails — typically the
+  operator's own email as the bootstrap. Example:
+  `ADMIN_EMAILS=ops@example.com,alice@example.com`.
+- **Owner:** user / operator.
+- **/iterate skip:** this row is `[operator]` — `/iterate`
+  should leave it pending and move on.
+
 ### [needs-user-call] Three framework-spec questions raised by the distilled nexus-porting analysis
 
 - **Source:** oversight 2026-05-20 round 14 (deferred from the

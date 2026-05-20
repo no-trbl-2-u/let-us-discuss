@@ -8,7 +8,7 @@ export const PUBLIC_ROUTE_PREFIXES = [
   '/diag',
 ] as const
 
-export const AUTHED_ROUTE_PREFIXES = ['/app'] as const
+export const AUTHED_ROUTE_PREFIXES = ['/app', '/admin'] as const
 
 export function isPublicRoute(pathname: string): boolean {
   if (pathname === '/') return true

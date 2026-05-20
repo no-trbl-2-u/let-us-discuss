@@ -28,12 +28,15 @@ describe('isPublicRoute', () => {
 })
 
 describe('isAuthedRoute', () => {
-  it.each(['/app', '/app/sessions', '/app/sessions/abc/transcript'])(
-    'returns true for %s',
-    (path) => {
-      expect(isAuthedRoute(path)).toBe(true)
-    },
-  )
+  it.each([
+    '/app',
+    '/app/sessions',
+    '/app/sessions/abc/transcript',
+    '/admin',
+    '/admin/anything',
+  ])('returns true for %s', (path) => {
+    expect(isAuthedRoute(path)).toBe(true)
+  })
 
   it.each(['/', '/signin', '/api/health', '/diag'])(
     'returns false for %s',

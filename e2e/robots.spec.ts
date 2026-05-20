@@ -14,6 +14,7 @@ test.describe('robots.txt', () => {
     expect(body).toMatch(/User-Agent:\s*\*/i)
     expect(body).toMatch(/Allow:\s*\//)
     expect(body).toMatch(/Disallow:\s*\/app\//)
+    expect(body).toMatch(/Disallow:\s*\/admin/)
     expect(body).toMatch(/Disallow:\s*\/api\//)
     expect(body).toMatch(/Disallow:\s*\/auth\/callback/)
     expect(body).toMatch(/Disallow:\s*\/diag/)

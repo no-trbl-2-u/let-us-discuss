@@ -89,6 +89,13 @@ export const URL_CONTRACT: ReadonlyArray<UrlContractEntry> = [
     next: '/app/settings/delete-account',
   },
   {
+    url: '/admin',
+    method: 'GET',
+    label: 'admin / dev dashboard (env-gated)',
+    expect: 'redirect-to-signin-with-next',
+    next: '/admin',
+  },
+  {
     url: '/api/health',
     method: 'GET',
     label: 'health probe',
