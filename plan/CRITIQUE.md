@@ -230,6 +230,16 @@
   restatement) if a formal legal voice is on the roadmap.
 - **source:** web-fetch
 
+### [MED] general — v2/v3/v4 vision: per-user "Agentic OS" workspace containers
+- pass: user-jot (commit f837944368d14555eb1fd6f947375cf56b3137ec)
+- viewport: unspecified
+- auth_state: anonymous
+- category: observation
+- observation: Idea for v2: The user will have their own "workspace" for a project (just 1 for now) which will essentially be a container w/ claude code and whatever tools it'll need and with all the skills caked into there. The container itself will contain an "Agentic OS". This way, the conversations can have user-specific memory, progression, and it'll get bet the more the user uses the tool. For v3: We can allow the user to have multiple workspaces that all have their own progress. And finally in v4: We can figure out a way for the multiple workspaces to communicate such that non-domain-specific progress in 1 could help the others.
+- evidence: user-spotted at 2026-05-20T21:56:42Z
+- suggested_fix: [user has not specified — iterate to determine]
+- source: user
+
 ## Done
 
 ### [x] [LOW] /signin — unlabeled hidden inputs surface to assistive tech — addressed at `1b04cd5`

@@ -16,6 +16,47 @@
 
 ## Pending
 
+### [needs-user-call] Three framework-spec questions raised by the distilled nexus-porting analysis
+
+- **Source:** oversight 2026-05-20 round 14 (deferred from the
+  "Open questions" section of the now-distilled
+  `ideas-for-the-skills.md` — content captured as 7 candidate
+  rows in `plan/PHASE_CANDIDATES.md` (Ideas 1–7) before the
+  source doc was deleted).
+- **Score:** 3.5 (medium — none of the three answers block an
+  in-flight phase, but each becomes load-bearing the moment
+  the relevant candidate is promoted. Holding the questions
+  here prevents drift while the related candidates wait).
+- **Category:** spec
+- **The three questions (verbatim from the source doc):**
+  1. Does `bearings.md` belong in `src-ai-skills/` (portable
+     spec) or in boardroom's product config (implementation
+     choice)? Argument for spec: it's the durable companion
+     to `retros.md`, which is already in the spec. Argument
+     for product: not every fork wants standing decisions.
+     **Gates:** Idea 2 candidate (topic-level `bearings.md`).
+  2. Should the orchestrator hard-enforce
+     `CLARIFY-QUESTION-FORMAT.md` (reject + retry) or
+     soft-enforce (document and trust personas)? Hard-enforce
+     is robust but adds latency on malformed retry;
+     soft-enforce is fast but lets bad questions through.
+     **Gates:** Idea 1 candidate (`CLARIFY-QUESTION-FORMAT.md`).
+  3. Is the autonomy spectrum (Idea 7) a framework concept or
+     a product concept? Affects whether it lives in
+     `src-ai-skills/` or in `plan/`.
+     **Gates:** Idea 7 candidate (autonomy spectrum doc).
+- **Disposition:** Defer all three until the relevant
+  candidate is promoted; answer each in that phase's brief
+  where the scope context is fresh. Re-asking in the
+  abstract before promotion risks a stale call by the time
+  the phase actually ships.
+- **What to do:** When `/oversight` (or `/expand`) promotes
+  Idea 1, 2, or 7, lift the matching question into the
+  phase brief's Open Questions section and resolve it there.
+- **Owner:** user.
+- **/iterate skip:** this row is `[needs-user-call]` —
+  `/iterate` should leave it pending and move on.
+
 ### [operator] Wire magic-link inbox credentials for e2e walk
 
 - **Source:** oversight 2026-05-16 (round 3 — follows resolution

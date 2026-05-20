@@ -9,6 +9,278 @@
 
 ## Pending
 
+> **Round-14 batch (oversight 2026-05-20):** Ideas 1–7 below
+> were distilled from a working doc (`ideas-for-the-skills.md`
+> at repo root, now deleted). The doc mapped nexus's dev-side
+> patterns to boardroom's runtime `src-ai-skills/` framework
+> and proposed which to port. Source signals + open questions
+> for Ideas 1, 2, 7 are captured here; the open questions
+> themselves are queued in `plan/AUDIT.md` as
+> `[needs-user-call]` so they get answered when the matching
+> candidate is promoted.
+
+### [ ] [score 7.0] Idea 1 — `CLARIFY-QUESTION-FORMAT.md` (nexus's "asking-well" rules for runtime leads)
+
+- proposed: 2026-05-20, oversight round 14 (distilled from
+  `ideas-for-the-skills.md` Tier 1)
+- source signals:
+  - Current framework rule constrains the *shape* of user
+    effort (`≤1 sentence answer, ≤5 questions per
+    checkpoint`) but not the *quality* of the question.
+  - Nexus `concepts/asking-well.md` formalizes: 1–4
+    questions per batch; recommended option first
+    (`(Recommended)`); descriptions name the trade-off;
+    lead with 2–4 sentences of prose before asking.
+  - 45s/checkpoint (free-form) vs. 15s/checkpoint
+    (recommended ballot) is roughly the difference between
+    "fits the attention budget" and "doesn't".
+- rationale: Highest-leverage / smallest-doc Tier 1 idea.
+  Affects every clarify checkpoint in every session;
+  composes with the existing `≤5/≤1` constraint rather
+  than replacing it. Free-form clarify questions still
+  allowed (a project name; a one-line audience
+  description) — nexus rule 4 still applies; 1–3 relax.
+- proposed scope: 1 phase.
+  - `src-ai-skills/CLARIFY-QUESTION-FORMAT.md` (~60–120
+    lines, mirrors nexus's `concepts/asking-well.md`).
+  - Reference from `PERSONA-FORMAT.md` §Role/lead.
+  - One paragraph reminder in each lead persona body
+    (`personas/product-lead.md`,
+    `personas/skeptical-engineer.md`).
+  - Optional lightweight orchestrator-side validator that
+    rejects clarify-prompt outputs missing at least one
+    ranked `(Recommended)` option with a trade-off
+    description (hard-vs-soft enforcement is one of the
+    deferred open questions — see AUDIT
+    `[needs-user-call]`).
+- estimated phases: 1.
+- conflicts: none direct; promotion order can be any time
+  after BYOK ships.
+- next step: when promoted, brief from this row + nexus
+  `concepts/asking-well.md` + the current lead persona
+  bodies; resolve the hard-vs-soft validator question
+  in the brief.
+
+### [ ] [score 6.5] Idea 2 — Topic-level `bearings.md` alongside `retros.md` (standing decisions)
+
+- proposed: 2026-05-20, oversight round 14 (distilled from
+  `ideas-for-the-skills.md` Tier 1)
+- source signals:
+  - `retros.md` answers "what should the next session try
+    to do better?" — but not "what has already been
+    settled about this project?".
+  - Worked example from the doc: session 3 decides "mobile
+    is out of v1"; session 7's product-lead re-opens it
+    because the pitch wording doesn't echo that decision;
+    4 turns wasted re-deciding.
+  - Nexus solves this with `plan/bearings.md` (Stack, URL
+    contract, Auth, hard rules, standing decisions); the
+    dev-side loop reads it before every skill.
+- rationale: Direct cross-session memory for **settled
+  decisions** (not just "next-time" items). Composes
+  cleanly with the phase-22 retros loop; same persistence
+  shape, different semantic axis.
+- proposed scope: 1 phase (or could be 2 if portable-spec
+  vs. product-only choice expands scope — see open
+  question below).
+  - New schema: `Bearing` (active/retired sections).
+  - New hooks: `loadBearings()` / `appendBearing(entry)`
+    paralleling `loadRetros` / `appendRetro`.
+  - Orchestrator wiring: pass loaded bearings to leads in
+    clarify phase as prepended context (same way
+    retro-review picks already flow).
+  - Secretary persona update: secretary (not lead
+    personas) authors bearings, preserving voice
+    consistency.
+  - Either a new lightweight "settle" phase, or fold
+    bearing emission into the existing artifact phase.
+- estimated phases: 1–2.
+- conflicts: phase 22's retros schema sits adjacent;
+  bearings schema should follow the same naming
+  conventions for orchestrator clarity.
+- open question (in AUDIT `[needs-user-call]`): does
+  `bearings.md` live in `src-ai-skills/` (portable spec)
+  or in boardroom's product config (impl choice)?
+- next step: when promoted, resolve the spec-vs-product
+  question in the brief; brief from this row +
+  `src-ai-skills/RETROS-FORMAT.md` (if it exists; else
+  the phase-22 brief) + nexus `plan/bearings.md`.
+
+### [ ] [score 5.5] Idea 3 — `concepts/architecture.md` (one-read mental model for `src-ai-skills/`)
+
+- proposed: 2026-05-20, oversight round 14 (distilled from
+  `ideas-for-the-skills.md` Tier 1)
+- source signals:
+  - README does a great tour of **files**; the mental
+    model — *engine + cast + choreography are orthogonal
+    data; the engine takes the other two as input;
+    artifacts are the byproduct, not the goal* — is
+    implicit and spread across README + ORCHESTRATOR.md
+    preamble + "What this framework is NOT" section.
+  - Anyone porting the framework needs the mental model
+    first; the files second.
+  - Nexus `concepts/architecture.md` is the analog and
+    works well.
+- rationale: Front-load the mental model before more files
+  accumulate. Doc-only; no code change; low risk; high
+  leverage for fork-ers.
+- proposed scope: 1 phase, ~250 lines.
+  - `src-ai-skills/concepts/architecture.md` with layered
+    diagram (Layer 1 Cast+Choreography, Layer 2 Conferring
+    loop, Layer 3 User checkpoints, Layer 4 Cross-session
+    learning).
+  - Per-layer section: what it does, why it exists, what
+    fails if you skip it.
+  - Closing section: portable contract vs. adapter-specific
+    impl.
+  - Cross-link README ↔ architecture doc (README = TL;DR +
+    tour; architecture = mental model).
+- estimated phases: 1.
+- conflicts: minor README overlap, manageable via
+  cross-linking + a "see also" note in README.
+- next step: when promoted, brief from this row + nexus
+  `concepts/architecture.md` for the layered-diagram
+  pattern; first draft can quote/adapt the doc's existing
+  ASCII layer sketch.
+
+### [ ] [score 4.5] Idea 4 — `src-ai-skills/customization/` directory (adaptation recipes)
+
+- proposed: 2026-05-20, oversight round 14 (distilled from
+  `ideas-for-the-skills.md` Tier 2)
+- source signals:
+  - Adaptation knowledge is currently scattered: a new
+    fork-er has to read README §Customization knobs +
+    PERSONA-FORMAT.md + TEMPLATE-FORMAT.md +
+    ORCHESTRATOR.md and infer what to change.
+  - Nexus `customization/` is the analog: one doc per
+    common adaptation question.
+- rationale: Makes adaptation a tour of recipes instead
+  of an inference exercise. Pure docs; demand-driven.
+- proposed scope: 2 phases (ship first 2 docs, grow only
+  when a real fork hits a missing recipe).
+  - Phase A: `customization/alternate-domains.md` (fork the
+    cast for writers' room / post-mortem / research-question
+    — what changes, what doesn't) +
+    `customization/session-cadence.md` (3-min fast pass vs.
+    30-min deep dive: turn_budget,
+    lead_round_max_questions, MAX_SESSION_TOKENS).
+  - Phase B (deferred until needed):
+    `customization/no-secretary.md`,
+    `customization/multi-template.md`,
+    `customization/persistence.md`,
+    `customization/moderation-providers.md`.
+- estimated phases: 2 (or 1 if scoped to the first two
+  docs only).
+- conflicts: should land after Idea 3 (architecture.md) so
+  the recipes can reference the mental model.
+- next step: when promoted, brief from this row + the
+  README §Customization knobs section + a survey of the
+  top adaptation questions raised in any prior fork
+  discussions.
+
+### [ ] [score 3.5] Idea 5 — `src-ai-skills/RUNTIME_LESSONS.md` (downstream-fork gap log)
+
+- proposed: 2026-05-20, oversight round 14 (distilled from
+  `ideas-for-the-skills.md` Tier 2)
+- source signals:
+  - `NEXUS_LESSONS.md` exists at repo root for the
+    boardroom-as-downstream-of-nexus relationship; the
+    runtime framework will have the same upstream/
+    downstream relationship as people fork
+    `src-ai-skills/` for other products.
+  - Discipline-only file; lightweight but compounds over
+    time.
+- rationale: Captures friction points each downstream
+  implementation hits in real time, so the framework spec
+  moves forward without re-discovering the same gaps.
+- proposed scope: 1 phase, tiny.
+  - `src-ai-skills/RUNTIME_LESSONS.md` with header + one
+    seed lesson (e.g., the clarify-prompt validator gap
+    surfaced by Idea 1's open question).
+  - Append-only convention; periodic harvest into spec
+    patches.
+  - Norm: every session that exposed a framework gap gets
+    one entry; recover into spec patches every ~5 entries.
+- estimated phases: 1 (could be folded into Idea 2's
+  commit if both ship together; not load-bearing alone).
+- conflicts: none.
+- next step: when promoted, brief from this row + the
+  existing `NEXUS_LESSONS.md` for the schema; could
+  bundle with Idea 2 to share a commit.
+
+### [ ] [score 2.0] Idea 6 — Optional sub-personas (deliberately deferred — note for future)
+
+- proposed: 2026-05-20, oversight round 14 (distilled from
+  `ideas-for-the-skills.md` Tier 2 — explicitly tagged
+  "not on the build plan; note for the future")
+- source signals:
+  - Nexus delegates aggressively (`scout`, `reader` sub-
+    agents) to keep the main context window clean.
+  - For a 3-minute brainstorming session, the deliberate
+    constraint is that **all personas share one
+    conversation** — the collision is the value. Sub-calls
+    would dilute that.
+  - But the slot exists: `tools: []` array in persona
+    frontmatter reserves space for tool-calling personas.
+- rationale: Capture the pattern so it's not lost; do not
+  ship in v1. The pattern (e.g., a `fact-checker` persona
+  the secretary summons to audit a claim) is sub-persona
+  delegation.
+- proposed scope: 0 phases at v1. If/when adopted,
+  document in `PERSONA-FORMAT.md` §Tools.
+- estimated phases: 0 at v1; 1 small doc-update phase
+  later if the brainstorming product proves it needs it.
+- conflicts: would violate the README's "What this
+  framework is NOT" claim ("Not a workflow tool. Personas
+  reason; they don't act.") — keep that claim until
+  evidence forces a revision.
+- next step: leave pending; do not promote unless a
+  concrete sub-persona use case (e.g., fact-checking
+  audit) materializes.
+
+### [ ] [score 4.0] Idea 7 — Autonomy spectrum doc (L0–L4 product ladder)
+
+- proposed: 2026-05-20, oversight round 14 (distilled from
+  `ideas-for-the-skills.md` Tier 2)
+- source signals:
+  - Nexus's intervention spectrum (Levels 0–4) is about how
+    much autonomy the dev gives the loop. A brainstorming
+    platform has an analogous ladder for how much autonomy
+    the user gives the product:
+    - **L0 Manual** — user picks personas + drives clarify
+      by hand (current default).
+    - **L1 Cast-only** — user picks cast; product picks
+      template from pitch shape.
+    - **L2 Pitch-only** — user pastes pitch; product picks
+      cast + template.
+    - **L3 Project-piped** — user pipes a long-running
+      project; product schedules sessions on a cadence.
+    - **L4 Background** — product proactively offers
+      sessions when it detects signal (bearings drift,
+      retros accumulating).
+  - README hints at this ("the same framework runs other
+    conversations by swapping cast + template") but
+    doesn't make it a product roadmap.
+- rationale: Document the ladder explicitly so the team
+  has shared vocabulary for where the product is and
+  where it's going. The path from **tool** to **platform**.
+- proposed scope: 1 phase (or 1 doc edit; not a code
+  phase).
+  - File location depends on the deferred open question
+    (framework concept vs. product concept). Probably
+    boardroom-specific (`plan/concepts/autonomy-
+    spectrum.md`) for v1 with a short framework-side
+    summary in `src-ai-skills/README.md`.
+  - Each level: what the user does; what the product
+    does; required infra; failure mode.
+- estimated phases: 1.
+- conflicts: shades into product spec, not framework
+  spec — see the open question in AUDIT
+  `[needs-user-call]`.
+- next step: when promoted, resolve the framework-vs-
+  product question in the brief; pair with a product
+  planning session if going boardroom-specific.
+
 ### [ ] [score 8.0] Scope-driven artifact output — let the session pick what to produce (Spec / PRD / Roadmap / Call-outs / …)
 
 - proposed: 2026-05-20, oversight round 13 (user free-form
