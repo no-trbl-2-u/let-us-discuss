@@ -107,14 +107,14 @@ commit that ships the phase.
       phase to the template + the UI that surfaces past
       "for next time" items before clarify; the user picks
       zero/some, their answers feed into clarify context) — `3465e5c`
-- [ ] Phase 23 — Admin / dev dashboard (read-only `/admin`
+- [x] Phase 23 — Admin / dev dashboard (read-only `/admin`
       route, env-gated via `ADMIN_EMAILS`; surfaces
       sessions/day, tokens/day, top-cost sessions, flag rate,
       error rate as monospace tiles. Adds `/admin` to the
       bearings URL contract in the same PR. No write actions
       in v1; reads from phase 16's existing observability
       columns + the `flag_audit` table. Closes phase 16's
-      filed follow-up "per-account aggregate dashboard.")
+      filed follow-up "per-account aggregate dashboard.") — `1a6bcf0`
 - [ ] Phase 24 — Model picker for the boardroom session
       (user-selectable model used by all personas in a
       session; `AVAILABLE_MODELS` allowlist in
@@ -623,3 +623,14 @@ side moves alone.
   settings link; bearings URL contract + smoke walker both
   updated; closes phase 12's privacy-policy promise structurally;
   promoted by /oversight round 6 after build-plan completion)
+- phase 23 — 1a6bcf0 — admin / dev dashboard (env-gated /admin
+  route via ADMIN_EMAILS; isAdminEmail + requireAdmin in
+  lib/auth/admin.ts; lib/admin/queries.ts with four loaders
+  (loadSessionsPerDay, loadTokensPerDay, loadTopCostSessions,
+  loadFlagAndErrorRates) reading phase-16 columns + flag_audit;
+  three mono primitives in components/admin/; page renders
+  five tiles via Promise.all with per-loader em-dash fallback;
+  /admin joins AUTHED_ROUTE_PREFIXES + bearings URL contract +
+  robots Disallow + url-contract walker; new [operator] AUDIT
+  row for ADMIN_EMAILS; closes phase 16 follow-up "per-account
+  aggregate dashboard")
