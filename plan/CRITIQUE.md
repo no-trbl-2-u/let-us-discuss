@@ -1,7 +1,7 @@
 # Critique log
 
-> Last pass: 2026-05-19 at commit f21399e
-> Pass count: 10
+> Last pass: 2026-05-20 at commit 9ed19c6
+> Pass count: 11
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
@@ -54,6 +54,10 @@
   interactive /try states + mobile reflow + console + network
   timing remain unreachable. Status unchanged; row stays
   pending.
+- **Pass-11 re-check (2026-05-20, commit `9ed19c6`):** Reader
+  confirmed `mcp__claude-in-chrome__*` still unavailable in
+  the anonymous reader sub-agent's tool list. 11 consecutive
+  passes WebFetch-only. Status unchanged.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
 ### [needs-user-call] SUPABASE_E2E_SESSION_COOKIE unset — authed /critique cannot walk /app
@@ -90,6 +94,12 @@
   reach until an operator populates the cookie. AUDIT.md
   `[operator] Populate SUPABASE_E2E_SESSION_COOKIE` row holds
   the same context with score 3.0.
+- **Pass-11 re-check (2026-05-20, commit `9ed19c6`):** Authed
+  reader pass exited at Step 0 with `auth_state: "auth-failed"`
+  per reader hard rule 9 (`.env` still lacks the cookie;
+  `.env.example` L77/L80/L109 still carry only commented
+  templates). Three consecutive authed passes blocked at the
+  same gate. Status unchanged.
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ### [MED] /try — demo opens with no drag affordance, contradicting marketing-side "drop personas onto the table"
@@ -207,7 +217,7 @@
   auto-injected" UX shape; option 1 is the smaller diff.
 - **source:** web-fetch
 
-### [LOW] /legal/privacy — "Plain version:" label primes a legal counterpart the page doesn't provide
+### [LOW] /legal/privacy + /legal/terms — "Plain version:" label primes a legal counterpart neither page provides
 
 - **pass:** 9 (commit `363aa2a`)
 - **viewport:** desktop
@@ -229,6 +239,14 @@
   is redundant. Alternative: ship the pair (plain + legal
   restatement) if a formal legal voice is on the roadmap.
 - **source:** web-fetch
+- **pass-11 update (2026-05-20, commit `9ed19c6`):** Scope
+  widened to also cover `/legal/terms`, which opens with the
+  same "Plain version: you bring a pitch, the AI personas
+  confer on it, you get three files." pattern (rest of page
+  also plain prose; no legal restatement pairs with the
+  label). When /iterate closes this, drop the prefix from
+  BOTH legal pages' openers in one edit so they don't drift
+  back into voice-asymmetry.
 
 ### [MED] general — v2/v3/v4 vision: per-user "Agentic OS" workspace containers
 - pass: user-jot (commit f837944368d14555eb1fd6f947375cf56b3137ec)
@@ -239,6 +257,101 @@
 - evidence: user-spotted at 2026-05-20T21:56:42Z
 - suggested_fix: [user has not specified — iterate to determine]
 - source: user
+
+### [HIGH] /signin — "What boardroom is." link mis-routed to /about/personas (same anti-pattern as the closed landing-page version)
+
+- **pass:** 11 (commit `9ed19c6`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** navigation
+- **observation:** The /signin footer carries a link labeled
+  "What boardroom is." whose href is `/about/personas` (the
+  persona library), not `/about` (the explainer titled "About
+  boardroom." with H1 "About boardroom."). A first-time
+  visitor clicking that link lands on a list of persona cards,
+  not the what-is-this explainer the label promises. Exact
+  sibling of the pass-2 landing-page mis-route closed at
+  `6f32cb8` — the same href fix appears to have missed this
+  second instance on /signin.
+- **evidence:** WebFetch on /signin shows anchor text "What
+  boardroom is." with `href="/about/personas"`. /about
+  exists, title "About boardroom — boardroom", H1 "About
+  boardroom.", and is the canonical what-boardroom-is surface
+  per the closed pass-2 finding.
+- **suggested fix:** Retarget the /signin "What boardroom is."
+  link href from `/about/personas` to `/about`. Same one-line
+  shape that closed the landing-page version of this finding
+  at `6f32cb8`. Existing /signin unit test should be extended
+  to assert the new href (regression guard mirroring the
+  landing-hero test added at the original fix).
+- **source:** web-fetch
+
+### [MED] /about/personas — Skeptical Engineer and Secretary share the "SE" monogram (visual collision)
+
+- **pass:** 11 (commit `9ed19c6`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** Two of the five persona cards on
+  /about/personas carry the identical monogram badge "SE" —
+  Skeptical Engineer and Secretary. A first-time visitor
+  scanning the library sees two visually-coded-identical
+  badges for two different roles. The collision became
+  inevitable when phase 21 added Secretary to the public
+  cast (same root as the pending pass-10 "these four → five"
+  finding), but the monogram collision is a separate
+  visual-identity bug the pending lede row doesn't cover.
+- **evidence:** Confirmed via WebFetch: rendered order on
+  /about/personas is PL (Product Lead), SE (Skeptical
+  Engineer), EP (End-user Proxy), GV (Growth Voice), SE
+  (Secretary). Both SE and Secretary render with the
+  monogram "SE".
+- **suggested fix:** Pick a non-colliding short code for
+  Secretary in `personas/secretary.md` — e.g. `SC` (Sec) or
+  `ST` (Scribe). Per bearings rule 10, persona changes ship
+  via PR. Data-layer-only edit; no component changes required
+  if the monogram is derived from the persona file's display
+  token.
+- **source:** web-fetch
+
+### [LOW] / — "Drag two to six personas" landing copy contradicts the post-phase-21 cast count
+
+- **pass:** 11 (commit `9ed19c6`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** Landing's "How a session runs" step copy
+  still reads "Drag two to six personas from the shelf onto
+  the boardroom. Each persona has a fixed voice and role —
+  you don't write prompts." The user-pickable cast is now
+  four conferring personas (PL/SE/EP/GV) plus an
+  auto-injected Secretary that isn't user-drag-staffed.
+  A visitor reading "two to six" then arriving at
+  /about/personas counts five cards and asks which two-to-six
+  the landing meant. Adjacent to the pending pass-10
+  "these four → five" lede finding but on a different
+  surface — that one is on /about/personas; this one is
+  the landing step copy.
+- **evidence:** Landing "How a session runs" step i body
+  verbatim: "Drag two to six personas from the shelf onto
+  the boardroom. Each persona has a fixed voice and role —
+  you don't write prompts." /about/personas now renders
+  five cards including Secretary, whose voice descriptor
+  ("Quiet, append-only, taxonomy-driven") and first prompt
+  line ("You are the secretary at the table. You do not
+  argue, propose, defend scope, or take a position.")
+  signal a meta-role rather than a draggable conferrer.
+- **suggested fix:** Either (a) reword to "Drag two to four
+  personas onto the table; a Secretary keeps the log" —
+  names the meta-role explicitly and stops promising a
+  six-slot drag the cast can't fill — or (b) drop the range
+  to "two to four" and let the Secretary line live only on
+  /about/personas. Option (a) keeps the landing honest about
+  the full cast; (b) is the smaller diff. Cleanest closure
+  bundles this with the pending /about/personas "these four
+  → five" row in a single edit pass so the user-pickable
+  count matches across surfaces.
+- **source:** web-fetch
 
 ## Done
 
