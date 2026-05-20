@@ -14,6 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { DEFAULT_MODEL, resolveModel } from '@/lib/anthropic/models'
 import { ArtifactPreviewGrid } from './artifact-preview-grid'
 import { ModelPicker } from './model-picker'
+import { UsageEstimate } from './usage-estimate'
 import { BoardroomEmptyHint } from './boardroom-empty-hint'
 import { BoardroomSurface } from './boardroom-surface'
 import { BudgetBanner } from './budget-banner'
@@ -165,6 +166,7 @@ export function BoardClient({
             onChange={setModel}
             disabled={state.tag === 'running'}
           />
+          {state.tag !== 'running' && <UsageEstimate model={model} />}
           <StartSessionButton
             disabled={state.tag !== 'ready'}
             onStart={handleStart}
