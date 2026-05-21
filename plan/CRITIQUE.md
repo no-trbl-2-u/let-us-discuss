@@ -30,24 +30,15 @@
   is pinned as a regex fixture in
   `lib/site/__tests__/empty-state-copy.test.ts`.
 
-### [LOW] /signin — "We never use this for anything else." reads as defensive marketing reassurance
+### [x] [LOW] /signin — defensive email helper — addressed at `fc13867`
 
-- **pass:** 12 (commit `8b17933`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** voice
-- **observation:** The email input's helper line protests a
-  negative ("never use this for anything else"). A been-there
-  colleague — the bearings voice — would say what they actually
-  do with it (send the link, attach sessions to the account), not
-  reassure against an unstated worry. Mild voice drift but on the
-  highest-conversion-intent surface boardroom has.
-- **evidence:** /signin form: small print under the Email label,
-  "We never use this for anything else."
-- **suggested fix:** Replace with a what-it's-for line, e.g.
-  "Used to send you the magic link and attach your sessions to
-  this account."
-- **source:** web-fetch
+- **Pass:** 12 (commit `8b17933`)
+- **Resolved 2026-05-21 at `fc13867`** (issue #41). Helper
+  "We never use this for anything else." → "Used to send the
+  magic link and attach your sessions to this account."
+  `design/compositions/signin.tsx` carries the same string
+  but as a design export, not shipped — a separate sweep can
+  align it.
 
 ### [x] [MED] /try — "demo · locked" badge — addressed at `7b7d58e`
 
