@@ -43,4 +43,13 @@ describe('/signin page', () => {
     expect(input).toHaveAttribute('aria-invalid', 'true')
     expect(screen.getByText('rate limit')).toBeInTheDocument()
   })
+
+  it('the "What boardroom is." link points at /about (not /about/personas)', async () => {
+    // Regression guard for /critique pass 11 HIGH (sibling of the
+    // pass-2 landing fix at 6f32cb8). The label promises an
+    // explainer; the persona library doesn't deliver that.
+    await renderPage()
+    const link = screen.getByRole('link', { name: /what boardroom is/i })
+    expect(link).toHaveAttribute('href', '/about')
+  })
 })

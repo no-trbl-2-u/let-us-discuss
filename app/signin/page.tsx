@@ -67,7 +67,7 @@ export default async function SignInPage({
       </section>
 
       <p className="mt-[var(--space-6)] font-[var(--font-sans)] text-[var(--text-2xs)] text-[color:var(--ink-muted)]">
-        New here? <Link href="/about/personas">What boardroom is.</Link>
+        New here? <Link href="/about">What boardroom is.</Link>
       </p>
     </div>
   )
