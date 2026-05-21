@@ -12,7 +12,7 @@ const NOTES = [
   {
     n: 'i.',
     t: 'Staff the table.',
-    b: 'Drag two to six personas from the shelf onto the boardroom. Each persona has a fixed voice and role — you don’t write prompts.',
+    b: 'Drag two to four personas onto the table; a Secretary keeps the log. Each persona has a fixed voice and role — you don’t write prompts.',
   },
   {
     n: 'ii.',
