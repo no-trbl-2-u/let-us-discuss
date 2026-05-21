@@ -9,32 +9,13 @@
 
 ## Pending
 
-### [HIGH] / — hero subhead still says "one-word questions" (predicted regression from pass-12 fix sweep)
+### [x] [HIGH] / — HERO_SUBHEAD canonical-constraint mismatch — addressed at `4de29b4`
 
-- **pass:** 13 (commit `83c595c`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** voice
-- **observation:** The /about lede was corrected at `91090dd`
-  to use the canonical "one-word or one-sentence clarifying
-  questions" shape, but the landing hero subhead in the same
-  component file still carries the old "You answer one-word
-  questions at the checkpoints" copy. Pass-12 closure note
-  for issue #40 explicitly called this out as the
-  not-bundled drift; pass 13 confirms it survived.
-- **evidence:** Hero subhead on `/`: "Drop a few personas
-  onto the table, hand them your pitch, and let them confer.
-  You answer one-word questions at the checkpoints. They do
-  the thinking." Source: `components/site/landing-hero.tsx`
-  `HERO_SUBHEAD` constant (around L8). Compare canonical:
-  the template constraint says "Every question must accept a
-  1-word or 1-sentence answer."; /about lede + landing step
-  copy both align.
-- **suggested fix:** Edit `HERO_SUBHEAD` in
-  `components/site/landing-hero.tsx`: "You answer one-word
-  questions at the checkpoints." → "You answer one-word or
-  one-sentence clarifying questions at the checkpoints."
-- **source:** web-fetch
+- **Pass:** 13 (commit `83c595c`)
+- **Resolved 2026-05-21 at `4de29b4`** (issue #46). One-line
+  copy edit on `components/site/landing-hero.tsx`'s
+  `HERO_SUBHEAD`; landing now matches /about lede + the
+  landing step-i body + the template constraint.
 
 ### [MED] /try — "The Product Lead is already at the table." body restates the new lede
 
