@@ -248,36 +248,12 @@
   ones you want onto the table." Closes phase 21's
   anticipated follow-up.
 
-### [LOW] /legal/privacy + /legal/terms — "Plain version:" label primes a legal counterpart neither page provides
+### [x] [LOW] /legal/{privacy,terms} — "Plain version:" labels dropped — addressed at `738b0f3`
 
-- **pass:** 9 (commit `363aa2a`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** voice
-- **observation:** Opening sentence "Plain version: we keep
-  your sessions while your account is open and delete them
-  when you close it" implies a non-plain (legal-prose) version
-  follows for contrast. The rest of the page is also plain
-  prose — no formal restatement pairs with the labeled one.
-  The label primes an expectation the page never fulfills.
-- **evidence:** Opening line of `/legal/privacy`: "Plain
-  version: we keep your sessions while your account is open
-  and delete them when you close it." No subsequent "Legal
-  version" or formalized block appears.
-- **suggested fix:** Drop "Plain version:" — the page is
-  already plainspoken throughout per the bearings voice
-  ("plainspoken, terse, no marketing fluff"), so the framing
-  is redundant. Alternative: ship the pair (plain + legal
-  restatement) if a formal legal voice is on the roadmap.
-- **source:** web-fetch
-- **pass-11 update (2026-05-20, commit `9ed19c6`):** Scope
-  widened to also cover `/legal/terms`, which opens with the
-  same "Plain version: you bring a pitch, the AI personas
-  confer on it, you get three files." pattern (rest of page
-  also plain prose; no legal restatement pairs with the
-  label). When /iterate closes this, drop the prefix from
-  BOTH legal pages' openers in one edit so they don't drift
-  back into voice-asymmetry.
+- **Pass:** 9 (commit `363aa2a`); pass-11 widened scope.
+- **Resolved 2026-05-21 at `738b0f3`** (issue #43). Both
+  openers shipped in one edit per the pass-11 instruction
+  to prevent voice-asymmetry drift between the pages.
 
 ### [MED] general — v2/v3/v4 vision: per-user "Agentic OS" workspace containers
 - pass: user-jot (commit f837944368d14555eb1fd6f947375cf56b3137ec)
