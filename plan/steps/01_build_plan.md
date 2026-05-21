@@ -143,7 +143,7 @@ commit that ships the phase.
       Scout pass during brief generation confirms Vault vs.
       application-level KMS choice. Ship before phase 27 —
       phase 27 reads the encrypted key.) — `c162ed8`
-- [ ] Phase 27 — BYO Anthropic API key (orchestrator
+- [x] Phase 27 — BYO Anthropic API key (orchestrator
       integration: active session reads the user's key when
       present and instantiates a second Anthropic client;
       falls back to the project key when absent; per-session
@@ -152,7 +152,7 @@ commit that ships the phase.
       user-key sessions. Polish (model-allowlist intersection
       with user's account permissions, per-key spend tile,
       first-run warning checkbox) folded into /iterate after
-      this ships.)
+      this ships.) — `a1ed0ef`
 - [ ] Phase 28 — `CLARIFY-QUESTION-FORMAT.md` (nexus's
       "asking-well" rules for runtime leads: 1–4 questions
       per batch, recommended option first, descriptions
