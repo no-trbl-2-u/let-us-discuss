@@ -33,7 +33,7 @@ export function SignInForm({
         autoComplete="email"
         defaultValue={email}
         placeholder="you@studio.com"
-        helper="We never use this for anything else."
+        helper="Used to send the magic link and attach your sessions to this account."
         error={error}
       />
       {next ? (
