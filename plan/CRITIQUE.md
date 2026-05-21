@@ -195,34 +195,14 @@
   unit tests + the URL-contract walker's redirect check.
 - **Source:** web-fetch (reader sub-agent + grep)
 
-### [MED] /try — demo opens with no drag affordance, contradicting marketing-side "drop personas onto the table"
+### [x] [MED] /try — drag-promise gap — addressed at `ec81a40`
 
-- **pass:** 9 (commit `363aa2a`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** Landing copy promises "Drop a few personas
-  onto the table, hand them your pitch, and let them confer";
-  `/about` repeats "You drag personas, hand over a pitch...".
-  The visitor arrives at `/try` expecting the staffing affordance
-  the marketing surface just sold, and finds a static layout
-  with the Product Lead pre-seated and five "demo · locked"
-  seats. The drag affordance is intentionally an authed-only
-  feature, but the demo doesn't acknowledge the gap — the
-  expectation mismatch reads as the demo being broken or
-  shallow, not as a deliberate scope choice.
-- **evidence:** Landing body — "Drop a few personas onto the
-  table, hand them your pitch, and let them confer." `/about`
-  — "You drag personas, hand over a pitch...". `/try` body —
-  "One persona, three canned turns, three artifact tiles" +
-  "The Product Lead is already at the table" + five locked
-  seat tiles.
-- **suggested fix:** Add one explicit framing line to the
-  `/try` opener: e.g. "Full sessions let you staff the table
-  yourself — the demo skips that and seats the Product Lead
-  for you." Sets the expectation that drag is a signed-in
-  affordance without selling-then-pulling.
-- **source:** web-fetch
+- **Pass:** 9 (commit `363aa2a`); pending across passes 9–12.
+- **Resolved 2026-05-21 at `ec81a40`** (issue #39). /try
+  opener replaces "Full sessions need a sign-in." with
+  "The demo seats the Product Lead for you; full sessions
+  let you staff the table yourself once you sign in." —
+  names both the missing affordance and the gate.
 
 ### [MED] /about/personas — no link back to /about, breaks the explainer → library traversal
 
