@@ -192,34 +192,16 @@
   breadcrumb pattern already shipping on /app/settings/api-key
   + /app/settings/delete-account. Header nav unchanged.
 
-### [LOW] /about/personas — all four persona system prompts share the templated "You are the X at the boardroom table. Your job is to..." opener
+### [x] [LOW] /about/personas — shared-opener scaffold framed on the page — addressed at `4edecd9`
 
-- **pass:** 9 (commit `363aa2a`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** voice
-- **observation:** Page lede promises "personas each layer their
-  own voice on top." The voice descriptors above each prompt
-  ("Sharp-edged, technical, doubt-driven" / "Plain, curious,
-  inexpert-friendly") set the expectation that the prompts
-  themselves will sound different. They don't — all four open
-  with the identical "You are the [role] at the boardroom
-  table. Your job is to..." scaffold. The reader hears the
-  voice *claim* in the descriptor but doesn't see it modeled
-  in the prompt text.
-- **evidence:** PL — "You are the product lead at the boardroom
-  table. Your job is to turn a fuzzy pitch..." SE — "You are
-  the skeptical engineer at the boardroom table. Your job is
-  to make the spec survive..." EP / GV follow the same first-
-  line cadence.
-- **suggested fix:** Either lean into the scaffold — frame it
-  on the page as a stable opener that the persona's voice
-  rides on (one explanatory line near the lede) — or vary the
-  first-line cadence on at least one persona's prompt body so
-  the page demonstrates the layered-voice claim it makes. The
-  framing call is cheaper; the rewrite is the truer fix. Prompt
-  edits ship via PR per bearings rule 10.
-- **source:** web-fetch
+- **Pass:** 9 (commit `363aa2a`); pending across passes 9–12.
+- **Resolved 2026-05-21 at `4edecd9`** (issue #45). Picked
+  option (a) over (b): added one explanatory paragraph
+  beneath the lede naming the "You are the [role] at the
+  boardroom table." scaffold as deliberate, and pointing
+  readers at the voice descriptor above each card as the
+  per-persona register. No persona-body edits — runtime
+  behavior of the orchestrator is unchanged.
 
 ### [x] [MED] /about/personas — lede cast-count drift — addressed at `baa28ea`
 
