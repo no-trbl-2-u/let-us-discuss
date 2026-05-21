@@ -58,8 +58,8 @@ export default function AboutPage() {
       </Heading>
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch]">
         Boardroom isn&apos;t a generic chat. It isn&apos;t a place to author
-        personas or templates — the v1 library is curated. It isn&apos;t a
-        multi-user surface; sessions are single-user only.
+        personas or templates — the starter library is curated. It
+        isn&apos;t a multi-user surface; sessions are single-user only.
       </p>
 
       <Heading level={2} className="mt-[var(--space-6)] mb-[var(--space-3)]">
@@ -69,7 +69,7 @@ export default function AboutPage() {
         <Link href="/try">Run an anonymous demo</Link> — no sign-in needed.{' '}
         <Link href="/signin">Sign in</Link> to run full sessions and keep your
         artifacts. The <Link href="/about/personas">persona library</Link>{' '}
-        has the full v1 set.
+        has the full starter set.
       </p>
     </section>
   )
