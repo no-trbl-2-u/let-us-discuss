@@ -109,7 +109,7 @@ describe('/about/personas page — with secretary in the cast', () => {
       screen.getByRole('heading', { level: 2, name: /log-keeper/i }),
     ).toBeInTheDocument()
     expect(
-      screen.getByText(/never dragged.*runs the log/i),
+      screen.getByText(/you never seat the Secretary.*runs the log/i),
     ).toBeInTheDocument()
     // Both personas are still on the page (conferring + meta-role groups).
     expect(screen.getByText('Product lead')).toBeInTheDocument()

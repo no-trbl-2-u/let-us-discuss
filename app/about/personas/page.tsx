@@ -85,8 +85,8 @@ export default function PersonasPage() {
                 Log-keeper
               </h2>
               <p className="mb-[var(--space-5)] font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch]">
-                Auto-injected by the cast guard, never dragged. The
-                Secretary doesn&apos;t confer; it runs the log.
+                Always at the table; you never seat the Secretary. It
+                doesn&apos;t confer; it runs the log.
               </p>
               <ul
                 role="list"
