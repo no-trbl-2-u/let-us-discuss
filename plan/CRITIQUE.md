@@ -17,34 +17,15 @@
   `HERO_SUBHEAD`; landing now matches /about lede + the
   landing step-i body + the template constraint.
 
-### [MED] /try — "The Product Lead is already at the table." body restates the new lede
+### [x] [MED] /try — shelf body restated the lede — addressed at `72818f2`
 
-- **pass:** 13 (commit `83c595c`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** The /try lede was rewritten at `ec81a40`
-  to say "The demo seats the Product Lead for you; full
-  sessions let you staff the table yourself once you sign
-  in." A body paragraph below the lede still says "The
-  Product Lead is already at the table. The other seats are
-  locked — sign in to staff the full table." — same idea
-  twice within two consecutive blocks. The body line feels
-  like leftover copy from before the lede was rewritten.
-- **evidence:** Lede (page header on /try): "One persona,
-  three canned turns, three artifact tiles. The demo seats
-  the Product Lead for you; full sessions let you staff the
-  table yourself once you sign in." Body just below the
-  boardroom: "The Product Lead is already at the table. The
-  other seats are locked — sign in to staff the full table."
-  Source: `components/demo/demo-shelf.tsx` (the
-  "already at the table" string lives there per
-  `grep -rn`).
-- **suggested fix:** Drop the body restatement and let the
-  seat tiles' "sign in to seat" labels (shipped at
-  `7b7d58e`) carry the message. Or compress to a single
-  line above the table.
-- **source:** web-fetch
+- **Pass:** 13 (commit `83c595c`)
+- **Resolved 2026-05-21 at `72818f2`** (issue #47). Dropped
+  both restatement lines; shelf now carries eyebrow +
+  one-line sign-in pointer ("Sign in to staff the table
+  yourself."). Test updated to assert the absence of the
+  old copy + presence of the new line; sign-in CTA href
+  assertion preserved.
 
 ### [MED] /try — "1 persona" vs "one persona" register drift on the same page
 
