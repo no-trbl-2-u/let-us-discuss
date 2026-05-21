@@ -27,7 +27,7 @@ export default function AboutPage() {
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch] mb-[var(--space-7)]">
         Boardroom turns a loose pitch into a usable spec by running a short,
         opinionated conversation between AI personas you staff onto a
-        board-room table. You drag personas, hand over a pitch, and answer
+        boardroom table. You drag personas, hand over a pitch, and answer
         one-word or one-sentence clarifying questions at the checkpoints.
         The personas do the thinking.
       </p>
