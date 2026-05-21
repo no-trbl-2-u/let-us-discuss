@@ -9,32 +9,14 @@
 
 ## Pending
 
-### [MED] /about/personas — "cast guard" jargon introduced cold in the new Log-keeper helper note
+### [x] [MED] /about/personas — "cast guard" jargon dropped — addressed at `b2b9de9`
 
-- **pass:** 14 (commit `9a2c9b2`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** The Log-keeper partition shipped at
-  `3fb5fad` introduced the helper line "Auto-injected by the
-  cast guard, never dragged. The Secretary doesn't confer; it
-  runs the log." "Cast guard" is internal jargon — the term
-  doesn't appear anywhere visitor-facing on `/`, `/about`,
-  `/try`, or earlier on `/about/personas`. The note tries to
-  explain WHY the partition exists but leans on a term that
-  itself needs explaining; the rationale lands soft.
-- **evidence:** Divider helper text on /about/personas:
-  "Auto-injected by the cast guard, never dragged. The
-  Secretary doesn't confer; it runs the log." "Cast guard"
-  absent from /, /about, the intro paragraphs above the
-  cards, and the persona-card bodies (it lives in the
-  orchestrator code at `src-ai-skills/`, not in user-facing
-  copy).
-- **suggested fix:** Replace "cast guard" with a context-
-  resolvable phrase, e.g. "Auto-joined by the system, never
-  dragged." Or drop the mechanism and just say "Always at the
-  table; you never seat the Secretary."
-- **source:** web-fetch
+- **Pass:** 14 (commit `9a2c9b2`)
+- **Resolved 2026-05-21 at `b2b9de9`** (issue #52). Helper
+  rewritten to "Always at the table; you never seat the
+  Secretary. It doesn't confer; it runs the log." Drops the
+  mechanism reference; states the user-visible fact directly.
+  Regression regex on the page test updated to match.
 
 ### [MED] /about/personas + /try — "Product lead · lead" role badge duplicates the name's trailing word
 
