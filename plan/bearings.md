@@ -163,6 +163,7 @@ The v1 URL set:
 /app/settings/delete-account  Confirm-then-delete flow that closes the account and cascades the data wipe.
 /app/settings/api-key    BYO Anthropic API key (encrypted at rest; revocable; one per account).
 /admin                   Read-only env-gated operator dashboard (ADMIN_EMAILS). Anon redirects to /signin?next=/admin; non-admin authed gets 404.
+/admin/migrations        Read-only operator status table: which db/migrations/*.sql files are applied.
 /about                   What boardroom is and isn't; tone-setter for the persona; links to nexus.
 /about/personas          Read-only library of the curated v1 personas.
 /legal/privacy           Privacy + retention.

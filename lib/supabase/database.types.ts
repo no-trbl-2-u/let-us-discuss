@@ -177,6 +177,17 @@ type UserApiKeyAuditInsert = Omit<UserApiKeyAuditRow, 'id' | 'created_at'> & {
   created_at?: string
 }
 
+type AppliedMigrationRow = {
+  filename: string
+  applied_at: string
+  applied_by: string | null
+}
+
+type AppliedMigrationInsert = Omit<AppliedMigrationRow, 'applied_at' | 'applied_by'> & {
+  applied_at?: string
+  applied_by?: string | null
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -226,6 +237,12 @@ export type Database = {
         Row: UserApiKeyAuditRow
         Insert: UserApiKeyAuditInsert
         Update: Partial<UserApiKeyAuditRow>
+        Relationships: []
+      }
+      applied_migrations: {
+        Row: AppliedMigrationRow
+        Insert: AppliedMigrationInsert
+        Update: Partial<AppliedMigrationRow>
         Relationships: []
       }
     }

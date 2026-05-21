@@ -103,6 +103,13 @@ export const URL_CONTRACT: ReadonlyArray<UrlContractEntry> = [
     next: '/admin',
   },
   {
+    url: '/admin/migrations',
+    method: 'GET',
+    label: 'admin migrations status (env-gated)',
+    expect: 'redirect-to-signin-with-next',
+    next: '/admin/migrations',
+  },
+  {
     url: '/api/health',
     method: 'GET',
     label: 'health probe',

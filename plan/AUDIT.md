@@ -26,8 +26,49 @@
 
 ## Pending
 
+### [operator] Enable operator-batch: set `SUPABASE_DB_URL` + run `pnpm db:apply-pending`
+
+- **Source:** phase 30 ship 2026-05-21 (consolidates 5 prior rows).
+- **Score:** 4.5 (medium-high — applying drains 5 pending operator
+  rows in one pass + lights up cost-attribution, the BYOK settings
+  surface, secretary persistence, and the cross-session retros
+  loop. Phase 30 ships the apply path; the operator unblocks it.
+  Future phases' migrations apply automatically once this is set up).
+- **Category:** config (operator action)
+- **Summary:** Phase 30 ships `scripts/operator-apply.mjs` which
+  bootstraps `public.applied_migrations` on first run and applies
+  every pending `*.sql` under `db/migrations/` in lex order. Each
+  migration runs in its own transaction; the script exits non-zero
+  on first failure. The `/admin/migrations` page renders status.
+- **What to do:** Two actions.
+  1. **Set `SUPABASE_DB_URL`** in local `.env`. Get the value from
+     Supabase dashboard → Project Settings → Database → Connection
+     string (URI mode). The script connects directly to Postgres,
+     not via the supabase-js client.
+  2. **Run `pnpm db:apply-pending`** from a shell. The script
+     bootstraps the tracking table on first run, then applies every
+     pending migration in order. Re-runs are no-ops once everything
+     is tracked.
+- **Additionally** (separate concern, was bundled in the prior BYOK
+  row): set `BYOK_MASTER_KEY` env (32-byte base64; `openssl rand
+  -base64 32`) in `.env` + Vercel Project Env. The script doesn't
+  touch app runtime env — BYOK is a separate config step.
+- **Edge case — already-applied migrations:** Operators who
+  manually applied some migrations before phase 30 shipped should
+  first pre-mark them in the SQL editor:
+  `INSERT INTO public.applied_migrations (filename) VALUES
+  ('<filename.sql>') ON CONFLICT DO NOTHING;` for each
+  already-applied file. Otherwise the script will re-run them
+  (most use `IF NOT EXISTS` so re-applying is safe; not guaranteed
+  across every legacy file).
+- **Owner:** user / operator.
+- **/iterate skip:** this row is `[operator]` — `/iterate` should
+  leave it pending and move on.
+
 ### [operator] Apply phase-27 `key_origin` migration in Supabase
 
+- **Resolved by consolidation 2026-05-21 at phase 30 ship.**
+  Apply via the new row above (`pnpm db:apply-pending`).
 - **Source:** phase 27 ship (commit pending)
 - **Score:** 2.5 (low-medium — phase 27 ships an additive column
   on `public.sessions`. The orchestrator's create-time insert
@@ -54,6 +95,11 @@
 
 ### [operator] Enable BYOK — set `BYOK_MASTER_KEY` + apply phase-26 migration
 
+- **Resolved by consolidation 2026-05-21 at phase 30 ship.**
+  The phase-26 migration is now applied via the consolidated
+  `pnpm db:apply-pending` row above. The `BYOK_MASTER_KEY` env
+  is still a separate operator action — noted in the new
+  consolidated row's "Additionally" section.
 - **Source:** phase 26 ship (commit pending)
 - **Score:** 3.0 (medium — without both ops, the settings panel
   renders "BYOK is not enabled" and `/api/byok/*` returns 503;
@@ -198,6 +244,8 @@
 
 ### [operator] Apply phase-16 token-usage migration in Supabase
 
+- **Resolved by consolidation 2026-05-21 at phase 30 ship.**
+  Apply via the new row above (`pnpm db:apply-pending`).
 - **Walkthrough:** `setup/operator-batch.md` Step 1.
 - **Source:** /iterate audit 2026-05-18 (gap-filling pass —
   the action was called out in phase 16's commit body at
@@ -230,6 +278,8 @@
 
 ### [operator] Apply phase-21 secretary migration in Supabase
 
+- **Resolved by consolidation 2026-05-21 at phase 30 ship.**
+  Apply via the new row above (`pnpm db:apply-pending`).
 - **Walkthrough:** `setup/operator-batch.md` Step 2.
 - **Source:** oversight 2026-05-19 round 12 (backfill — phase 21's
   commit body at `fada1d9` promised this row but the shipping
@@ -260,6 +310,8 @@
 
 ### [operator] Apply phase-22 retros migration in Supabase
 
+- **Resolved by consolidation 2026-05-21 at phase 30 ship.**
+  Apply via the new row above (`pnpm db:apply-pending`).
 - **Walkthrough:** `setup/operator-batch.md` Step 3.
 - **Source:** oversight 2026-05-19 round 12 (backfill — phase 22's
   commit body at `3465e5c` promised this row but the shipping

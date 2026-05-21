@@ -149,6 +149,15 @@ export default async function AdminPage() {
           secondary={topCostRows ? null : 'no data yet'}
         />
       </div>
+
+      <p className="mt-[var(--space-6)] font-[var(--font-mono)] text-[var(--text-2xs)] text-[color:var(--ink-muted)]">
+        <a
+          href="/admin/migrations"
+          className="underline-offset-4 hover:underline"
+        >
+          → Migrations status
+        </a>
+      </p>
     </section>
   )
 }
