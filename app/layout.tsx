@@ -28,9 +28,9 @@ const mono = IBM_Plex_Mono({
   weight: ['400', '500'],
 })
 
-const ROOT_TITLE = 'boardroom — a short, opinionated meeting with AI personas'
+const ROOT_TITLE = 'boardroom — pitch in, spec out'
 const ROOT_DESCRIPTION =
-  'Drop a few personas onto the table, hand them your pitch, and let them confer. You answer one-word questions at the checkpoints. They do the thinking.'
+  'Drop a few personas onto the table, hand them your pitch, and let them confer. You answer one-word or one-sentence clarifying questions at the checkpoints. They do the thinking.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteOrigin()),
