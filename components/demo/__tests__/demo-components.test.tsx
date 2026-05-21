@@ -51,6 +51,20 @@ describe('DemoSurface', () => {
     }
   })
 
+  it('gated seats label themselves as a sign-in invitation, not as "locked"', () => {
+    // Regression guard for /critique pass-12 MED: "demo · locked"
+    // implied a paywall the product doesn't have. The new copy names
+    // the actual gate (sign in) without the transactional verb.
+    const { container } = render(<DemoSurface persona={persona} tag="empty" />)
+    const wrapper = container.querySelector(
+      '[data-seat-id="1"][data-locked]',
+    )
+    const inner = wrapper?.querySelector('[aria-label]')
+    expect(inner?.getAttribute('aria-label')).toBe('Seat 1 — sign in to seat')
+    expect(wrapper?.textContent).toContain('sign in to seat')
+    expect(wrapper?.textContent).not.toMatch(/locked/i)
+  })
+
   it('reflects state in data-state attribute', () => {
     const { container, rerender } = render(<DemoSurface persona={persona} tag="empty" />)
     expect(container.firstElementChild?.getAttribute('data-state')).toBe('seated')

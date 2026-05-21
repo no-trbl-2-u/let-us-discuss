@@ -80,19 +80,19 @@ export function DemoSurface({ persona, tag }: Props) {
               />
             ) : (
               <div
-                aria-label={`Seat ${id} — demo locked`}
+                aria-label={`Seat ${id} — sign in to seat`}
                 className={cn(
                   'w-[140px] sm:w-[180px] md:w-[220px]',
                   'h-[80px] sm:h-[96px] md:h-[112px]',
                   'rounded-[var(--radius-md)]',
                   'border border-dashed border-[color:var(--paper-edge)]',
-                  'bg-transparent opacity-50 cursor-not-allowed',
+                  'bg-transparent opacity-50',
                   'flex flex-col items-center justify-center text-center',
                   'font-[var(--font-mono)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-faint)]',
                 )}
               >
                 <span>seat {id}</span>
-                <span className="mt-[var(--space-1)] text-[var(--text-3xs)]">demo · locked</span>
+                <span className="mt-[var(--space-1)] text-[var(--text-3xs)]">sign in to seat</span>
               </div>
             )}
           </div>
