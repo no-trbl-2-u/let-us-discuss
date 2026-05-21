@@ -18,33 +18,15 @@
   mechanism reference; states the user-visible fact directly.
   Regression regex on the page test updated to match.
 
-### [MED] /about/personas + /try — "Product lead · lead" role badge duplicates the name's trailing word
+### [x] [MED] /about/personas + /try — role-badge stutter on Product Lead — addressed at `e60a46d`
 
-- **pass:** 14 (commit `9a2c9b2`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** visual
-- **observation:** The PersonaCard renders the role token as
-  an uppercase chip immediately after the persona name. For
-  Product Lead — whose name's last word IS the role token
-  "lead" — the card reads "Product lead · LEAD · Concrete,
-  decisive, scope-defending." Three of the four conferring
-  personas don't have this collision because their names
-  don't end in "lead" or "specialist"; Product Lead does,
-  and so does the /try shelf which carries the same card.
-  Reads as a visual stutter for the persona that ships
-  pre-staffed on every demo.
-- **evidence:** /about/personas Product Lead card rendering:
-  "Product lead" then role badge "LEAD" (caps in design
-  token) then italic voice. Same shape on /try where PL
-  is the only seated persona. Skeptical Engineer (role
-  `lead`) reads "Skeptical engineer · LEAD" — no stutter;
-  EP + GV (role `specialist`) — no stutter.
-- **suggested fix:** Hide the role badge when its lowercase
-  text equals the trailing word of the persona name. (Or
-  always hide for PL specifically; the principled rule is
-  the first.)
-- **source:** web-fetch
+- **Pass:** 14 (commit `9a2c9b2`)
+- **Resolved 2026-05-21 at `e60a46d`** (issue #53). Picked
+  the principled rule: hide the role badge when its lowercase
+  text equals the trailing word of the persona name. New
+  `roleBadgeIsRedundant` helper in PersonaCard suppresses the
+  chip on PL today + any future persona whose name ends in
+  its role token. Regression tests added to the page test.
 
 ### [LOW] /try — "sign in to seat" repeats vertically four times
 
