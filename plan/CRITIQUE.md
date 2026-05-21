@@ -28,30 +28,14 @@
   chip on PL today + any future persona whose name ends in
   its role token. Regression tests added to the page test.
 
-### [LOW] /try — "sign in to seat" repeats vertically four times
+### [x] [LOW] /try — gated-tile sign-in CTA repetition — addressed at `d7a3054`
 
-- **pass:** 14 (commit `9a2c9b2`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** The five seat rows render seat 1 (PL,
-  seated) plus seats 2–5 each labelled "sign in to seat"
-  after the pass-12 fix at `7b7d58e` swapped "demo · locked"
-  → "sign in to seat" per-tile. Stacked vertically, the four
-  identical CTAs read more like a feature-wall than the
-  trimmed shelf at `72818f2` intended; the shelf itself
-  already says "Sign in to staff the table yourself."
-- **evidence:** WebFetch on /try shows seats 2–5 each carrying
-  "sign in to seat"; the shelf above carries the same CTA in
-  prose form via a link.
-- **suggested fix:** Trade-off vs. the pass-12 "locked-implies-
-  paywall" fix at `7b7d58e`. Two compatible directions —
-  (a) keep one tile labelled "sign in to seat" and label the
-  rest "empty"; or (b) make the per-tile label appear only
-  on hover/focus while the static badge reads "empty". Either
-  trims the vertical repetition without losing the gate
-  signal the per-tile label was originally added to surface.
-- **source:** web-fetch
+- **Pass:** 14 (commit `9a2c9b2`)
+- **Resolved 2026-05-21 at `d7a3054`** (issue #54). Visible
+  badge → "empty"; aria-label keeps the gate cue ("Seat N —
+  empty, sign in to staff"). Pass-12 #33 guard (no paywall
+  verb) + pass-13 #47 guard (shelf carries the visible CTA)
+  both preserved.
 
 ### [x] [HIGH] / — HERO_SUBHEAD canonical-constraint mismatch — addressed at `4de29b4`
 
