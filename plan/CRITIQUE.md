@@ -9,27 +9,14 @@
 
 ## Pending
 
-### [MED] /about — "one-word questions at the checkpoints" contradicts the canonical "1-word or 1-sentence answer" constraint
+### [x] [MED] /about — "one-word questions" canonical mismatch — addressed at `91090dd`
 
-- **pass:** 12 (commit `8b17933`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** /about's lede says the user "answer[s] one-word
-  questions at the checkpoints," but every other surface (landing
-  body, /try, the template constraint itself) describes the user
-  answering "in a word or one sentence." /about is the canonical
-  what-is-this surface — the wrong-shape version of the constraint
-  there mis-sells the actual experience.
-- **evidence:** /about lede: "You drag personas, hand over a
-  pitch, and answer one-word questions at the checkpoints." The
-  template at `templates/pitch-to-spec.json` says "Every question
-  must accept a 1-word or 1-sentence answer." Landing body uses
-  the same "one-sentence clarifying questions" framing.
-- **suggested fix:** Change /about's "one-word questions at the
-  checkpoints" to "one-word or one-sentence clarifying questions
-  at the checkpoints" so it matches every other surface.
-- **source:** web-fetch
+- **Pass:** 12 (commit `8b17933`)
+- **Resolved 2026-05-21 at `91090dd`** (issue #34). One-line
+  copy edit on `app/about/page.tsx`; lede now uses the
+  canonical "one-word or one-sentence clarifying questions"
+  shape that matches every other surface + the template
+  constraint.
 
 ### [MED] /about — "the v1 library is curated" uses "v1" without antecedent
 
