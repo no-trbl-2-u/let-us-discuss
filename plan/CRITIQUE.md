@@ -339,33 +339,21 @@
   `app/signin/__tests__/page.test.tsx` mirroring the
   landing-hero guard from `6f32cb8`.
 
-### [MED] /about/personas — Skeptical Engineer and Secretary share the "SE" monogram (visual collision)
+### [x] [MED] /about/personas — SE monogram collision — addressed at `9bb01c3`
 
-- **pass:** 11 (commit `9ed19c6`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** Two of the five persona cards on
-  /about/personas carry the identical monogram badge "SE" —
-  Skeptical Engineer and Secretary. A first-time visitor
-  scanning the library sees two visually-coded-identical
-  badges for two different roles. The collision became
-  inevitable when phase 21 added Secretary to the public
-  cast (same root as the pending pass-10 "these four → five"
-  finding), but the monogram collision is a separate
-  visual-identity bug the pending lede row doesn't cover.
-- **evidence:** Confirmed via WebFetch: rendered order on
-  /about/personas is PL (Product Lead), SE (Skeptical
-  Engineer), EP (End-user Proxy), GV (Growth Voice), SE
-  (Secretary). Both SE and Secretary render with the
-  monogram "SE".
-- **suggested fix:** Pick a non-colliding short code for
-  Secretary in `personas/secretary.md` — e.g. `SC` (Sec) or
-  `ST` (Scribe). Per bearings rule 10, persona changes ship
-  via PR. Data-layer-only edit; no component changes required
-  if the monogram is derived from the persona file's display
-  token.
-- **source:** web-fetch
+- **Pass:** 11 (commit `9ed19c6`)
+- **Resolved 2026-05-21 at `9bb01c3`** (issue #38). The
+  underlying algorithm (first-letter-of-each-of-first-two-
+  words; for single-word names, first two letters) made the
+  collision inevitable — "Skeptical Engineer" → "SE" + bare
+  "Secretary" → "SE". Fix added an optional `monogram` field
+  on the persona schema (single source of truth per phase 20)
+  that overrides the derivation when set; Secretary's
+  monogram is now `SC`. While at it, consolidated the
+  duplicate `monogramFor` in
+  `components/personas/persona-card.tsx` into the shared
+  `lib/personas/monogram.ts` helper so the same drift can't
+  recur.
 
 ### [LOW] / — "Drag two to six personas" landing copy contradicts the post-phase-21 cast count
 
