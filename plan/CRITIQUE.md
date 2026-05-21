@@ -59,27 +59,14 @@
   yet") so it doesn't pre-echo the H1.
 - **source:** web-fetch
 
-### [LOW] /about — "board-room table" hyphen contradicts the rest of the lexicon
+### [x] [LOW] /about — "board-room" hyphen on shipped lede — addressed at `a24cfaf`
 
-- **pass:** 13 (commit `83c595c`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** voice
-- **observation:** /about's lede hyphenates "board-room"
-  ("staff onto a board-room table") even though every other
-  surface — landing, eyebrow, H1, nav, /about/personas,
-  /try, persona prompt bodies — uses "boardroom" as one
-  word. Small but it's the very first sentence of the
-  explainer page; reads as a typo against the rest of the
-  lexicon.
-- **evidence:** /about lede: "...running a short, opinionated
-  conversation between AI personas you staff onto a
-  board-room table." Eyebrow on the same page: "boardroom ·
-  about".
-- **suggested fix:** "board-room table" → "boardroom table"
-  on /about. Single-word grep across `app/`, `components/`,
-  `personas/` confirms one-word "boardroom" everywhere else.
-- **source:** web-fetch
+- **Pass:** 13 (commit `83c595c`)
+- **Resolved 2026-05-21 at `a24cfaf`** (issue #49). One-line
+  swap on the /about lede; substrate-doc uses (spec.md,
+  README, design/, claude-design.prompt.md) keep the hyphen
+  since they articulate the metaphor rather than brand it
+  for a user.
 
 ### [LOW] /about/personas — Secretary card sits in the same visual grid as the four conferring personas
 
