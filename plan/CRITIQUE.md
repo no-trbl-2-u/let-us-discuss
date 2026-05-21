@@ -183,29 +183,14 @@
   let you staff the table yourself once you sign in." —
   names both the missing affordance and the gate.
 
-### [MED] /about/personas — no link back to /about, breaks the explainer → library traversal
+### [x] [MED] /about/personas — no link back to /about — addressed at `4f38e1a`
 
-- **pass:** 9 (commit `363aa2a`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** navigation
-- **observation:** Reader landed on `/about/personas` directly
-  (via footer link from another page) and found no path back
-  to the parent `/about` explainer. Header nav exposes
-  "Personas" (current page) and "Sign in"; footer repeats
-  Personas, Privacy, Terms. The only way to reach `/about`
-  from `/about/personas` is the browser back button or
-  retyping the URL.
-- **evidence:** Full anchor inventory on `/about/personas`:
-  skip-link, boardroom logo (→ /), Personas (self), Sign in,
-  Privacy, Terms. No `/about` link anywhere on the page.
-- **suggested fix:** Add `/about` to the global header nav
-  (alongside "Personas" + "Sign in"), OR ship a breadcrumb
-  matching the "boardroom · about" pattern already used on
-  `/about` — render "boardroom · about · personas" at the top
-  of `/about/personas`. Either closes the loop; the breadcrumb
-  is the smaller diff.
-- **source:** web-fetch
+- **Pass:** 9 (commit `363aa2a`); pending across passes 9–12.
+- **Resolved 2026-05-21 at `4f38e1a`** (issue #44). Eyebrow
+  reshaped from "boardroom · the starter shelf" to "boardroom
+  · about / personas" with /about linked — matches the
+  breadcrumb pattern already shipping on /app/settings/api-key
+  + /app/settings/delete-account. Header nav unchanged.
 
 ### [LOW] /about/personas — all four persona system prompts share the templated "You are the X at the boardroom table. Your job is to..." opener
 
