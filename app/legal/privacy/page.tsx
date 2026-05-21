@@ -78,9 +78,10 @@ export default function PrivacyPage() {
         <p>
           Every pitch you submit and every persona reply is run through
           OpenAI&apos;s omni-moderation endpoint before it&apos;s shown back or
-          saved. If it trips, the session halts with a polite refusal and we
-          keep a row of what tripped, the verdict, and the timestamp — see{' '}
-          <Link href="/legal/terms">Terms</Link> for what use is in-bounds.
+          saved. If it trips, the session halts with a polite refusal and
+          we keep a row of the offending text, the verdict, and the
+          timestamp — see <Link href="/legal/terms">Terms</Link> for what
+          use is in-bounds.
         </p>
       </LegalSection>
 
