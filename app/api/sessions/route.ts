@@ -1,3 +1,7 @@
+import {
+  logClarifyFormatIssues,
+  validateClarifyFormat,
+} from '@/lib/anthropic/clarify-validator'
 import { runConferring } from '@/lib/anthropic/conferring'
 import { resolveModel } from '@/lib/anthropic/models'
 import { resolveSessionClient } from '@/lib/anthropic/user-key-client'
@@ -237,6 +241,12 @@ export async function POST(req: NextRequest) {
           hooks: {
             async persistTurn(turn) {
               nextIdx = Math.max(nextIdx, turn.idx + 1)
+              if (turn.phase === 'clarify' && turn.author === 'persona') {
+                logClarifyFormatIssues(validateClarifyFormat(turn.body), {
+                  sessionId,
+                  personaSlug: turn.personaSlug,
+                })
+              }
               try {
                 await appendTurn(supabase, {
                   sessionId,

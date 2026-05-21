@@ -58,6 +58,15 @@ Leads do **two specific things**:
 You typically staff 1–2 leads per session. More than that and
 clarify rounds get noisy.
 
+Clarify-phase question shape follows
+[`CLARIFY-QUESTION-FORMAT.md`](./CLARIFY-QUESTION-FORMAT.md):
+1–4 questions per batch; the recommended option first
+(literal marker `(Recommended)`); each option's description
+names the trade-off; 2–4 sentences of prose preamble before
+the ask. **Soft-enforced** — the orchestrator logs format
+drift but does not reject or retry; lead persona bodies are
+the primary enforcement surface.
+
 ### `specialist`
 
 Specialists drill into a domain (UX, growth, eng, design, legal,

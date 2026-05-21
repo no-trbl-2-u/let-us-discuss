@@ -148,6 +148,14 @@
   where the scope context is fresh. Re-asking in the
   abstract before promotion risks a stale call by the time
   the phase actually ships.
+- **Pass-resolved 2026-05-21 — Q2 resolved by phase 28.**
+  The brief at `plan/phases/phase_28_clarify_question_format.md`
+  picked **soft-enforce** (validator logs format drift via
+  `logError('orchestrator', ..., { tag: 'clarify-format' })`
+  but does not retry/reject). Reasoning recorded in the
+  brief's Decisions block. Q1 and Q3 stay pending — each
+  gates a different candidate (Ideas 2 and 7 in
+  `plan/PHASE_CANDIDATES.md`).
 - **What to do:** When `/oversight` (or `/expand`) promotes
   Idea 1, 2, or 7, lift the matching question into the
   phase brief's Open Questions section and resolve it there.
