@@ -58,18 +58,26 @@ describe('DemoSurface', () => {
     }
   })
 
-  it('gated seats label themselves as a sign-in invitation, not as "locked"', () => {
-    // Regression guard for /critique pass-12 MED: "demo · locked"
-    // implied a paywall the product doesn't have. The new copy names
-    // the actual gate (sign in) without the transactional verb.
+  it('gated seats label themselves descriptively ("empty"), with the sign-in cue in aria-label only', () => {
+    // Trade-off across two /critique passes:
+    //   - pass-12 MED #33: "demo · locked" implied a paywall the
+    //     product doesn't have; replaced with "sign in to seat".
+    //   - pass-14 LOW #54: four vertical "sign in to seat" CTAs read
+    //     as a feature-wall; the shelf already carries the prose CTA.
+    // Resolution: visible badge is "empty" (descriptive, no
+    // transactional verb), aria-label still names the gate so screen
+    // readers + tooltips discover it.
     const { container } = render(<DemoSurface persona={persona} tag="empty" />)
     const wrapper = container.querySelector(
       '[data-seat-id="1"][data-locked]',
     )
     const inner = wrapper?.querySelector('[aria-label]')
-    expect(inner?.getAttribute('aria-label')).toBe('Seat 1 — sign in to seat')
-    expect(wrapper?.textContent).toContain('sign in to seat')
+    expect(inner?.getAttribute('aria-label')).toBe(
+      'Seat 1 — empty, sign in to staff',
+    )
+    expect(wrapper?.textContent).toContain('empty')
     expect(wrapper?.textContent).not.toMatch(/locked/i)
+    expect(wrapper?.textContent).not.toMatch(/sign in to seat/i)
   })
 
   it('reflects state in data-state attribute', () => {

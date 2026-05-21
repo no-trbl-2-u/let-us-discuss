@@ -80,7 +80,7 @@ export function DemoSurface({ persona, tag }: Props) {
               />
             ) : (
               <div
-                aria-label={`Seat ${id} — sign in to seat`}
+                aria-label={`Seat ${id} — empty, sign in to staff`}
                 className={cn(
                   'w-[140px] sm:w-[180px] md:w-[220px]',
                   'h-[80px] sm:h-[96px] md:h-[112px]',
@@ -92,7 +92,7 @@ export function DemoSurface({ persona, tag }: Props) {
                 )}
               >
                 <span>seat {id}</span>
-                <span className="mt-[var(--space-1)] text-[var(--text-3xs)]">sign in to seat</span>
+                <span className="mt-[var(--space-1)] text-[var(--text-3xs)]">empty</span>
               </div>
             )}
           </div>
