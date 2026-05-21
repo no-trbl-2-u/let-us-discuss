@@ -2,8 +2,22 @@ import type { Persona } from '@framework/schemas/persona'
 import { cn } from '@/lib/cn'
 import { monogramFor } from '@/lib/personas/monogram'
 
+// Suppress the role badge when its lowercase text equals the trailing
+// word of the persona name. Avoids the "Product lead · LEAD" stutter
+// that surfaces whenever a persona name ends in its own role token
+// (PL today; any future persona named "<X> specialist" or "<Y>
+// secretary" follows the same shape). The lead/specialist distinction
+// is also signalled by the lead-only accent treatment, so the badge
+// is reinforcement rather than the primary signal — safe to drop on
+// collision.
+function roleBadgeIsRedundant(persona: Persona): boolean {
+  const lastWord = persona.name.trim().split(/\s+/).pop()?.toLowerCase()
+  return lastWord === persona.role
+}
+
 export function PersonaCard({ persona }: { persona: Persona }) {
   const isLead = persona.role === 'lead'
+  const showRoleBadge = !roleBadgeIsRedundant(persona)
 
   return (
     <article
@@ -33,17 +47,19 @@ export function PersonaCard({ persona }: { persona: Persona }) {
             {persona.name}
           </h2>
           <span className="font-[var(--font-sans)] text-[var(--text-2xs)] text-[color:var(--ink-muted)]">
-            <span
-              className={cn(
-                'inline-flex items-center rounded-[var(--radius-sm)] px-[var(--space-2)] py-[1px] mr-[var(--space-2)]',
-                'font-medium uppercase tracking-[var(--tracking-caps)]',
-                isLead
-                  ? 'bg-[color:var(--accent-tint)] text-[color:var(--accent)]'
-                  : 'bg-[color:var(--paper-sunken)] text-[color:var(--ink-muted)]',
-              )}
-            >
-              {persona.role}
-            </span>
+            {showRoleBadge ? (
+              <span
+                className={cn(
+                  'inline-flex items-center rounded-[var(--radius-sm)] px-[var(--space-2)] py-[1px] mr-[var(--space-2)]',
+                  'font-medium uppercase tracking-[var(--tracking-caps)]',
+                  isLead
+                    ? 'bg-[color:var(--accent-tint)] text-[color:var(--accent)]'
+                    : 'bg-[color:var(--paper-sunken)] text-[color:var(--ink-muted)]',
+                )}
+              >
+                {persona.role}
+              </span>
+            ) : null}
             <span className="italic">{persona.voice}</span>
           </span>
         </div>

@@ -41,12 +41,30 @@ describe('/about/personas page', () => {
     expect(screen.getByText('End-user proxy')).toBeInTheDocument()
   })
 
-  it('renders a role tag for each persona', () => {
+  it('renders a role badge for personas whose name does not duplicate the role', () => {
     render(PersonasPage())
-    expect(screen.getAllByText(/lead/i, { selector: 'span' }).length).toBeGreaterThan(
-      0,
+    // EP's role tag renders (name "End-user proxy" does not end in
+    // "specialist", so the badge isn't redundant).
+    expect(
+      screen.getAllByText(/specialist/i, { selector: 'span' }).length,
+    ).toBe(1)
+  })
+
+  it('suppresses the role badge when the persona name ends in the role token', () => {
+    // Pass-14 fix at issue #53: "Product lead · LEAD" stutter is
+    // suppressed by hiding the badge when its lowercase text equals
+    // the trailing word of the name. The lead-accent treatment on the
+    // card still distinguishes role visually.
+    const { container } = render(PersonasPage())
+    // The role badge is rendered as a <span> inside the card header;
+    // its computed class set carries `uppercase`. PL's badge should
+    // not be in the DOM at all (rather than just visually hidden), so
+    // grep for any uppercase-rendering span containing exactly "lead".
+    const leadBadges = container.querySelectorAll('span.uppercase')
+    const leadBadgeTexts = Array.from(leadBadges).map(
+      (el) => el.textContent?.toLowerCase().trim(),
     )
-    expect(screen.getAllByText(/specialist/i, { selector: 'span' }).length).toBe(1)
+    expect(leadBadgeTexts).not.toContain('lead')
   })
 
   it('keeps system-prompt details closed by default', () => {
