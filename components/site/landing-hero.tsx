@@ -6,7 +6,7 @@ export const HERO_HEADLINE =
   'A short, opinionated meeting between AI personas — and you leave with a usable spec.'
 
 export const HERO_SUBHEAD =
-  "Drop a few personas onto the table, hand them your pitch, and let them confer. You answer one-word questions at the checkpoints. They do the thinking."
+  "Drop a few personas onto the table, hand them your pitch, and let them confer. You answer one-word or one-sentence clarifying questions at the checkpoints. They do the thinking."
 
 const NOTES = [
   {
