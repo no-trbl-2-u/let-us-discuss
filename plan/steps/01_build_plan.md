@@ -134,7 +134,7 @@ commit that ships the phase.
       excludes the per-session footer already shipped by
       phase 16; the brief calls that out to prevent scope
       leak.) — `740d7ad`
-- [ ] Phase 26 — BYO Anthropic API key (foundation:
+- [x] Phase 26 — BYO Anthropic API key (foundation:
       encrypted-key schema via Supabase Vault or pgsodium;
       `lib/byok/encrypt.ts` + `decrypt.ts` server-only;
       `/app/settings/api-key` UI to paste/rotate/revoke;
@@ -142,7 +142,7 @@ commit that ships the phase.
       `/app/settings/api-key` to the bearings URL contract.
       Scout pass during brief generation confirms Vault vs.
       application-level KMS choice. Ship before phase 27 —
-      phase 27 reads the encrypted key.)
+      phase 27 reads the encrypted key.) — `c162ed8`
 - [ ] Phase 27 — BYO Anthropic API key (orchestrator
       integration: active session reads the user's key when
       present and instantiates a second Anthropic client;
