@@ -4,20 +4,33 @@
 > pass. Manual entries are allowed; `/iterate audit` should
 > preserve rows whose source is `[oversight]` or `[user]`.
 
-> **Operator migration batch (oversight 2026-05-20, round 13):**
-> Three `[operator]` rows below queue Supabase migrations
-> (phase 16 token usage, phase 21 secretary, phase 22 retros).
-> Decision this round: **apply all three in one batch after
-> phase 23 ships** — phase 23's admin dashboard reads from the
-> phase-16 columns, so the migrations and the new admin tiles
-> light up together. Until then phase 22's retro loop is a
-> no-op in prod and SessionUsageFooter renders `—`. `/iterate`
-> continues to skip these rows per the `[operator]` contract.
+> **Bias: voice + comprehension** (set via oversight 2026-05-20
+> round 15). The cast-count drift findings on `/about/personas`
+> + the landing copy (rooted in phase 21 making Secretary
+> public) are still pending across pass 10 + 11; `/iterate`
+> should weight voice + comprehension findings 1.5x next tick
+> so the trio drains in 1–3 ticks instead of lagging behind the
+> phase-ship cadence.
+
+> **Operator migration batch (oversight 2026-05-20, round 15):**
+> Four `[operator]` rows below queue: three Supabase migrations
+> (phase 16 token usage, phase 21 secretary, phase 22 retros)
+> plus the phase 23 `ADMIN_EMAILS` env. Phases 23/24/25 have all
+> shipped, so the round-13 "batch after phase 23 ships" trigger
+> is met. An ELI5 walkthrough for applying all four lives at
+> `setup/operator-batch.md` (filed this round at the user's
+> request). Until applied: SessionUsageFooter renders `—` for
+> every session, phase 21's secretary turns silently drop at
+> the DB, phase 22's retro loop is a no-op, and `/admin` 404s
+> for every user. `/iterate` continues to skip these rows per
+> the `[operator]` contract until the operator confirms they're
+> applied.
 
 ## Pending
 
 ### [operator] Set `ADMIN_EMAILS` for the /admin dashboard
 
+- **Walkthrough:** `setup/operator-batch.md` Step 4.
 - **Source:** phase 23 ship (commit pending)
 - **Score:** 3.0 (medium — without `ADMIN_EMAILS`, the
   `/admin` route 404s for every authed user. The page is
@@ -118,6 +131,7 @@
 
 ### [operator] Apply phase-16 token-usage migration in Supabase
 
+- **Walkthrough:** `setup/operator-batch.md` Step 1.
 - **Source:** /iterate audit 2026-05-18 (gap-filling pass —
   the action was called out in phase 16's commit body at
   `7171206` but never surfaced in this audit queue).
@@ -149,6 +163,7 @@
 
 ### [operator] Apply phase-21 secretary migration in Supabase
 
+- **Walkthrough:** `setup/operator-batch.md` Step 2.
 - **Source:** oversight 2026-05-19 round 12 (backfill — phase 21's
   commit body at `fada1d9` promised this row but the shipping
   never filed it).
@@ -178,6 +193,7 @@
 
 ### [operator] Apply phase-22 retros migration in Supabase
 
+- **Walkthrough:** `setup/operator-batch.md` Step 3.
 - **Source:** oversight 2026-05-19 round 12 (backfill — phase 22's
   commit body at `3465e5c` promised this row but the shipping
   never filed it).

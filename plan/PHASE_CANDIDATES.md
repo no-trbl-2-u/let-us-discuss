@@ -337,6 +337,13 @@
   candidate + a fresh read of `templates/pitch-to-spec.json`
   + `lib/anthropic/conferring.ts` + the current artifact
   render grid.
+- oversight 2026-05-20 round 15: **held** — outscores BYOK
+  26/27 but BYOK is already in flight (phase 26 brief landed
+  this round). Promote after phase 27 ships to avoid
+  interleaving two multi-phase initiatives. The cast-count
+  drift findings on /about/personas + landing hint at
+  artifact-contract drift but are voice-layer issues
+  /iterate can drain — they don't change this hold decision.
 
 ### [ ] [score 4.0] Quota visibility — surface remaining sessions/day before the user starts
 
