@@ -18,26 +18,17 @@
   shape that matches every other surface + the template
   constraint.
 
-### [MED] /about — "the v1 library is curated" uses "v1" without antecedent
+### [x] [MED] /about + /about/personas — bare "v1" without antecedent — addressed at `163787c`
 
-- **pass:** 12 (commit `8b17933`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** /about is the natural first-time-visitor entry
-  point but uses the bare term "v1" without ever defining it.
-  /about/personas's lede also leans on "v1" ("the v1 library is
-  these four"), and earlier MED critique-pass-9 closed at
-  `4babc35` had to clean up three different meanings of "v1" on
-  one page. The pattern keeps recurring; reads as engineer voice
-  that the bearings "plainspoken, no marketing fluff" cue rejects.
-- **evidence:** /about "What it isn't": "isn't a place to author
-  personas or templates — the v1 library is curated." /about/personas
-  lede also uses "the v1 library is these four."
-- **suggested fix:** On /about, swap "v1 library" for "starter
-  library" (or briefly gloss v1 the first time it appears). Apply
-  the same swap on /about/personas to keep the surfaces aligned.
-- **source:** web-fetch
+- **Pass:** 12 (commit `8b17933`)
+- **Resolved 2026-05-21 at `163787c`** (issue #35). Swapped
+  "v1" → "starter" on every user-visible surface across both
+  pages (lede, breadcrumb eyebrow, "What it isn't" body, "Try
+  it" link copy, OG/Twitter metadata description). Left the
+  dead empty-state branch at `app/about/personas/page.tsx:56`
+  untouched per the commit body — it's not user-reachable and
+  is pinned as a regex fixture in
+  `lib/site/__tests__/empty-state-copy.test.ts`.
 
 ### [LOW] /signin — "We never use this for anything else." reads as defensive marketing reassurance
 
