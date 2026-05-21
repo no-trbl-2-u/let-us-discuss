@@ -335,44 +335,17 @@
   `lib/personas/monogram.ts` helper so the same drift can't
   recur.
 
-### [LOW] / — "Drag two to six personas" landing copy contradicts the post-phase-21 cast count
+### [x] [LOW] / — landing "two to six" cast drift — addressed at `d24e362`
 
-- **pass:** 11 (commit `9ed19c6`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** Landing's "How a session runs" step copy
-  still reads "Drag two to six personas from the shelf onto
-  the boardroom. Each persona has a fixed voice and role —
-  you don't write prompts." The user-pickable cast is now
-  four conferring personas (PL/SE/EP/GV) plus an
-  auto-injected Secretary that isn't user-drag-staffed.
-  A visitor reading "two to six" then arriving at
-  /about/personas counts five cards and asks which two-to-six
-  the landing meant. Adjacent to the pending pass-10
-  "these four → five" lede finding but on a different
-  surface — that one is on /about/personas; this one is
-  the landing step copy.
-- **evidence:** Landing "How a session runs" step i body
-  verbatim: "Drag two to six personas from the shelf onto
-  the boardroom. Each persona has a fixed voice and role —
-  you don't write prompts." /about/personas now renders
-  five cards including Secretary, whose voice descriptor
-  ("Quiet, append-only, taxonomy-driven") and first prompt
-  line ("You are the secretary at the table. You do not
-  argue, propose, defend scope, or take a position.")
-  signal a meta-role rather than a draggable conferrer.
-- **suggested fix:** Either (a) reword to "Drag two to four
-  personas onto the table; a Secretary keeps the log" —
-  names the meta-role explicitly and stops promising a
-  six-slot drag the cast can't fill — or (b) drop the range
-  to "two to four" and let the Secretary line live only on
-  /about/personas. Option (a) keeps the landing honest about
-  the full cast; (b) is the smaller diff. Cleanest closure
-  bundles this with the pending /about/personas "these four
-  → five" row in a single edit pass so the user-pickable
-  count matches across surfaces.
-- **source:** web-fetch
+- **Pass:** 11 (commit `9ed19c6`)
+- **Resolved 2026-05-21 at `d24e362`** (issue #40). Picked
+  option (a): "Drag two to four personas onto the table; a
+  Secretary keeps the log." Aligns with the
+  /about/personas lede reframe at `baa28ea`. HERO_SUBHEAD
+  on the same file still has the "one-word questions" drift
+  the /about fix cleaned up at `91090dd` — separate row,
+  next critique pass will surface (or /iterate picks up
+  directly).
 
 ## Done
 
