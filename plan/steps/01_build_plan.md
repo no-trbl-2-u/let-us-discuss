@@ -185,7 +185,7 @@ commit that ships the phase.
       verify-gate guard. Promoted by `/oversight` 2026-05-21
       (round 17) from `plan/PHASE_CANDIDATES.md`
       `[7.5] Voice-canon`. — `aa81a63`
-- [ ] Phase 30 — Operator-batch one-shot apply script +
+- [x] Phase 30 — Operator-batch one-shot apply script +
       `/admin/migrations` status surface
       (`scripts/operator-apply.mjs` runs every
       `db/migrations/*.sql` in order, idempotent, tracked
@@ -197,7 +197,7 @@ commit that ships the phase.
       "apply pending migrations via `pnpm db:apply-pending`").
       Promoted by `/oversight` 2026-05-21 (round 17) from
       `plan/PHASE_CANDIDATES.md` `[7.0] Operator-batch`.
-      Sequenced after phase 29.
+      Sequenced after phase 29. — `9e5c7b7`
 
 > **Phase numbering note:** Phase 19 (Quota visibility) was
 > promoted in round 7 but never shipped; oversight round 10
