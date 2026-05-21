@@ -75,7 +75,7 @@ export function DemoSurface({ persona, tag }: Props) {
                 role={persona.role}
                 voice={persona.voice}
                 blurb={persona.summary}
-                monogram={monogramFor(persona.name)}
+                monogram={monogramFor(persona)}
                 className="w-[160px] sm:w-[200px] md:w-[220px]"
               />
             ) : (

@@ -1,12 +1,6 @@
 import type { Persona } from '@framework/schemas/persona'
 import { cn } from '@/lib/cn'
-
-function monogramFor(name: string): string {
-  const parts = name.split(/\s+/).filter(Boolean)
-  if (parts.length === 0) return '··'
-  if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase()
-  return `${parts[0]![0] ?? ''}${parts[1]![0] ?? ''}`.toUpperCase()
-}
+import { monogramFor } from '@/lib/personas/monogram'
 
 export function PersonaCard({ persona }: { persona: Persona }) {
   const isLead = persona.role === 'lead'
@@ -32,7 +26,7 @@ export function PersonaCard({ persona }: { persona: Persona }) {
             'shadow-[inset_0_1px_2px_oklch(0%_0_0_/_0.08),inset_0_-1px_0_oklch(100%_0_0_/_0.6)]',
           )}
         >
-          {monogramFor(persona.name)}
+          {monogramFor(persona)}
         </span>
         <div className="flex flex-col leading-tight">
           <h2 className="font-[var(--font-serif)] font-semibold text-[var(--text-lg)] tracking-[var(--tracking-tight)] text-[color:var(--ink-strong)]">

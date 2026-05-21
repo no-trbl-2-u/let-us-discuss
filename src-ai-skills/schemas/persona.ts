@@ -15,6 +15,10 @@ export const PersonaFrontmatterSchema = z.object({
   lead: z.boolean(),
   tools: z.array(z.string().min(1)).default([]),
   summary: z.string().min(8).max(200),
+  monogram: z
+    .string()
+    .regex(/^[A-Z]{1,3}$/, 'monogram must be 1–3 uppercase letters')
+    .optional(),
 })
 
 export type PersonaFrontmatter = z.infer<typeof PersonaFrontmatterSchema>

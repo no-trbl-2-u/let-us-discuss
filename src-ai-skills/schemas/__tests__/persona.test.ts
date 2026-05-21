@@ -58,6 +58,29 @@ describe('PersonaFrontmatterSchema', () => {
     })
     expect(result.success).toBe(false)
   })
+
+  it('accepts an optional monogram of 1–3 uppercase letters', () => {
+    for (const mono of ['SC', 'X', 'STA']) {
+      const result = PersonaFrontmatterSchema.safeParse({
+        ...good,
+        monogram: mono,
+      })
+      expect(result.success, `monogram "${mono}" should parse`).toBe(true)
+    }
+  })
+
+  it('rejects a monogram that is lowercase, too long, or non-letter', () => {
+    for (const mono of ['sc', 'STAR', '12', '']) {
+      const result = PersonaFrontmatterSchema.safeParse({
+        ...good,
+        monogram: mono,
+      })
+      expect(
+        result.success,
+        `monogram "${mono}" should not parse`,
+      ).toBe(false)
+    }
+  })
 })
 
 describe('PersonaSchema', () => {

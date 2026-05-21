@@ -44,7 +44,7 @@ export function DemoTranscript({ persona, revealIndex, done, onSkip }: Props) {
           const isModerator = i === moderatorIndex
           const name = isModerator ? 'Boardroom' : persona.name
           const voice = isModerator ? 'wrap-up' : persona.voice
-          const monogram = isModerator ? 'B' : monogramFor(persona.name)
+          const monogram = isModerator ? 'B' : monogramFor(persona)
           return (
             <TurnBubble
               key={i}

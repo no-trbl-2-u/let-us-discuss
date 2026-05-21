@@ -28,6 +28,7 @@ voice: One short clause                      # 4-200 chars, voice-cue for the pe
 lead: true | false                           # true → this persona drives the clarify phase
 tools: []                                    # array of tool names; [] for v1
 summary: One line                            # 8-200 chars, why you'd staff them
+monogram: SC                                 # optional, 1-3 uppercase letters; overrides the name-derived monogram
 ---
 ```
 
@@ -38,6 +39,7 @@ summary: One line                            # 8-200 chars, why you'd staff them
 | `role` | `lead` or `specialist`. Drives turn-taking in the template. | See **Role** below. |
 | `voice` | One-clause voice description. | This appears as the byline next to the persona's name in transcripts. Examples: "Concrete, decisive, scope-defending." / "Plain, curious, didn't-read-the-spec." |
 | `lead` | Whether this persona drives the `clarify` phase (asks initial questions). | Should be `true` only if `role: lead`. The orchestrator enforces this. |
+| `monogram` | Optional 1–3 uppercase letters used for the persona's avatar badge. | Omit to let the runtime derive from `name` (first letter of each of the first two words). Set explicitly when the derived value would collide with another persona's. |
 | `tools` | Array of tool names this persona may invoke. | Empty in v1 (no tools shipped). Reserved for future tool-calling personas. |
 | `summary` | One-line answer to "why staff them?". | Used in the persona-library UI. |
 
