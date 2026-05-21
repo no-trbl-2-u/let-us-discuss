@@ -277,38 +277,17 @@
   edits ship via PR per bearings rule 10.
 - **source:** web-fetch
 
-### [MED] /about/personas — lede says "these four" but the library now lists five personas (Secretary went public in phase 21)
+### [x] [MED] /about/personas — lede cast-count drift — addressed at `baa28ea`
 
-- **pass:** 10 (commit `f21399e`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** voice
-- **observation:** Phase 21 added `personas/secretary.md` to the
-  deployed cast so `loadPersonas()` returns five entries; the
-  `/about/personas` page now renders five persona cards (PL,
-  SE, EP, GV, Secretary). The page lede was never updated and
-  still reads "The v1 library is these four; user-defined
-  personas aren't shipped yet." A first-time visitor counting
-  cards immediately catches the contradiction — the surface
-  undermines its own plainspoken voice.
-- **evidence:** Verbatim lede on `/about/personas`: "The v1
-  library is these four; user-defined personas aren't shipped
-  yet." Actual cards rendered: Product Lead, Skeptical
-  Engineer, End-user Proxy, Growth Voice, Secretary — five
-  total. Phase 21's brief explicitly anticipated this in its
-  Follow-ups section: "Cast-guard exposure on /about/personas
-  — currently the page lists all four user-pickable personas;
-  secretary rendering on that page is a small follow-up so
-  the public library is honest about the full cast." Filed
-  here per that anticipation.
-- **suggested fix:** Two compatible options; either works.
-  (1) Change "these four" → "these five" and adjust trailing
-  copy if needed. (2) Reframe Secretary as a meta-role
-  distinct from the four conferring personas — e.g. "Four
-  personas confer; a Secretary keeps the log." Option 2 is
-  more honest about the cast guard's "exactly one secretary,
-  auto-injected" UX shape; option 1 is the smaller diff.
-- **source:** web-fetch
+- **Pass:** 10 (commit `f21399e`); pending across passes 10–12.
+- **Resolved 2026-05-21 at `baa28ea`** (issue #37). Picked
+  option 2 (the reframe) over option 1 (bare four→five swap)
+  because Secretary is structurally different — auto-injected
+  by the cast guard, runs the log, doesn't get dragged the
+  same way. New lede: "The starter library is four conferring
+  personas plus a Secretary who keeps the log; you drag the
+  ones you want onto the table." Closes phase 21's
+  anticipated follow-up.
 
 ### [LOW] /legal/privacy + /legal/terms — "Plain version:" label primes a legal counterpart neither page provides
 
