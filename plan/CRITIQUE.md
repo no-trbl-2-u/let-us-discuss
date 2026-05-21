@@ -1,13 +1,58 @@
 # Critique log
 
-> Last pass: 2026-05-21 at commit 9a2c9b2
-> Pass count: 14
+> Last pass: 2026-05-21 at commit 6090b4f
+> Pass count: 15
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
 > for the contract.
 
 ## Pending
+
+### [LOW] /signin — helper doesn't tell first-timers that submitting creates an account
+
+- **pass:** 15 (commit `6090b4f`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** The email helper says the address is
+  "used to send the magic link and attach your sessions to
+  this account" but never tells a first-time visitor that
+  the link will *create* the account on first click. The
+  page reads as login-only, which can make new arrivals
+  hesitate before submitting an email they've never
+  registered. The only secondary CTA referencing newness
+  is "New here? What boardroom is." — which routes to
+  /about (the explainer), not a create-account hint.
+- **evidence:** Email helper (shipped `fc13867`): "Used
+  to send the magic link and attach your sessions to this
+  account." Heading: "Sign in".
+- **suggested fix:** Half a sentence on the helper:
+  "...attach your sessions to this account. New email?
+  We'll create the account on first link click."
+- **source:** web-fetch
+
+### [LOW] /about/personas — Log-keeper helper cadence reads choppier than the surrounding voice
+
+- **pass:** 15 (commit `6090b4f`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** voice
+- **observation:** The Log-keeper helper at `b2b9de9`
+  reads "Always at the table; you never seat the
+  Secretary. It doesn't confer; it runs the log." The
+  two adjacent "It" clauses share the same antecedent
+  but are separated by a period; the second sentence
+  reads like a fragment when read aloud. Subjective
+  stylistic note rather than a substantive bug — but
+  the surrounding /about/personas copy is denser and
+  more flowing.
+- **evidence:** `app/about/personas/page.tsx` Log-keeper
+  helper line.
+- **suggested fix:** Tighten to one sentence with an
+  em-dash: "Always at the table; you never seat the
+  Secretary — it doesn't confer, it runs the log."
+- **source:** web-fetch
 
 ### [x] [MED] /about/personas — "cast guard" jargon dropped — addressed at `b2b9de9`
 
@@ -214,6 +259,9 @@
 - **Pass-14 re-check (2026-05-21, commit `9a2c9b2`):** Reader
   again confirmed `mcp__claude-in-chrome__*` unavailable.
   14 consecutive passes WebFetch-only.
+- **Pass-15 re-check (2026-05-21, commit `6090b4f`):** Reader
+  confirmed `mcp__claude-in-chrome__*` still unavailable.
+  15 consecutive passes WebFetch-only.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
 ### [needs-user-call] SUPABASE_E2E_SESSION_COOKIE unset — authed /critique cannot walk /app
@@ -268,6 +316,8 @@
   passes blocked at the same gate.
 - **Pass-14 re-check (2026-05-21, commit `9a2c9b2`):** Same;
   anonymous only. Six consecutive authed-blocks.
+- **Pass-15 re-check (2026-05-21, commit `6090b4f`):** Same;
+  anonymous only. Seven consecutive authed-blocks.
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ### [x] [MED] /try — drag-promise gap — addressed at `ec81a40`
