@@ -1,13 +1,159 @@
 # Critique log
 
-> Last pass: 2026-05-21 at commit 8b17933
-> Pass count: 12
+> Last pass: 2026-05-21 at commit 83c595c
+> Pass count: 13
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
 > for the contract.
 
 ## Pending
+
+### [HIGH] / — hero subhead still says "one-word questions" (predicted regression from pass-12 fix sweep)
+
+- **pass:** 13 (commit `83c595c`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** voice
+- **observation:** The /about lede was corrected at `91090dd`
+  to use the canonical "one-word or one-sentence clarifying
+  questions" shape, but the landing hero subhead in the same
+  component file still carries the old "You answer one-word
+  questions at the checkpoints" copy. Pass-12 closure note
+  for issue #40 explicitly called this out as the
+  not-bundled drift; pass 13 confirms it survived.
+- **evidence:** Hero subhead on `/`: "Drop a few personas
+  onto the table, hand them your pitch, and let them confer.
+  You answer one-word questions at the checkpoints. They do
+  the thinking." Source: `components/site/landing-hero.tsx`
+  `HERO_SUBHEAD` constant (around L8). Compare canonical:
+  the template constraint says "Every question must accept a
+  1-word or 1-sentence answer."; /about lede + landing step
+  copy both align.
+- **suggested fix:** Edit `HERO_SUBHEAD` in
+  `components/site/landing-hero.tsx`: "You answer one-word
+  questions at the checkpoints." → "You answer one-word or
+  one-sentence clarifying questions at the checkpoints."
+- **source:** web-fetch
+
+### [MED] /try — "The Product Lead is already at the table." body restates the new lede
+
+- **pass:** 13 (commit `83c595c`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** The /try lede was rewritten at `ec81a40`
+  to say "The demo seats the Product Lead for you; full
+  sessions let you staff the table yourself once you sign
+  in." A body paragraph below the lede still says "The
+  Product Lead is already at the table. The other seats are
+  locked — sign in to staff the full table." — same idea
+  twice within two consecutive blocks. The body line feels
+  like leftover copy from before the lede was rewritten.
+- **evidence:** Lede (page header on /try): "One persona,
+  three canned turns, three artifact tiles. The demo seats
+  the Product Lead for you; full sessions let you staff the
+  table yourself once you sign in." Body just below the
+  boardroom: "The Product Lead is already at the table. The
+  other seats are locked — sign in to staff the full table."
+  Source: `components/demo/demo-shelf.tsx` (the
+  "already at the table" string lives there per
+  `grep -rn`).
+- **suggested fix:** Drop the body restatement and let the
+  seat tiles' "sign in to seat" labels (shipped at
+  `7b7d58e`) carry the message. Or compress to a single
+  line above the table.
+- **source:** web-fetch
+
+### [MED] /try — "1 persona" vs "one persona" register drift on the same page
+
+- **pass:** 13 (commit `83c595c`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** voice
+- **observation:** The /try page renders the persona count
+  in two different registers within a few hundred pixels:
+  a subheading reads "demo · 1 persona" (numeric) while the
+  Start-demo button caption reads "3 turns · one persona ·
+  no AI calls" (prose). Same surface, same concept, two
+  styles. Reads as drafted-by-committee against the
+  plainspoken-colleague voice.
+- **evidence:** Subheading: "demo · 1 persona". Button
+  caption: "3 turns · one persona · no AI calls".
+- **suggested fix:** Pick one register on /try. Prose-style
+  "one persona" in both places matches the surrounding body
+  copy.
+- **source:** web-fetch
+
+### [LOW] / — landing eyebrow paraphrases the H1 (no new info)
+
+- **pass:** 13 (commit `83c595c`); previously surfaced and
+  dismissed at pass 12 self-assessment, re-flagged here.
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** Eyebrow and H1 collapse to nearly the
+  same sentence: eyebrow "boardroom — a short, opinionated
+  meeting with AI personas" and H1 "A short, opinionated
+  meeting between AI personas — and you leave with a usable
+  spec." The eyebrow does no work the H1 doesn't already do;
+  the only new information is the product name, which is
+  already in the header nav. First paint reads twice before
+  reaching the lede.
+- **evidence:** Eyebrow: "boardroom — a short, opinionated
+  meeting with AI personas". H1: "A short, opinionated
+  meeting between AI personas — and you leave with a usable
+  spec."
+- **suggested fix:** Shorten the landing eyebrow to a
+  category label ("boardroom") or a different orienting
+  phrase (audience, e.g. "for solo builders without a spec
+  yet") so it doesn't pre-echo the H1.
+- **source:** web-fetch
+
+### [LOW] /about — "board-room table" hyphen contradicts the rest of the lexicon
+
+- **pass:** 13 (commit `83c595c`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** voice
+- **observation:** /about's lede hyphenates "board-room"
+  ("staff onto a board-room table") even though every other
+  surface — landing, eyebrow, H1, nav, /about/personas,
+  /try, persona prompt bodies — uses "boardroom" as one
+  word. Small but it's the very first sentence of the
+  explainer page; reads as a typo against the rest of the
+  lexicon.
+- **evidence:** /about lede: "...running a short, opinionated
+  conversation between AI personas you staff onto a
+  board-room table." Eyebrow on the same page: "boardroom ·
+  about".
+- **suggested fix:** "board-room table" → "boardroom table"
+  on /about. Single-word grep across `app/`, `components/`,
+  `personas/` confirms one-word "boardroom" everywhere else.
+- **source:** web-fetch
+
+### [LOW] /about/personas — Secretary card sits in the same visual grid as the four conferring personas
+
+- **pass:** 13 (commit `83c595c`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** The lede reframed at `baa28ea` says "four
+  conferring personas plus a Secretary who keeps the log."
+  The "four plus one" framing isn't reinforced visually —
+  the Secretary card (now monogram `SC`) renders in the same
+  uniform grid as PL/SE/EP/GV. A first-time visitor reading
+  the lede then scanning the grid still has to read the SC
+  card's body to confirm Secretary is structurally different.
+- **evidence:** Lede phrasing on /about/personas; rendered
+  card grid: PL, SE, EP, GV, SC — uniform visual treatment.
+  SC card's summary is the only one without a quoted
+  directive; only structural cue otherwise is the body prose.
+- **suggested fix:** Either visually separate the Secretary
+  card (divider, subheading "Log-keeper", or muted styling)
+  or add a one-line tag on the SC card like
+  "log-keeper, non-conferring" to mirror the lede's grouping.
+- **source:** web-fetch
 
 ### [x] [MED] /about — "one-word questions" canonical mismatch — addressed at `91090dd`
 
@@ -124,6 +270,9 @@
   again confirmed `mcp__claude-in-chrome__*` not in its tool
   list this invocation. 12 consecutive passes WebFetch-only.
   Status unchanged.
+- **Pass-13 re-check (2026-05-21, commit `83c595c`):** Reader
+  confirmed `mcp__claude-in-chrome__*` still not in tool list.
+  13 consecutive passes WebFetch-only. Status unchanged.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
 ### [needs-user-call] SUPABASE_E2E_SESSION_COOKIE unset — authed /critique cannot walk /app
@@ -172,6 +321,10 @@
   consecutive passes (counting pass 12 anon-only as the latest)
   with no authed walk; `/app/*` surfaces still observed only via
   unit tests + the URL-contract walker's redirect check.
+- **Pass-13 re-check (2026-05-21, commit `83c595c`):** Same
+  shape as pass 12 — anonymous only; authed leg skipped.
+  `.env` still lacks the cookie. Five consecutive authed
+  passes blocked at the same gate.
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ### [x] [MED] /try — drag-promise gap — addressed at `ec81a40`
