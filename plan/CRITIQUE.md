@@ -71,27 +71,15 @@
   this account."
 - **source:** web-fetch
 
-### [MED] /try — "demo · locked" badge implies a paywall that doesn't exist
+### [x] [MED] /try — "demo · locked" badge — addressed at `7b7d58e`
 
-- **pass:** 12 (commit `8b17933`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** The five gated seats on /try carry "demo ·
-  locked" badges. "Locked" implies a transactional unlock
-  (paywall, pro tier) that the product doesn't have. The lede
-  already framed the demo as "One persona, three canned turns,
-  three artifact tiles. Full sessions need a sign-in." — so the
-  five tiles add noise re-asking a question the lede answered,
-  and "locked" mis-classifies what's actually happening (the
-  demo intentionally ships pre-staffed).
-- **evidence:** /try renders five tiles each labelled "demo ·
-  locked" beneath the pre-staffed Product Lead. Lede above
-  says full sessions require a sign-in.
-- **suggested fix:** Drop "locked"; either dim the tiles with no
-  badge (the dim is enough signal) or relabel as "sign in to
-  seat" / "authed only" so the affordance names the actual gate.
-- **source:** web-fetch
+- **Pass:** 12 (commit `8b17933`)
+- **Resolved 2026-05-21 at `7b7d58e`** (issue #33). Badge copy
+  changed to "sign in to seat" + matching aria-label; cursor
+  reverted to default (the new framing is an invitation, not
+  a "you can't"); dashed border + opacity-50 stay as the
+  visual gate signal. Regression test added in
+  `components/demo/__tests__/demo-components.test.tsx`.
 
 ### [MED] /about/personas — "user-defined personas aren't shipped yet" promises a feature with no commitment
 
