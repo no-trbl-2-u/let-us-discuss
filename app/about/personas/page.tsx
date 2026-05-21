@@ -3,6 +3,10 @@ import { Heading } from '@/design/primitives/heading'
 import { Link } from '@/design/primitives/link'
 import { loadPersonas } from '@/lib/personas/load'
 import { PersonaCard } from '@/components/personas/persona-card'
+import {
+  CAST_GROUPING_PHRASE,
+  STARTER_LIBRARY_NOUN,
+} from '@/lib/site/voice-canon'
 
 export const metadata: Metadata = {
   title: 'Personas — boardroom',
@@ -51,9 +55,9 @@ export default function PersonasPage() {
       </Heading>
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch] mb-[var(--space-7)]">
         A persona brings a fixed role and voice to the conversation.
-        The starter library is four conferring personas plus a
-        Secretary who keeps the log; you drag the ones you want onto
-        the table. Authoring your own isn&apos;t in scope.
+        The {STARTER_LIBRARY_NOUN} is {CAST_GROUPING_PHRASE}; you drag
+        the ones you want onto the table. Authoring your own
+        isn&apos;t in scope.
       </p>
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch] mb-[var(--space-7)]">
         Each prompt opens with the same scaffold (

@@ -4,6 +4,7 @@ import { Header } from '@/components/site/header'
 import { Footer } from '@/components/site/footer'
 import { SkipLink } from '@/components/site/skip-link'
 import { getSiteOrigin } from '@/lib/site/origin'
+import { ANSWER_SHAPE_PHRASE } from '@/lib/site/voice-canon'
 import './globals.css'
 
 const serif = Source_Serif_4({
@@ -29,8 +30,7 @@ const mono = IBM_Plex_Mono({
 })
 
 const ROOT_TITLE = 'boardroom — pitch in, spec out'
-const ROOT_DESCRIPTION =
-  'Drop a few personas onto the table, hand them your pitch, and let them confer. You answer one-word or one-sentence clarifying questions at the checkpoints. They do the thinking.'
+const ROOT_DESCRIPTION = `Drop a few personas onto the table, hand them your pitch, and let them confer. You answer ${ANSWER_SHAPE_PHRASE} at the checkpoints. They do the thinking.`
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteOrigin()),

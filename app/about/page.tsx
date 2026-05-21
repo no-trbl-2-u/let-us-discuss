@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import { Heading } from '@/design/primitives/heading'
 import { Link } from '@/design/primitives/link'
+import {
+  ANSWER_SHAPE_PHRASE,
+  STARTER_LIBRARY_NOUN,
+} from '@/lib/site/voice-canon'
 
 export const metadata: Metadata = {
   title: 'About boardroom — boardroom',
@@ -27,9 +31,9 @@ export default function AboutPage() {
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch] mb-[var(--space-7)]">
         Boardroom turns a loose pitch into a usable spec by running a short,
         opinionated conversation between AI personas you staff onto a
-        boardroom table. You drag personas, hand over a pitch, and answer
-        one-word or one-sentence clarifying questions at the checkpoints.
-        The personas do the thinking.
+        boardroom table. You drag personas, hand over a pitch, and answer{' '}
+        {ANSWER_SHAPE_PHRASE} at the checkpoints. The personas do the
+        thinking.
       </p>
 
       <Heading level={2} className="mt-[var(--space-6)] mb-[var(--space-3)]">
@@ -58,8 +62,8 @@ export default function AboutPage() {
       </Heading>
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch]">
         Boardroom isn&apos;t a generic chat. It isn&apos;t a place to author
-        personas or templates — the starter library is curated. It
-        isn&apos;t a multi-user surface; sessions are single-user only.
+        personas or templates — the {STARTER_LIBRARY_NOUN} is curated.
+        It isn&apos;t a multi-user surface; sessions are single-user only.
       </p>
 
       <Heading level={2} className="mt-[var(--space-6)] mb-[var(--space-3)]">

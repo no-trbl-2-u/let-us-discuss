@@ -1,12 +1,12 @@
 import NextLink from 'next/link'
 import { Heading } from '@/design/primitives/heading'
 import { Link } from '@/design/primitives/link'
+import { ANSWER_SHAPE_PHRASE } from '@/lib/site/voice-canon'
 
 export const HERO_HEADLINE =
   'A short, opinionated meeting between AI personas — and you leave with a usable spec.'
 
-export const HERO_SUBHEAD =
-  "Drop a few personas onto the table, hand them your pitch, and let them confer. You answer one-word or one-sentence clarifying questions at the checkpoints. They do the thinking."
+export const HERO_SUBHEAD = `Drop a few personas onto the table, hand them your pitch, and let them confer. You answer ${ANSWER_SHAPE_PHRASE} at the checkpoints. They do the thinking.`
 
 const NOTES = [
   {
