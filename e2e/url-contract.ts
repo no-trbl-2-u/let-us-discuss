@@ -89,6 +89,13 @@ export const URL_CONTRACT: ReadonlyArray<UrlContractEntry> = [
     next: '/app/settings/delete-account',
   },
   {
+    url: '/app/settings/api-key',
+    method: 'GET',
+    label: 'byok settings panel',
+    expect: 'redirect-to-signin-with-next',
+    next: '/app/settings/api-key',
+  },
+  {
     url: '/admin',
     method: 'GET',
     label: 'admin / dev dashboard (env-gated)',

@@ -24,6 +24,7 @@ export type LogScope =
   | 'rate-limit'
   | 'data'
   | 'client-boundary'
+  | 'byok'
   | 'other'
 
 export interface LogErrorOptions {

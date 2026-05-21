@@ -28,6 +28,41 @@
 
 ## Pending
 
+### [operator] Enable BYOK — set `BYOK_MASTER_KEY` + apply phase-26 migration
+
+- **Source:** phase 26 ship (commit pending)
+- **Score:** 3.0 (medium — without both ops, the settings panel
+  renders "BYOK is not enabled" and `/api/byok/*` returns 503;
+  the rest of the app is unaffected. Once both ops are applied,
+  users can paste / rotate / revoke their Anthropic API key
+  from `/app/settings/api-key`. Phase 27 reads the encrypted
+  key from the orchestrator).
+- **Category:** config (operator action)
+- **Summary:** Phase 26 ships the BYOK foundation. Two ops are
+  required to light it up:
+  1. **Env:** `BYOK_MASTER_KEY` — a 32-byte random value
+     base64-encoded. Generate via
+     `openssl rand -base64 32`. The app decodes this and uses
+     it as the AES-256-GCM master for every encrypt / decrypt
+     on the user-key column. **Once set, do not rotate
+     without a follow-up re-encryption migration** — every
+     row stored under the old key becomes unreadable when
+     the env value changes. Set in local `.env` + Vercel
+     Project Env (Production + Preview).
+  2. **Migration:** `db/migrations/20260520_phase_26_byok.sql`
+     creates `public.user_api_keys` + `public.user_api_key_audit`
+     with RLS pinned to `auth.uid()`. Run `pnpm db:migrate`
+     against the production Supabase project, or paste the
+     SQL into the Supabase SQL editor.
+- **What to do:** Both ops. Verify by signing in as any user,
+  visiting `/app/settings/api-key`, pasting a key, confirming
+  the masked summary renders + the audit log shows an `add`
+  event. Revoke + re-add to confirm the `rotate` / `revoke`
+  paths both write to the audit log.
+- **Owner:** user / operator.
+- **/iterate skip:** this row is `[operator]` — `/iterate`
+  should leave it pending and move on.
+
 ### [operator] Set `ADMIN_EMAILS` for the /admin dashboard
 
 - **Walkthrough:** `setup/operator-batch.md` Step 4.

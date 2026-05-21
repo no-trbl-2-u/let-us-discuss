@@ -51,6 +51,21 @@ export default async function SettingsPage() {
       )}
 
       <SettingsSection
+        title="API key"
+        cta={
+          <Link href="/app/settings/api-key" variant="default">
+            Manage your Anthropic API key →
+          </Link>
+        }
+      >
+        <p>
+          Bring your own Anthropic API key. When set, every boardroom
+          session on this account uses it; Anthropic bills you
+          directly.
+        </p>
+      </SettingsSection>
+
+      <SettingsSection
         title="Account"
         cta={
           <Link href="/app/settings/delete-account" variant="default">

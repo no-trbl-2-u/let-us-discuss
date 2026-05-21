@@ -143,6 +143,37 @@ type RetroInsert = Omit<RetroRow, 'id' | 'created_at'> & {
   created_at?: string
 }
 
+type UserApiKeyRow = {
+  user_id: string
+  ciphertext: string
+  iv: string
+  auth_tag: string
+  key_version: number
+  mask: string
+  created_at: string
+  updated_at: string
+}
+
+type UserApiKeyInsert = Omit<UserApiKeyRow, 'created_at' | 'updated_at'> & {
+  key_version?: number
+  created_at?: string
+  updated_at?: string
+}
+
+type UserApiKeyAuditRow = {
+  id: number
+  user_id: string
+  event: 'add' | 'rotate' | 'revoke'
+  key_version: number
+  created_at: string
+}
+
+type UserApiKeyAuditInsert = Omit<UserApiKeyAuditRow, 'id' | 'created_at'> & {
+  id?: number
+  key_version?: number
+  created_at?: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -180,6 +211,18 @@ export type Database = {
         Row: RetroRow
         Insert: RetroInsert
         Update: Partial<RetroRow>
+        Relationships: []
+      }
+      user_api_keys: {
+        Row: UserApiKeyRow
+        Insert: UserApiKeyInsert
+        Update: Partial<UserApiKeyRow>
+        Relationships: []
+      }
+      user_api_key_audit: {
+        Row: UserApiKeyAuditRow
+        Insert: UserApiKeyAuditInsert
+        Update: Partial<UserApiKeyAuditRow>
         Relationships: []
       }
     }
