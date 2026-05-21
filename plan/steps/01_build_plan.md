@@ -170,7 +170,7 @@ commit that ships the phase.
       (round 16) from `plan/PHASE_CANDIDATES.md`
       `[7.0] Idea 1`. Sequenced after BYOK (26 + 27) per
       the candidate's own note. — `f6b27cf`
-- [ ] Phase 29 — Voice-canon module + drift-detection
+- [x] Phase 29 — Voice-canon module + drift-detection
       test (new `lib/site/voice-canon.ts` exporting the
       canonical phrasings `ANSWER_SHAPE_PHRASE`,
       `CAST_GROUPING_PHRASE`, `STARTER_LIBRARY_NOUN`;
@@ -184,7 +184,7 @@ commit that ships the phase.
       recurring /iterate voice-drift work into a one-time
       verify-gate guard. Promoted by `/oversight` 2026-05-21
       (round 17) from `plan/PHASE_CANDIDATES.md`
-      `[7.5] Voice-canon`.
+      `[7.5] Voice-canon`. — `aa81a63`
 - [ ] Phase 30 — Operator-batch one-shot apply script +
       `/admin/migrations` status surface
       (`scripts/operator-apply.mjs` runs every
