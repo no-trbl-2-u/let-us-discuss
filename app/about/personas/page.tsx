@@ -55,6 +55,14 @@ export default function PersonasPage() {
         Secretary who keeps the log; you drag the ones you want onto
         the table. Authoring your own isn&apos;t in scope.
       </p>
+      <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch] mb-[var(--space-7)]">
+        Each prompt opens with the same scaffold (
+        <span className="font-[var(--font-mono)] text-[var(--text-sm)]">
+          You are the [role] at the boardroom table.
+        </span>
+        ) by design — the voice descriptor above each card is the
+        register the prompt body rides on after that first line.
+      </p>
 
       {personas.length === 0 ? (
         <p className="font-[var(--font-sans)] text-[var(--text-sm)] text-[color:var(--ink-muted)]">
