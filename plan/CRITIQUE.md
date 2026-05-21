@@ -1,13 +1,93 @@
 # Critique log
 
-> Last pass: 2026-05-21 at commit 83c595c
-> Pass count: 13
+> Last pass: 2026-05-21 at commit 9a2c9b2
+> Pass count: 14
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
 > for the contract.
 
 ## Pending
+
+### [MED] /about/personas — "cast guard" jargon introduced cold in the new Log-keeper helper note
+
+- **pass:** 14 (commit `9a2c9b2`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** The Log-keeper partition shipped at
+  `3fb5fad` introduced the helper line "Auto-injected by the
+  cast guard, never dragged. The Secretary doesn't confer; it
+  runs the log." "Cast guard" is internal jargon — the term
+  doesn't appear anywhere visitor-facing on `/`, `/about`,
+  `/try`, or earlier on `/about/personas`. The note tries to
+  explain WHY the partition exists but leans on a term that
+  itself needs explaining; the rationale lands soft.
+- **evidence:** Divider helper text on /about/personas:
+  "Auto-injected by the cast guard, never dragged. The
+  Secretary doesn't confer; it runs the log." "Cast guard"
+  absent from /, /about, the intro paragraphs above the
+  cards, and the persona-card bodies (it lives in the
+  orchestrator code at `src-ai-skills/`, not in user-facing
+  copy).
+- **suggested fix:** Replace "cast guard" with a context-
+  resolvable phrase, e.g. "Auto-joined by the system, never
+  dragged." Or drop the mechanism and just say "Always at the
+  table; you never seat the Secretary."
+- **source:** web-fetch
+
+### [MED] /about/personas + /try — "Product lead · lead" role badge duplicates the name's trailing word
+
+- **pass:** 14 (commit `9a2c9b2`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** visual
+- **observation:** The PersonaCard renders the role token as
+  an uppercase chip immediately after the persona name. For
+  Product Lead — whose name's last word IS the role token
+  "lead" — the card reads "Product lead · LEAD · Concrete,
+  decisive, scope-defending." Three of the four conferring
+  personas don't have this collision because their names
+  don't end in "lead" or "specialist"; Product Lead does,
+  and so does the /try shelf which carries the same card.
+  Reads as a visual stutter for the persona that ships
+  pre-staffed on every demo.
+- **evidence:** /about/personas Product Lead card rendering:
+  "Product lead" then role badge "LEAD" (caps in design
+  token) then italic voice. Same shape on /try where PL
+  is the only seated persona. Skeptical Engineer (role
+  `lead`) reads "Skeptical engineer · LEAD" — no stutter;
+  EP + GV (role `specialist`) — no stutter.
+- **suggested fix:** Hide the role badge when its lowercase
+  text equals the trailing word of the persona name. (Or
+  always hide for PL specifically; the principled rule is
+  the first.)
+- **source:** web-fetch
+
+### [LOW] /try — "sign in to seat" repeats vertically four times
+
+- **pass:** 14 (commit `9a2c9b2`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** The five seat rows render seat 1 (PL,
+  seated) plus seats 2–5 each labelled "sign in to seat"
+  after the pass-12 fix at `7b7d58e` swapped "demo · locked"
+  → "sign in to seat" per-tile. Stacked vertically, the four
+  identical CTAs read more like a feature-wall than the
+  trimmed shelf at `72818f2` intended; the shelf itself
+  already says "Sign in to staff the table yourself."
+- **evidence:** WebFetch on /try shows seats 2–5 each carrying
+  "sign in to seat"; the shelf above carries the same CTA in
+  prose form via a link.
+- **suggested fix:** Trade-off vs. the pass-12 "locked-implies-
+  paywall" fix at `7b7d58e`. Two compatible directions —
+  (a) keep one tile labelled "sign in to seat" and label the
+  rest "empty"; or (b) make the per-tile label appear only
+  on hover/focus while the static badge reads "empty". Either
+  trims the vertical repetition without losing the gate
+  signal the per-tile label was originally added to surface.
+- **source:** web-fetch
 
 ### [x] [HIGH] / — HERO_SUBHEAD canonical-constraint mismatch — addressed at `4de29b4`
 
@@ -183,6 +263,9 @@
 - **Pass-13 re-check (2026-05-21, commit `83c595c`):** Reader
   confirmed `mcp__claude-in-chrome__*` still not in tool list.
   13 consecutive passes WebFetch-only. Status unchanged.
+- **Pass-14 re-check (2026-05-21, commit `9a2c9b2`):** Reader
+  again confirmed `mcp__claude-in-chrome__*` unavailable.
+  14 consecutive passes WebFetch-only.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
 ### [needs-user-call] SUPABASE_E2E_SESSION_COOKIE unset — authed /critique cannot walk /app
@@ -235,6 +318,8 @@
   shape as pass 12 — anonymous only; authed leg skipped.
   `.env` still lacks the cookie. Five consecutive authed
   passes blocked at the same gate.
+- **Pass-14 re-check (2026-05-21, commit `9a2c9b2`):** Same;
+  anonymous only. Six consecutive authed-blocks.
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ### [x] [MED] /try — drag-promise gap — addressed at `ec81a40`
