@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Heading } from '@/design/primitives/heading'
+import { Link } from '@/design/primitives/link'
 import { loadPersonas } from '@/lib/personas/load'
 import { PersonaCard } from '@/components/personas/persona-card'
 
@@ -39,7 +40,11 @@ export default function PersonasPage() {
   return (
     <section className="mx-auto max-w-[760px] px-[var(--space-4)] sm:px-[var(--space-5)] md:px-[var(--space-7)] py-[var(--space-7)] md:py-[var(--space-8)]">
       <p className="font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)] mb-[var(--space-4)]">
-        boardroom &nbsp;·&nbsp; the starter shelf
+        boardroom &nbsp;·&nbsp;{' '}
+        <Link href="/about" variant="quiet">
+          about
+        </Link>{' '}
+        &nbsp;/&nbsp; personas
       </p>
       <Heading level={1} className="mb-[var(--space-5)]">
         Personas
