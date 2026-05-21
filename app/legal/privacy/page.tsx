@@ -31,8 +31,8 @@ export default function PrivacyPage() {
         Privacy.
       </Heading>
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch]">
-        Plain version: we keep your sessions while your account is open and
-        delete them when you close it.
+        We keep your sessions while your account is open and delete them
+        when you close it.
       </p>
 
       <LegalSection id="what-we-store" title="What we store">

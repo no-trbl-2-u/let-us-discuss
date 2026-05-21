@@ -31,9 +31,9 @@ export default function TermsPage() {
         Terms of use.
       </Heading>
       <p className="font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch]">
-        Plain version: you bring a pitch, the AI personas confer on it, you
-        get three files. Don&apos;t try to grind the AI for something it
-        refuses. Quotas exist.
+        You bring a pitch, the AI personas confer on it, you get three
+        files. Don&apos;t try to grind the AI for something it refuses.
+        Quotas exist.
       </p>
 
       <LegalSection id="who-can-use" title="Who can use boardroom">
