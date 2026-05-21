@@ -258,33 +258,14 @@
 - suggested_fix: [user has not specified — iterate to determine]
 - source: user
 
-### [HIGH] /signin — "What boardroom is." link mis-routed to /about/personas (same anti-pattern as the closed landing-page version)
+### [x] [HIGH] /signin — link mis-route — addressed at `79e1a55`
 
-- **pass:** 11 (commit `9ed19c6`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** navigation
-- **observation:** The /signin footer carries a link labeled
-  "What boardroom is." whose href is `/about/personas` (the
-  persona library), not `/about` (the explainer titled "About
-  boardroom." with H1 "About boardroom."). A first-time
-  visitor clicking that link lands on a list of persona cards,
-  not the what-is-this explainer the label promises. Exact
-  sibling of the pass-2 landing-page mis-route closed at
-  `6f32cb8` — the same href fix appears to have missed this
-  second instance on /signin.
-- **evidence:** WebFetch on /signin shows anchor text "What
-  boardroom is." with `href="/about/personas"`. /about
-  exists, title "About boardroom — boardroom", H1 "About
-  boardroom.", and is the canonical what-boardroom-is surface
-  per the closed pass-2 finding.
-- **suggested fix:** Retarget the /signin "What boardroom is."
-  link href from `/about/personas` to `/about`. Same one-line
-  shape that closed the landing-page version of this finding
-  at `6f32cb8`. Existing /signin unit test should be extended
-  to assert the new href (regression guard mirroring the
-  landing-hero test added at the original fix).
-- **source:** web-fetch
+- **Pass:** 11 (commit `9ed19c6`)
+- **Resolved 2026-05-21 at `79e1a55`** (issue #32). One-line
+  href change `/about/personas` → `/about` in
+  `app/signin/page.tsx`; regression test added to
+  `app/signin/__tests__/page.test.tsx` mirroring the
+  landing-hero guard from `6f32cb8`.
 
 ### [MED] /about/personas — Skeptical Engineer and Secretary share the "SE" monogram (visual collision)
 
