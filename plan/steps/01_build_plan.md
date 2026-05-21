@@ -153,7 +153,7 @@ commit that ships the phase.
       with user's account permissions, per-key spend tile,
       first-run warning checkbox) folded into /iterate after
       this ships.) — `a1ed0ef`
-- [ ] Phase 28 — `CLARIFY-QUESTION-FORMAT.md` (nexus's
+- [x] Phase 28 — `CLARIFY-QUESTION-FORMAT.md` (nexus's
       "asking-well" rules for runtime leads: 1–4 questions
       per batch, recommended option first, descriptions
       name the trade-off, 2–4 sentences of prose before
@@ -169,7 +169,7 @@ commit that ships the phase.
       questions" Q2. Promoted by `/oversight` 2026-05-20
       (round 16) from `plan/PHASE_CANDIDATES.md`
       `[7.0] Idea 1`. Sequenced after BYOK (26 + 27) per
-      the candidate's own note.
+      the candidate's own note. — `f6b27cf`
 
 > **Phase numbering note:** Phase 19 (Quota visibility) was
 > promoted in round 7 but never shipped; oversight round 10
