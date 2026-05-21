@@ -19,48 +19,6 @@
 > `[needs-user-call]` so they get answered when the matching
 > candidate is promoted.
 
-### [ ] [score 7.0] Idea 1 — `CLARIFY-QUESTION-FORMAT.md` (nexus's "asking-well" rules for runtime leads)
-
-- proposed: 2026-05-20, oversight round 14 (distilled from
-  `ideas-for-the-skills.md` Tier 1)
-- source signals:
-  - Current framework rule constrains the *shape* of user
-    effort (`≤1 sentence answer, ≤5 questions per
-    checkpoint`) but not the *quality* of the question.
-  - Nexus `concepts/asking-well.md` formalizes: 1–4
-    questions per batch; recommended option first
-    (`(Recommended)`); descriptions name the trade-off;
-    lead with 2–4 sentences of prose before asking.
-  - 45s/checkpoint (free-form) vs. 15s/checkpoint
-    (recommended ballot) is roughly the difference between
-    "fits the attention budget" and "doesn't".
-- rationale: Highest-leverage / smallest-doc Tier 1 idea.
-  Affects every clarify checkpoint in every session;
-  composes with the existing `≤5/≤1` constraint rather
-  than replacing it. Free-form clarify questions still
-  allowed (a project name; a one-line audience
-  description) — nexus rule 4 still applies; 1–3 relax.
-- proposed scope: 1 phase.
-  - `src-ai-skills/CLARIFY-QUESTION-FORMAT.md` (~60–120
-    lines, mirrors nexus's `concepts/asking-well.md`).
-  - Reference from `PERSONA-FORMAT.md` §Role/lead.
-  - One paragraph reminder in each lead persona body
-    (`personas/product-lead.md`,
-    `personas/skeptical-engineer.md`).
-  - Optional lightweight orchestrator-side validator that
-    rejects clarify-prompt outputs missing at least one
-    ranked `(Recommended)` option with a trade-off
-    description (hard-vs-soft enforcement is one of the
-    deferred open questions — see AUDIT
-    `[needs-user-call]`).
-- estimated phases: 1.
-- conflicts: none direct; promotion order can be any time
-  after BYOK ships.
-- next step: when promoted, brief from this row + nexus
-  `concepts/asking-well.md` + the current lead persona
-  bodies; resolve the hard-vs-soft validator question
-  in the brief.
-
 ### [ ] [score 6.5] Idea 2 — Topic-level `bearings.md` alongside `retros.md` (standing decisions)
 
 - proposed: 2026-05-20, oversight round 14 (distilled from
@@ -387,6 +345,53 @@
   after phase 25 ships, re-evaluate.
 
 ## Promoted
+
+### [x] [score 7.0] Idea 1 — `CLARIFY-QUESTION-FORMAT.md` — promoted 2026-05-20 as phase 28
+
+- proposed: 2026-05-20, oversight round 14 (distilled from
+  `ideas-for-the-skills.md` Tier 1)
+- promoted: 2026-05-20 (oversight round 16) → phase 28
+- source signals:
+  - Current framework rule constrains the *shape* of user
+    effort (`≤1 sentence answer, ≤5 questions per
+    checkpoint`) but not the *quality* of the question.
+  - Nexus `concepts/asking-well.md` formalizes: 1–4
+    questions per batch; recommended option first
+    (`(Recommended)`); descriptions name the trade-off;
+    lead with 2–4 sentences of prose before asking.
+  - 45s/checkpoint (free-form) vs. 15s/checkpoint
+    (recommended ballot) is roughly the difference between
+    "fits the attention budget" and "doesn't".
+- rationale: Highest-leverage / smallest-doc Tier 1 idea.
+  Affects every clarify checkpoint in every session;
+  composes with the existing `≤5/≤1` constraint rather
+  than replacing it. Free-form clarify questions still
+  allowed (a project name; a one-line audience
+  description) — nexus rule 4 still applies; 1–3 relax.
+- proposed scope: 1 phase.
+  - `src-ai-skills/CLARIFY-QUESTION-FORMAT.md` (~60–120
+    lines, mirrors nexus's `concepts/asking-well.md`).
+  - Reference from `PERSONA-FORMAT.md` §Role/lead.
+  - One paragraph reminder in each lead persona body
+    (`personas/product-lead.md`,
+    `personas/skeptical-engineer.md`).
+  - Optional lightweight orchestrator-side validator that
+    rejects clarify-prompt outputs missing at least one
+    ranked `(Recommended)` option with a trade-off
+    description (hard-vs-soft enforcement is one of the
+    deferred open questions — see AUDIT
+    `[needs-user-call]`).
+- estimated phases: 1.
+- conflicts: none direct; promotion order is after BYOK
+  (phases 26 + 27) per the candidate's own note.
+- oversight 2026-05-20 round 16: **promoted as phase 28.**
+  Top-scoring pending candidate since round 14; brief
+  generation deferred to `/plan-a-phase` (or
+  `/ship-a-phase`'s missing-brief contract) when the loop
+  reaches phase 28 after BYOK ships. The hard-vs-soft
+  validator open question stays in AUDIT
+  `[needs-user-call]` until the brief drafts; it'll be
+  resolved there per the candidate's `next step` line.
 
 ### [x] [score 7.0] Admin / dev dashboard — promoted 2026-05-19 as phase 23
 

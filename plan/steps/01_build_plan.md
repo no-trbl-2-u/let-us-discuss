@@ -153,6 +153,23 @@ commit that ships the phase.
       with user's account permissions, per-key spend tile,
       first-run warning checkbox) folded into /iterate after
       this ships.)
+- [ ] Phase 28 — `CLARIFY-QUESTION-FORMAT.md` (nexus's
+      "asking-well" rules for runtime leads: 1–4 questions
+      per batch, recommended option first, descriptions
+      name the trade-off, 2–4 sentences of prose before
+      asking). New
+      `src-ai-skills/CLARIFY-QUESTION-FORMAT.md`; referenced
+      from `PERSONA-FORMAT.md §Role/lead`; one-paragraph
+      reminder in each lead persona body
+      (`product-lead.md`, `skeptical-engineer.md`).
+      Optional lightweight orchestrator-side validator on
+      clarify-prompt outputs — hard-vs-soft enforcement
+      resolved in the brief per AUDIT
+      `[needs-user-call]` "Three framework-spec
+      questions" Q2. Promoted by `/oversight` 2026-05-20
+      (round 16) from `plan/PHASE_CANDIDATES.md`
+      `[7.0] Idea 1`. Sequenced after BYOK (26 + 27) per
+      the candidate's own note.
 
 > **Phase numbering note:** Phase 19 (Quota visibility) was
 > promoted in round 7 but never shipped; oversight round 10
