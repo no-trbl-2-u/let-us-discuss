@@ -59,24 +59,14 @@
   visual gate signal. Regression test added in
   `components/demo/__tests__/demo-components.test.tsx`.
 
-### [MED] /about/personas — "user-defined personas aren't shipped yet" promises a feature with no commitment
+### [x] [MED] /about/personas — "aren't shipped yet" roadmap leak — addressed at `b2368e8`
 
-- **pass:** 12 (commit `8b17933`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** The persona-library lede ends with "user-defined
-  personas aren't shipped yet" — a roadmap leak that promises a
-  future feature with no date, no caveat. Reads as "coming soon"
-  marketing fluff that the bearings voice avoids. /about handles
-  the same constraint more honestly with "isn't a place to author
-  personas or templates" (no "yet").
-- **evidence:** /about/personas lede: "The v1 library is these
-  four; user-defined personas aren't shipped yet."
-- **suggested fix:** Drop the "yet" (or the whole half-clause).
-  Match /about's framing: "The starter library is these four.
-  Authoring your own isn't in scope."
-- **source:** web-fetch
+- **Pass:** 12 (commit `8b17933`)
+- **Resolved 2026-05-21 at `b2368e8`** (issue #36). Half-clause
+  "user-defined personas aren't shipped yet" → "authoring your
+  own isn't in scope" — matches /about's existing framing.
+  "These four" left untouched per the one-fix-per-tick rule;
+  the cast-count drift is the separate pass-10 finding.
 
 ### [LOW] /legal/privacy — "rejected content details" vs "verdict + timestamp" disagrees on retention scope
 
