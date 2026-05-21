@@ -19,115 +19,6 @@
 > stays unavailable. Each candidate addresses a structural
 > cause the recent /iterate ticks were patching reactively.
 
-### [ ] [score 7.5] Voice-canon module + drift-detection test
-
-- proposed: 2026-05-21, expand pass 6
-- source signals:
-  - **Recurring "sibling-surface" misses across recent fixes.**
-    HIGH #46 fixed `HERO_SUBHEAD` but missed `ROOT_DESCRIPTION`
-    in the same file → required a second fix at `cd94020`.
-    The "v1" antecedent fix touched both /about and
-    /about/personas but the underlying lexicon wasn't
-    centralized, so the same drift recurred for "starter
-    library" wording across surfaces.
-  - **80+ commits since the last expand pass** focused on
-    surface-level voice/copy drift (audit findings #34–#54).
-    The cadence suggests the substrate doesn't have a single
-    source of truth for canonical phrasings; each new surface
-    re-derives them from the template + prior commits.
-  - **The template constraint "1-word or 1-sentence answer"
-    is rendered in code at least 4 places** (template JSON,
-    /about lede, HERO_SUBHEAD, landing step copy) with
-    different phrasings each time — three of those required
-    cleanup passes.
-  - Phase 27's `BYOK_BANNER_TEXT` constant + phase 28's
-    `RECOMMENDED_MARKER` constant already prove this pattern
-    works for centralized strings.
-- rationale: The voice contract is currently load-bearing on
-  human re-discovery via `/critique`. Each surface change
-  risks drift; each drift takes 1–3 iterate ticks to detect
-  + fix. Centralizing the canonical strings + adding a vitest
-  that asserts they're used wherever the relevant constraint
-  is named would convert reactive cleanup into a hard gate.
-  Pattern is small, well-bounded, and converts known-future
-  /iterate work into one-time engineering cost.
-- proposed scope: 1 phase.
-  - `lib/site/voice-canon.ts` — exports `ANSWER_SHAPE_PHRASE`
-    ("one-word or one-sentence clarifying questions"),
-    `CAST_GROUPING_PHRASE` ("four conferring personas plus a
-    Secretary who keeps the log"), and `STARTER_LIBRARY_NOUN`
-    ("starter library") as module-level constants.
-  - Refactor /about/landing-hero/HERO_SUBHEAD/HERO_HEADLINE/
-    ROOT_DESCRIPTION/landing-step-i/persona-library lede to
-    import from `voice-canon.ts` rather than carry the
-    string inline.
-  - `lib/site/__tests__/voice-canon.test.ts` — asserts each
-    canonical phrase has exactly one definition; greps the
-    shipped source for the *outdated* shapes ("one-word
-    questions" without "or one-sentence"; "v1 library";
-    "these four"; "demo · locked") and fails the verify gate
-    when found. Same pattern as phase 17's
-    `EMPTY_STATE_TEMPLATE_RE` audit test.
-- estimated phases: 1.
-- conflicts: none. Composes cleanly with existing /critique
-  loop (the drift test would catch regressions before
-  /critique has to re-discover them).
-- next step: when promoted, brief from this row + the recent
-  audit-finding hashes #34–#54 as the canon source-of-truth
-  list.
-
-### [ ] [score 7.0] Operator-batch one-shot apply script + status surface
-
-- proposed: 2026-05-21, expand pass 6
-- source signals:
-  - **5 pending `[operator]` rows in `plan/AUDIT.md`**:
-    BYOK_MASTER_KEY env + phase-26 migration, ADMIN_EMAILS
-    env, phase-16 token-usage migration, phase-21 secretary
-    migration, phase-22 retros migration, phase-27 key_origin
-    migration. Each blocks visible-state on `/admin`,
-    `/app/settings/api-key`, BYOK orchestration, or the
-    secretary surface.
-  - **`setup/operator-batch.md` walkthrough** already
-    documents the apply sequence (filed at oversight round
-    15) but each operator still applies migrations one at a
-    time from the SQL editor, with no shared status surface
-    for "what's applied vs. pending."
-  - Pattern that's only going to grow: phases 26, 27, 28
-    each ship operator action; future phases likely follow
-    the same shape.
-- rationale: The autonomous loop has internalized that
-  migrations are operator-applied, but the operator
-  experience hasn't been streamlined. Each new operator
-  audit row sits pending while the loop keeps shipping
-  features that depend on it. A small "one-shot" operator
-  helper would drain the backlog in one apply pass; a
-  matching read-only `/admin/migrations` status surface
-  reports state and prevents re-applying.
-- proposed scope: 1 phase.
-  - `scripts/operator-apply.mjs` — runs every `*.sql` under
-    `db/migrations/` in lexicographic order against the
-    project Supabase, idempotent (each migration wraps in a
-    `begin / commit` block + uses `if not exists`).
-    Compares the file list against a `db.applied_migrations`
-    table; only applies new ones.
-  - `db.applied_migrations` schema migration adds the
-    tracking table (chicken-and-egg: bootstrap the script
-    by checking + creating this table first).
-  - `/admin/migrations` route — env-gated like `/admin`;
-    lists every migration file + its applied/pending state
-    + last-applied-at timestamp. Read-only.
-  - One `[operator]` AUDIT row consolidates the 5 pending
-    rows into one ("apply pending migrations via
-    `pnpm db:apply-pending`").
-- estimated phases: 1.
-- conflicts: phase 23 (`/admin` env-gating pattern) +
-  phase 26 (no destructive schema work). The /admin/migrations
-  surface joins the URL contract; standard pattern.
-- next step: when promoted, brief from this row + the
-  current operator-batch walkthrough + the existing
-  `scripts/db-migrate.mjs` (if one exists; otherwise
-  bootstrap from the operator-batch SQL block sequence).
-
 ### [ ] [score 6.0] Mobile e2e expansion across the /critique page set
 
 - proposed: 2026-05-21, expand pass 6
@@ -497,6 +388,119 @@
   after phase 25 ships, re-evaluate.
 
 ## Promoted
+
+### [x] [score 7.5] Voice-canon module + drift-detection test — promoted 2026-05-21 as phase 29
+
+- proposed: 2026-05-21, expand pass 6
+- promoted: 2026-05-21 (oversight round 17) → phase 29
+- source signals:
+  - **Recurring "sibling-surface" misses across recent fixes.**
+    HIGH #46 fixed `HERO_SUBHEAD` but missed `ROOT_DESCRIPTION`
+    in the same file → required a second fix at `cd94020`.
+    The "v1" antecedent fix touched both /about and
+    /about/personas but the underlying lexicon wasn't
+    centralized, so the same drift recurred for "starter
+    library" wording across surfaces.
+  - **80+ commits since the last expand pass** focused on
+    surface-level voice/copy drift (audit findings #34–#54).
+    The cadence suggests the substrate doesn't have a single
+    source of truth for canonical phrasings; each new surface
+    re-derives them from the template + prior commits.
+  - **The template constraint "1-word or 1-sentence answer"
+    is rendered in code at least 4 places** (template JSON,
+    /about lede, HERO_SUBHEAD, landing step copy) with
+    different phrasings each time — three of those required
+    cleanup passes.
+  - Phase 27's `BYOK_BANNER_TEXT` constant + phase 28's
+    `RECOMMENDED_MARKER` constant already prove this pattern
+    works for centralized strings.
+- rationale: The voice contract is currently load-bearing on
+  human re-discovery via `/critique`. Each surface change
+  risks drift; each drift takes 1–3 iterate ticks to detect
+  + fix. Centralizing the canonical strings + adding a vitest
+  that asserts they're used wherever the relevant constraint
+  is named would convert reactive cleanup into a hard gate.
+  Pattern is small, well-bounded, and converts known-future
+  /iterate work into one-time engineering cost.
+- proposed scope: 1 phase.
+  - `lib/site/voice-canon.ts` — exports `ANSWER_SHAPE_PHRASE`
+    ("one-word or one-sentence clarifying questions"),
+    `CAST_GROUPING_PHRASE` ("four conferring personas plus a
+    Secretary who keeps the log"), and `STARTER_LIBRARY_NOUN`
+    ("starter library") as module-level constants.
+  - Refactor /about/landing-hero/HERO_SUBHEAD/HERO_HEADLINE/
+    ROOT_DESCRIPTION/landing-step-i/persona-library lede to
+    import from `voice-canon.ts` rather than carry the
+    string inline.
+  - `lib/site/__tests__/voice-canon.test.ts` — asserts each
+    canonical phrase has exactly one definition; greps the
+    shipped source for the *outdated* shapes ("one-word
+    questions" without "or one-sentence"; "v1 library";
+    "these four"; "demo · locked") and fails the verify gate
+    when found. Same pattern as phase 17's
+    `EMPTY_STATE_TEMPLATE_RE` audit test.
+- estimated phases: 1.
+- conflicts: none. Composes cleanly with existing /critique
+  loop (the drift test would catch regressions before
+  /critique has to re-discover them).
+- oversight 2026-05-21 round 17: **promoted as phase 29.**
+  Top-scoring pass-6 candidate; drains recurring /iterate
+  drift-discovery work. Brief generation by next /march tick
+  via ship-a-phase's missing-brief contract (or `/plan-a-phase`
+  preceding it).
+
+### [x] [score 7.0] Operator-batch one-shot apply script + status surface — promoted 2026-05-21 as phase 30
+
+- proposed: 2026-05-21, expand pass 6
+- promoted: 2026-05-21 (oversight round 17) → phase 30
+- source signals:
+  - **5 pending `[operator]` rows in `plan/AUDIT.md`**:
+    BYOK_MASTER_KEY env + phase-26 migration, ADMIN_EMAILS
+    env, phase-16 token-usage migration, phase-21 secretary
+    migration, phase-22 retros migration, phase-27 key_origin
+    migration. Each blocks visible-state on `/admin`,
+    `/app/settings/api-key`, BYOK orchestration, or the
+    secretary surface.
+  - **`setup/operator-batch.md` walkthrough** already
+    documents the apply sequence (filed at oversight round
+    15) but each operator still applies migrations one at a
+    time from the SQL editor, with no shared status surface
+    for "what's applied vs. pending."
+  - Pattern that's only going to grow: phases 26, 27, 28
+    each ship operator action; future phases likely follow
+    the same shape.
+- rationale: The autonomous loop has internalized that
+  migrations are operator-applied, but the operator
+  experience hasn't been streamlined. Each new operator
+  audit row sits pending while the loop keeps shipping
+  features that depend on it. A small "one-shot" operator
+  helper would drain the backlog in one apply pass; a
+  matching read-only `/admin/migrations` status surface
+  reports state and prevents re-applying.
+- proposed scope: 1 phase.
+  - `scripts/operator-apply.mjs` — runs every `*.sql` under
+    `db/migrations/` in lexicographic order against the
+    project Supabase, idempotent (each migration wraps in a
+    `begin / commit` block + uses `if not exists`).
+    Compares the file list against a `db.applied_migrations`
+    table; only applies new ones.
+  - `db.applied_migrations` schema migration adds the
+    tracking table (chicken-and-egg: bootstrap the script
+    by checking + creating this table first).
+  - `/admin/migrations` route — env-gated like `/admin`;
+    lists every migration file + its applied/pending state
+    + last-applied-at timestamp. Read-only.
+  - One `[operator]` AUDIT row consolidates the 5 pending
+    rows into one ("apply pending migrations via
+    `pnpm db:apply-pending`").
+- estimated phases: 1.
+- conflicts: phase 23 (`/admin` env-gating pattern) +
+  phase 26 (no destructive schema work). The /admin/migrations
+  surface joins the URL contract; standard pattern.
+- oversight 2026-05-21 round 17: **promoted as phase 30.**
+  Sequenced after phase 29 (voice-canon). Closes the 5
+  operator `[needs-user-call]` rows that have accumulated
+  through phases 16/21/22/23/26/27.
 
 ### [x] [score 7.0] Idea 1 — `CLARIFY-QUESTION-FORMAT.md` — promoted 2026-05-20 as phase 28
 
@@ -870,6 +874,42 @@
   Critique pass 6 also filed a new MED on /try (Seat-
   vs-personas mismatch) that's a knock-on from the
   098e24f fix — /iterate will address.
+
+## v2-track / out of v1 scope
+
+> Long-horizon ideas that don't fit v1's spec. Kept here so
+> the loop has them when scope expands. Not scored against
+> v1 candidates; not eligible for `/oversight` promotion to
+> a v1 phase without an explicit spec change first.
+
+### [v2-track] Per-user "Agentic OS" workspace containers
+
+- **Source:** user-jot 2026-05-20 (`f837944`); moved here
+  from `plan/CRITIQUE.md` by `/oversight` round 17.
+- **Vision:**
+  - **v2:** Each user gets their own "workspace" for a
+    project (one to start) — essentially a container with
+    Claude Code + the project's tools + all the skills
+    baked in. The container hosts an "Agentic OS." Gives
+    conversations user-specific memory, progression, and
+    gets better the more the user uses the tool.
+  - **v3:** Multiple workspaces per user, each with its
+    own progress.
+  - **v4:** Cross-workspace communication so non-domain-
+    specific progress in one workspace can help the
+    others.
+- **Why this is v2-track, not v1:** spec.md scopes v1 as
+  the single-user pitch-to-spec session that ships three
+  artifacts. Per-user containers + persistent memory +
+  cross-workspace transfer all expand the surface
+  meaningfully beyond that scope. Each v-tier also implies
+  multiple v1-sized phases of work.
+- **Next step (when v2 is greenlit):** distill the v2
+  surface into discrete candidates (workspace
+  provisioning; per-user memory persistence beyond the
+  current retros loop; container/runtime infra; Claude
+  Code + tool integration). Each becomes its own candidate
+  row at that time.
 
 ## Considered (below threshold)
 

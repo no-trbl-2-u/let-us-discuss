@@ -318,15 +318,15 @@
   openers shipped in one edit per the pass-11 instruction
   to prevent voice-asymmetry drift between the pages.
 
-### [MED] general — v2/v3/v4 vision: per-user "Agentic OS" workspace containers
-- pass: user-jot (commit f837944368d14555eb1fd6f947375cf56b3137ec)
-- viewport: unspecified
-- auth_state: anonymous
-- category: observation
-- observation: Idea for v2: The user will have their own "workspace" for a project (just 1 for now) which will essentially be a container w/ claude code and whatever tools it'll need and with all the skills caked into there. The container itself will contain an "Agentic OS". This way, the conversations can have user-specific memory, progression, and it'll get bet the more the user uses the tool. For v3: We can allow the user to have multiple workspaces that all have their own progress. And finally in v4: We can figure out a way for the multiple workspaces to communicate such that non-domain-specific progress in 1 could help the others.
-- evidence: user-spotted at 2026-05-20T21:56:42Z
-- suggested_fix: [user has not specified — iterate to determine]
-- source: user
+### [x] [MED] Agentic OS vision row — moved to PHASE_CANDIDATES.md v2-track 2026-05-21
+
+- **Source:** user-jot (commit `f837944`)
+- **Moved 2026-05-21 (oversight round 17)** to
+  `plan/PHASE_CANDIDATES.md` under the new
+  `## v2-track / out of v1 scope` section. The row is a
+  long-horizon v2/v3/v4 vision, not an iterate-actionable
+  finding; keeping it in CRITIQUE.md was causing the
+  /iterate scoring loop to re-skip it every tick.
 
 ### [x] [HIGH] /signin — link mis-route — addressed at `79e1a55`
 

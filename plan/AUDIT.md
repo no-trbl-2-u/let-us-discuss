@@ -4,13 +4,11 @@
 > pass. Manual entries are allowed; `/iterate audit` should
 > preserve rows whose source is `[oversight]` or `[user]`.
 
-> **Bias: voice + comprehension** (set via oversight 2026-05-20
-> round 15). The cast-count drift findings on `/about/personas`
-> + the landing copy (rooted in phase 21 making Secretary
-> public) are still pending across pass 10 + 11; `/iterate`
-> should weight voice + comprehension findings 1.5x next tick
-> so the trio drains in 1–3 ticks instead of lagging behind the
-> phase-ship cadence.
+> **Bias retired (oversight 2026-05-21 round 17).** The
+> voice + comprehension bias set in round 15 drained its
+> queue across passes 12–14; every category it multiplied
+> is now empty. `/iterate` ranks unbiased going forward —
+> raw `impact × ease / 10`.
 
 > **Operator migration batch (oversight 2026-05-20, round 15):**
 > Four `[operator]` rows below queue: three Supabase migrations

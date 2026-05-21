@@ -170,6 +170,34 @@ commit that ships the phase.
       (round 16) from `plan/PHASE_CANDIDATES.md`
       `[7.0] Idea 1`. Sequenced after BYOK (26 + 27) per
       the candidate's own note. — `f6b27cf`
+- [ ] Phase 29 — Voice-canon module + drift-detection
+      test (new `lib/site/voice-canon.ts` exporting the
+      canonical phrasings `ANSWER_SHAPE_PHRASE`,
+      `CAST_GROUPING_PHRASE`, `STARTER_LIBRARY_NOUN`;
+      refactor shipped surfaces that carry those strings
+      inline to import from the module; vitest at
+      `lib/site/__tests__/voice-canon.test.ts` asserts each
+      phrase has exactly one definition + greps the shipped
+      source for outdated shapes and fails the verify gate
+      when found). Same pattern as phase 17's
+      `EMPTY_STATE_TEMPLATE_RE` audit test; converts
+      recurring /iterate voice-drift work into a one-time
+      verify-gate guard. Promoted by `/oversight` 2026-05-21
+      (round 17) from `plan/PHASE_CANDIDATES.md`
+      `[7.5] Voice-canon`.
+- [ ] Phase 30 — Operator-batch one-shot apply script +
+      `/admin/migrations` status surface
+      (`scripts/operator-apply.mjs` runs every
+      `db/migrations/*.sql` in order, idempotent, tracked
+      via a new `db.applied_migrations` table; env-gated
+      `/admin/migrations` route lists each migration's
+      applied/pending state. Drains the 5 pending
+      `[operator]` AUDIT rows that have accumulated through
+      phases 16/21/22/23/26/27 into one consolidated row
+      "apply pending migrations via `pnpm db:apply-pending`").
+      Promoted by `/oversight` 2026-05-21 (round 17) from
+      `plan/PHASE_CANDIDATES.md` `[7.0] Operator-batch`.
+      Sequenced after phase 29.
 
 > **Phase numbering note:** Phase 19 (Quota visibility) was
 > promoted in round 7 but never shipped; oversight round 10
