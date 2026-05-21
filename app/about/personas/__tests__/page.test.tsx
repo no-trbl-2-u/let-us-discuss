@@ -57,4 +57,63 @@ describe('/about/personas page', () => {
       expect(d).not.toHaveAttribute('open')
     }
   })
+
+  it('does not render a Log-keeper section when no secretary persona is loaded', () => {
+    // Pass-13 fix at issue #50: the page partitions conferring vs.
+    // secretary personas into two groups. When the loaded library has
+    // no secretary, the Log-keeper heading + helper line should not
+    // appear (avoid a stub section above an empty list).
+    render(PersonasPage())
+    expect(
+      screen.queryByRole('heading', { level: 2, name: /log-keeper/i }),
+    ).toBeNull()
+  })
+})
+
+describe('/about/personas page — with secretary in the cast', () => {
+  // Separate describe so we can mock the loader with a secretary
+  // persona without affecting the top-level case above.
+  const personasWithSecretary: Persona[] = [
+    {
+      slug: 'product-lead',
+      name: 'Product lead',
+      role: 'lead',
+      voice: 'Concrete, decisive.',
+      lead: true,
+      tools: [],
+      summary: 'Drives clarity.',
+      systemPrompt:
+        'You are the product lead. Plainspoken and terse.',
+    },
+    {
+      slug: 'secretary',
+      name: 'Secretary',
+      role: 'secretary',
+      voice: 'Quiet, append-only.',
+      lead: false,
+      tools: [],
+      summary: 'Keeps the log; auto-injected by the cast guard.',
+      systemPrompt: 'You are the secretary at the boardroom table.',
+      monogram: 'SC',
+    },
+  ]
+
+  it('renders the Log-keeper heading + helper line when a secretary persona is loaded', async () => {
+    vi.resetModules()
+    vi.doMock('@/lib/personas/load', () => ({
+      loadPersonas: () => personasWithSecretary,
+    }))
+    const Page = (await import('@/app/about/personas/page')).default
+    render(Page())
+    expect(
+      screen.getByRole('heading', { level: 2, name: /log-keeper/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/never dragged.*runs the log/i),
+    ).toBeInTheDocument()
+    // Both personas are still on the page (conferring + meta-role groups).
+    expect(screen.getByText('Product lead')).toBeInTheDocument()
+    expect(screen.getByText('Secretary')).toBeInTheDocument()
+    vi.doUnmock('@/lib/personas/load')
+  })
 })

@@ -69,13 +69,40 @@ export default function PersonasPage() {
           No personas yet — the v1 library ships in phase 4.
         </p>
       ) : (
-        <ul role="list" className="flex flex-col gap-[var(--space-5)]">
-          {personas.map((p) => (
-            <li key={p.slug}>
-              <PersonaCard persona={p} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul role="list" className="flex flex-col gap-[var(--space-5)]">
+            {personas
+              .filter((p) => p.role !== 'secretary')
+              .map((p) => (
+                <li key={p.slug}>
+                  <PersonaCard persona={p} />
+                </li>
+              ))}
+          </ul>
+          {personas.some((p) => p.role === 'secretary') ? (
+            <>
+              <h2 className="mt-[var(--space-7)] mb-[var(--space-3)] font-[var(--font-serif)] font-semibold text-[var(--text-xl)] leading-[var(--leading-heading)] tracking-[var(--tracking-tight)] text-[color:var(--ink-strong)]">
+                Log-keeper
+              </h2>
+              <p className="mb-[var(--space-5)] font-[var(--font-serif)] text-[var(--text-md)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)] max-w-[60ch]">
+                Auto-injected by the cast guard, never dragged. The
+                Secretary doesn&apos;t confer; it runs the log.
+              </p>
+              <ul
+                role="list"
+                className="flex flex-col gap-[var(--space-5)]"
+              >
+                {personas
+                  .filter((p) => p.role === 'secretary')
+                  .map((p) => (
+                    <li key={p.slug}>
+                      <PersonaCard persona={p} />
+                    </li>
+                  ))}
+              </ul>
+            </>
+          ) : null}
+        </>
       )}
 
       <script
