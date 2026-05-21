@@ -1,13 +1,140 @@
 # Critique log
 
-> Last pass: 2026-05-20 at commit 9ed19c6
-> Pass count: 11
+> Last pass: 2026-05-21 at commit 8b17933
+> Pass count: 12
 
 > External-observer feedback for boardroom. Populated by
 > `/critique`, drained by `/iterate`. See `skills/critique.md`
 > for the contract.
 
 ## Pending
+
+### [MED] /about — "one-word questions at the checkpoints" contradicts the canonical "1-word or 1-sentence answer" constraint
+
+- **pass:** 12 (commit `8b17933`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** /about's lede says the user "answer[s] one-word
+  questions at the checkpoints," but every other surface (landing
+  body, /try, the template constraint itself) describes the user
+  answering "in a word or one sentence." /about is the canonical
+  what-is-this surface — the wrong-shape version of the constraint
+  there mis-sells the actual experience.
+- **evidence:** /about lede: "You drag personas, hand over a
+  pitch, and answer one-word questions at the checkpoints." The
+  template at `templates/pitch-to-spec.json` says "Every question
+  must accept a 1-word or 1-sentence answer." Landing body uses
+  the same "one-sentence clarifying questions" framing.
+- **suggested fix:** Change /about's "one-word questions at the
+  checkpoints" to "one-word or one-sentence clarifying questions
+  at the checkpoints" so it matches every other surface.
+- **source:** web-fetch
+
+### [MED] /about — "the v1 library is curated" uses "v1" without antecedent
+
+- **pass:** 12 (commit `8b17933`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** /about is the natural first-time-visitor entry
+  point but uses the bare term "v1" without ever defining it.
+  /about/personas's lede also leans on "v1" ("the v1 library is
+  these four"), and earlier MED critique-pass-9 closed at
+  `4babc35` had to clean up three different meanings of "v1" on
+  one page. The pattern keeps recurring; reads as engineer voice
+  that the bearings "plainspoken, no marketing fluff" cue rejects.
+- **evidence:** /about "What it isn't": "isn't a place to author
+  personas or templates — the v1 library is curated." /about/personas
+  lede also uses "the v1 library is these four."
+- **suggested fix:** On /about, swap "v1 library" for "starter
+  library" (or briefly gloss v1 the first time it appears). Apply
+  the same swap on /about/personas to keep the surfaces aligned.
+- **source:** web-fetch
+
+### [LOW] /signin — "We never use this for anything else." reads as defensive marketing reassurance
+
+- **pass:** 12 (commit `8b17933`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** voice
+- **observation:** The email input's helper line protests a
+  negative ("never use this for anything else"). A been-there
+  colleague — the bearings voice — would say what they actually
+  do with it (send the link, attach sessions to the account), not
+  reassure against an unstated worry. Mild voice drift but on the
+  highest-conversion-intent surface boardroom has.
+- **evidence:** /signin form: small print under the Email label,
+  "We never use this for anything else."
+- **suggested fix:** Replace with a what-it's-for line, e.g.
+  "Used to send you the magic link and attach your sessions to
+  this account."
+- **source:** web-fetch
+
+### [MED] /try — "demo · locked" badge implies a paywall that doesn't exist
+
+- **pass:** 12 (commit `8b17933`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** The five gated seats on /try carry "demo ·
+  locked" badges. "Locked" implies a transactional unlock
+  (paywall, pro tier) that the product doesn't have. The lede
+  already framed the demo as "One persona, three canned turns,
+  three artifact tiles. Full sessions need a sign-in." — so the
+  five tiles add noise re-asking a question the lede answered,
+  and "locked" mis-classifies what's actually happening (the
+  demo intentionally ships pre-staffed).
+- **evidence:** /try renders five tiles each labelled "demo ·
+  locked" beneath the pre-staffed Product Lead. Lede above
+  says full sessions require a sign-in.
+- **suggested fix:** Drop "locked"; either dim the tiles with no
+  badge (the dim is enough signal) or relabel as "sign in to
+  seat" / "authed only" so the affordance names the actual gate.
+- **source:** web-fetch
+
+### [MED] /about/personas — "user-defined personas aren't shipped yet" promises a feature with no commitment
+
+- **pass:** 12 (commit `8b17933`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** The persona-library lede ends with "user-defined
+  personas aren't shipped yet" — a roadmap leak that promises a
+  future feature with no date, no caveat. Reads as "coming soon"
+  marketing fluff that the bearings voice avoids. /about handles
+  the same constraint more honestly with "isn't a place to author
+  personas or templates" (no "yet").
+- **evidence:** /about/personas lede: "The v1 library is these
+  four; user-defined personas aren't shipped yet."
+- **suggested fix:** Drop the "yet" (or the whole half-clause).
+  Match /about's framing: "The starter library is these four.
+  Authoring your own isn't in scope."
+- **source:** web-fetch
+
+### [LOW] /legal/privacy — "rejected content details" vs "verdict + timestamp" disagrees on retention scope
+
+- **pass:** 12 (commit `8b17933`)
+- **viewport:** desktop
+- **auth state:** anonymous
+- **category:** comprehension
+- **observation:** The privacy page lists "moderation flags with
+  rejected content details" under What we store, but the
+  dedicated moderation section says rejected content is logged
+  with "verdict and timestamp." A reader can't tell if the
+  rejected pitch text itself is retained or just the verdict —
+  the two passages disagree on scope. Legal-clarity matters here;
+  the discrepancy is exactly the kind of question a regulator
+  would ask first.
+- **evidence:** /legal/privacy What we store: "...moderation flags
+  with rejected content details." Same page, moderation section:
+  "rejected content logged with verdict and timestamp."
+- **suggested fix:** Reconcile the two clauses. Either state
+  explicitly "rejected pitch text is retained for N days then
+  purged" (and pin N), or change the What-we-store line to
+  "moderation flags (verdict + timestamp only)" so both passages
+  read the same scope.
+- **source:** web-fetch
 
 ### [needs-user-call] /critique reader cannot exercise interactive states — Chrome MCP not configured
 
@@ -58,6 +185,10 @@
   confirmed `mcp__claude-in-chrome__*` still unavailable in
   the anonymous reader sub-agent's tool list. 11 consecutive
   passes WebFetch-only. Status unchanged.
+- **Pass-12 re-check (2026-05-21, commit `8b17933`):** Reader
+  again confirmed `mcp__claude-in-chrome__*` not in its tool
+  list this invocation. 12 consecutive passes WebFetch-only.
+  Status unchanged.
 - **Source:** reader sub-agent (introspection on its own tool list)
 
 ### [needs-user-call] SUPABASE_E2E_SESSION_COOKIE unset — authed /critique cannot walk /app
@@ -100,6 +231,12 @@
   `.env.example` L77/L80/L109 still carry only commented
   templates). Three consecutive authed passes blocked at the
   same gate. Status unchanged.
+- **Pass-12 re-check (2026-05-21, commit `8b17933`):** Anonymous
+  pass only; the authed leg was skipped this round because the
+  `[operator]` audit row is still in deferred state. Four
+  consecutive passes (counting pass 12 anon-only as the latest)
+  with no authed walk; `/app/*` surfaces still observed only via
+  unit tests + the URL-contract walker's redirect check.
 - **Source:** web-fetch (reader sub-agent + grep)
 
 ### [MED] /try — demo opens with no drag affordance, contradicting marketing-side "drop personas onto the table"
