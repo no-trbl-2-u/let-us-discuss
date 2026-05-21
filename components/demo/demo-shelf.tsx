@@ -11,11 +11,9 @@ export function DemoShelf() {
       <p className="font-[var(--font-sans)] text-[var(--text-2xs)] uppercase tracking-[var(--tracking-caps)] text-[color:var(--ink-muted)]">
         demo &nbsp;·&nbsp; 1 persona
       </p>
-      <p className="font-[var(--font-serif)] text-[var(--text-sm)] leading-[var(--leading-prose)] text-[color:var(--ink-muted)]">
-        The Product Lead is already at the table.
-      </p>
       <p className="font-[var(--font-serif)] italic text-[var(--text-xs)] text-[color:var(--ink-muted)]">
-        The other seats are locked — <Link href="/signin?next=/app" variant="default">sign in</Link> to staff the full table.
+        <Link href="/signin?next=/app" variant="default">Sign in</Link> to
+        staff the table yourself.
       </p>
     </aside>
   )

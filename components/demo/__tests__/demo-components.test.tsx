@@ -23,19 +23,26 @@ const persona: Persona = {
 }
 
 describe('DemoShelf', () => {
-  it('renders the eyebrow + sign-in CTA without duplicating the seated persona card', () => {
+  it('renders the eyebrow + sign-in CTA without duplicating the seated persona card or restating the lede', () => {
     render(<DemoShelf />)
     expect(screen.getByLabelText(/demo shelf/i)).toBeInTheDocument()
     // The shelf used to render a duplicate PersonaCard of the persona
     // already on the board (pass-4 critique [MED] "rendered twice").
     // It now carries only the context strip + sign-in pointer.
     expect(screen.queryByText(/^product lead$/i)).toBeNull()
+    // Pass-13 [MED] fix at issue #47: the previous body restated the
+    // /try lede ("Product Lead is already at the table"). Both lines
+    // are gone; the sign-in CTA is preserved.
     expect(
-      screen.getByText(/product lead is already at the table/i),
-    ).toBeInTheDocument()
+      screen.queryByText(/product lead is already at the table/i),
+    ).toBeNull()
+    expect(screen.queryByText(/other seats are locked/i)).toBeNull()
     expect(
       screen.getByRole('link', { name: /sign in/i }),
     ).toHaveAttribute('href', '/signin?next=/app')
+    expect(
+      screen.getByText(/staff the table yourself/i),
+    ).toBeInTheDocument()
   })
 })
 
