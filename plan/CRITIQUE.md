@@ -34,30 +34,18 @@
   eyebrow swapped to prose to match the button caption's
   register.
 
-### [LOW] / — landing eyebrow paraphrases the H1 (no new info)
+### [x] [LOW] / — ROOT_TITLE / OG title paraphrasing H1 — addressed at `cd94020`
 
-- **pass:** 13 (commit `83c595c`); previously surfaced and
-  dismissed at pass 12 self-assessment, re-flagged here.
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** Eyebrow and H1 collapse to nearly the
-  same sentence: eyebrow "boardroom — a short, opinionated
-  meeting with AI personas" and H1 "A short, opinionated
-  meeting between AI personas — and you leave with a usable
-  spec." The eyebrow does no work the H1 doesn't already do;
-  the only new information is the product name, which is
-  already in the header nav. First paint reads twice before
-  reaching the lede.
-- **evidence:** Eyebrow: "boardroom — a short, opinionated
-  meeting with AI personas". H1: "A short, opinionated
-  meeting between AI personas — and you leave with a usable
-  spec."
-- **suggested fix:** Shorten the landing eyebrow to a
-  category label ("boardroom") or a different orienting
-  phrase (audience, e.g. "for solo builders without a spec
-  yet") so it doesn't pre-echo the H1.
-- **source:** web-fetch
+- **Pass:** 13 (commit `83c595c`); previously surfaced and
+  dismissed at pass 12 self-assessment.
+- **Resolved 2026-05-21 at `cd94020`** (issue #51). Reader's
+  "eyebrow" was actually ROOT_TITLE in app/layout.tsx (what
+  WebFetch sees as `<title>` + OG/Twitter title), not the
+  visible page eyebrow. Title → "boardroom — pitch in, spec
+  out". Bundled: ROOT_DESCRIPTION drift from "one-word
+  questions" → canonical "one-word or one-sentence clarifying
+  questions" — completes the surface that HIGH #46 missed at
+  the layout-metadata level.
 
 ### [x] [LOW] /about — "board-room" hyphen on shipped lede — addressed at `a24cfaf`
 
