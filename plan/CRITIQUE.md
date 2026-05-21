@@ -27,25 +27,12 @@
   old copy + presence of the new line; sign-in CTA href
   assertion preserved.
 
-### [MED] /try — "1 persona" vs "one persona" register drift on the same page
+### [x] [MED] /try — "1 persona"/"one persona" register drift — addressed at `3f8c0e4`
 
-- **pass:** 13 (commit `83c595c`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** voice
-- **observation:** The /try page renders the persona count
-  in two different registers within a few hundred pixels:
-  a subheading reads "demo · 1 persona" (numeric) while the
-  Start-demo button caption reads "3 turns · one persona ·
-  no AI calls" (prose). Same surface, same concept, two
-  styles. Reads as drafted-by-committee against the
-  plainspoken-colleague voice.
-- **evidence:** Subheading: "demo · 1 persona". Button
-  caption: "3 turns · one persona · no AI calls".
-- **suggested fix:** Pick one register on /try. Prose-style
-  "one persona" in both places matches the surrounding body
-  copy.
-- **source:** web-fetch
+- **Pass:** 13 (commit `83c595c`)
+- **Resolved 2026-05-21 at `3f8c0e4`** (issue #48). Shelf
+  eyebrow swapped to prose to match the button caption's
+  register.
 
 ### [LOW] / — landing eyebrow paraphrases the H1 (no new info)
 
