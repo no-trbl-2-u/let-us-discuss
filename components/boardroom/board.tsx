@@ -5,7 +5,11 @@ import {
 } from '@/lib/templates/load'
 import { BoardClient } from './board-client'
 
-export function Board() {
+type Props = {
+  hasUserKey?: boolean
+}
+
+export function Board({ hasUserKey = false }: Props) {
   const personas = loadPersonas()
   const template = loadDefaultTemplate()
   const firstPhase = template.phases[0]
@@ -14,6 +18,7 @@ export function Board() {
       personas={personas}
       templateFirstPhaseName={firstPhase?.name ?? 'Clarify'}
       templateSlug={DEFAULT_TEMPLATE_SLUG}
+      hasUserKey={hasUserKey}
     />
   )
 }

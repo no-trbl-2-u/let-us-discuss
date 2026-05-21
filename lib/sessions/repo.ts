@@ -39,6 +39,8 @@ export type CreateSessionInput = {
   model: string
   status: SessionStatus
   ipHash?: string | null
+  /** phase 27: which key paid for this session — 'user' or 'project' */
+  keyOrigin?: 'user' | 'project'
 }
 
 export type AppendTurnInput = {
@@ -84,6 +86,7 @@ export async function createSession(
       model: input.model,
       status: input.status,
       ip_hash: input.ipHash ?? null,
+      key_origin: input.keyOrigin ?? 'project',
     })
     .select('id')
     .single()

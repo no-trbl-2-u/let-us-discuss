@@ -28,6 +28,32 @@
 
 ## Pending
 
+### [operator] Apply phase-27 `key_origin` migration in Supabase
+
+- **Source:** phase 27 ship (commit pending)
+- **Score:** 2.5 (low-medium — phase 27 ships an additive column
+  on `public.sessions`. The orchestrator's create-time insert
+  passes `key_origin` defensively, but the column has
+  `default 'project'` so a pre-migration row stays valid; the
+  banner UI is computed from `loadKeyMeta` in memory, not from
+  reading the row back, so it renders correctly without the
+  column. The only thing this migration unlocks is honest
+  cost-attribution slicing by which key paid — useful once
+  BYOK is in use, no functional regression until then).
+- **Category:** config (operator action)
+- **Summary:** `db/migrations/20260520_phase_27_byok_key_origin.sql`
+  adds `sessions.key_origin text not null default 'project'`
+  with a check constraint pinning the value to `'user'` or
+  `'project'`. Additive; idempotent.
+- **What to do:** Run `pnpm db:migrate` against the production
+  Supabase project (or paste the SQL into the Supabase SQL
+  editor). Verify by walking one authed session with a user
+  key on file and confirming the new row reports
+  `key_origin = 'user'`.
+- **Owner:** user / operator.
+- **/iterate skip:** this row is `[operator]` — `/iterate`
+  should leave it pending and move on.
+
 ### [operator] Enable BYOK — set `BYOK_MASTER_KEY` + apply phase-26 migration
 
 - **Source:** phase 26 ship (commit pending)

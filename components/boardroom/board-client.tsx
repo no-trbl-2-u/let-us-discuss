@@ -13,6 +13,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { DEFAULT_MODEL, resolveModel } from '@/lib/anthropic/models'
 import { ArtifactPreviewGrid } from './artifact-preview-grid'
+import { ByokBanner } from './byok-banner'
 import { ModelPicker } from './model-picker'
 import { UsageEstimate } from './usage-estimate'
 import { BoardroomEmptyHint } from './boardroom-empty-hint'
@@ -39,12 +40,14 @@ type Props = {
   personas: readonly Persona[]
   templateFirstPhaseName: string
   templateSlug: string
+  hasUserKey?: boolean
 }
 
 export function BoardClient({
   personas,
   templateFirstPhaseName,
   templateSlug,
+  hasUserKey = false,
 }: Props) {
   const [state, dispatch] = useBoardState()
   const [session, sessionDispatch] = useSessionState()
@@ -156,6 +159,7 @@ export function BoardClient({
             personasBySlug={personasBySlug}
           />
           <BoardroomEmptyHint />
+          <ByokBanner visible={hasUserKey} />
           <PitchInput
             value={state.pitch}
             disabled={state.tag === 'running'}

@@ -35,6 +35,7 @@ type SessionRow = {
   completion_tokens: number
   cost_cents: number
   ip_hash: string | null
+  key_origin: 'user' | 'project'
   created_at: string
   updated_at: string
 }
@@ -80,12 +81,14 @@ type SessionInsert = Omit<
   | 'prompt_tokens'
   | 'completion_tokens'
   | 'cost_cents'
+  | 'key_origin'
 > & {
   id?: string
   total_tokens?: number
   prompt_tokens?: number
   completion_tokens?: number
   cost_cents?: number
+  key_origin?: 'user' | 'project'
   created_at?: string
   updated_at?: string
 }

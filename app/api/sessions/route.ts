@@ -1,5 +1,6 @@
 import { runConferring } from '@/lib/anthropic/conferring'
 import { resolveModel } from '@/lib/anthropic/models'
+import { resolveSessionClient } from '@/lib/anthropic/user-key-client'
 import { hashIp } from '@/lib/anti-abuse/ip-hash'
 import { countSessionsLast24h } from '@/lib/anti-abuse/quota'
 import {
@@ -175,6 +176,12 @@ export async function POST(req: NextRequest) {
 
   const ipHash = hashIp(req)
   const model = resolveModel(body.model)
+
+  const { client: userKeyClient, keyOrigin } = await resolveSessionClient({
+    supabase: session.supabase,
+    userId: session.user.id,
+  })
+
   let created: { id: string }
   try {
     created = await createSession(session.supabase, {
@@ -185,6 +192,7 @@ export async function POST(req: NextRequest) {
       model,
       status: 'clarify',
       ipHash,
+      keyOrigin,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'unknown'
@@ -210,6 +218,7 @@ export async function POST(req: NextRequest) {
           pitch: body.pitch,
           personas: augmentedCast,
           template,
+          ...(userKeyClient ? { client: userKeyClient } : {}),
           awaitAnswer: () => waitForAnswer(sessionId),
           async moderateOutput(text) {
             const v = await moderate(text, { sessionId, surface: 'output' })

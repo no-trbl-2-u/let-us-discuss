@@ -4,7 +4,11 @@ import { Button } from '@/design/primitives/button'
 import { Link } from '@/design/primitives/link'
 import { Board } from '@/components/boardroom/board'
 import { signOutAction } from '@/lib/auth/actions'
+import { getMasterKey } from '@/lib/byok/master-key'
+import { loadKeyMeta } from '@/lib/byok/repo'
+import { logError } from '@/lib/observability/log'
 import { requireUser } from '@/lib/supabase/auth'
+import { createServerClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,6 +19,17 @@ export const metadata: Metadata = {
 
 export default async function AppHomePage() {
   const user = await requireUser()
+
+  let hasUserKey = false
+  if (getMasterKey() !== null) {
+    try {
+      const supabase = await createServerClient()
+      const meta = await loadKeyMeta(supabase, user.id)
+      hasUserKey = meta !== null
+    } catch (err) {
+      logError('byok', err, { loader: 'loadKeyMeta', surface: '/app' })
+    }
+  }
 
   return (
     <section className="mx-auto max-w-[1080px] px-[var(--space-4)] sm:px-[var(--space-5)] md:px-[var(--space-7)] py-[var(--space-6)] md:py-[var(--space-7)]">
@@ -39,7 +54,7 @@ export default async function AppHomePage() {
           </form>
         </div>
       </header>
-      <Board />
+      <Board hasUserKey={hasUserKey} />
     </section>
   )
 }
