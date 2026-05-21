@@ -59,29 +59,17 @@
   "These four" left untouched per the one-fix-per-tick rule;
   the cast-count drift is the separate pass-10 finding.
 
-### [LOW] /legal/privacy — "rejected content details" vs "verdict + timestamp" disagrees on retention scope
+### [x] [LOW] /legal/privacy — moderation-row scope passages aligned — addressed at `cbb0e73`
 
-- **pass:** 12 (commit `8b17933`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** The privacy page lists "moderation flags with
-  rejected content details" under What we store, but the
-  dedicated moderation section says rejected content is logged
-  with "verdict and timestamp." A reader can't tell if the
-  rejected pitch text itself is retained or just the verdict —
-  the two passages disagree on scope. Legal-clarity matters here;
-  the discrepancy is exactly the kind of question a regulator
-  would ask first.
-- **evidence:** /legal/privacy What we store: "...moderation flags
-  with rejected content details." Same page, moderation section:
-  "rejected content logged with verdict and timestamp."
-- **suggested fix:** Reconcile the two clauses. Either state
-  explicitly "rejected pitch text is retained for N days then
-  purged" (and pin N), or change the What-we-store line to
-  "moderation flags (verdict + timestamp only)" so both passages
-  read the same scope.
-- **source:** web-fetch
+- **Pass:** 12 (commit `8b17933`)
+- **Resolved 2026-05-21 at `cbb0e73`** (issue #42). The two
+  passages were already functionally identical (both retain
+  offending text + verdict + timestamp), but the Moderation
+  section's "what tripped" was readable as narrower than the
+  What-we-store section's "the offending text." Tightened
+  the Moderation section to use the same explicit phrasing
+  so the two passages are provably identical. No retention
+  policy change.
 
 ### [needs-user-call] /critique reader cannot exercise interactive states — Chrome MCP not configured
 
