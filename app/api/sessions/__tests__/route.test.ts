@@ -7,10 +7,22 @@ const markStatusFn = vi.fn()
 const appendTurnFn = vi.fn()
 const finalizeArtifactFn = vi.fn()
 const runConferringSpy = vi.fn()
+const resolveSessionClient = vi.fn()
 
 vi.mock('@/lib/supabase/auth', () => ({
   getRouteUser: (...args: unknown[]) => getRouteUser(...args),
 }))
+
+vi.mock('@/lib/anthropic/user-key-client', async () => {
+  const actual = await vi.importActual<
+    typeof import('@/lib/anthropic/user-key-client')
+  >('@/lib/anthropic/user-key-client')
+  return {
+    ...actual,
+    resolveSessionClient: (...args: unknown[]) =>
+      resolveSessionClient(...args),
+  }
+})
 
 vi.mock('@/lib/sessions/repo', async () => {
   const actual = await vi.importActual<typeof import('@/lib/sessions/repo')>(
@@ -131,6 +143,12 @@ describe('POST /api/sessions', () => {
     appendTurnFn.mockReset()
     finalizeArtifactFn.mockReset()
     runConferringSpy.mockReset()
+    resolveSessionClient.mockReset()
+    // Default: no user key on file → orchestrator uses project key.
+    resolveSessionClient.mockResolvedValue({
+      client: null,
+      keyOrigin: 'project',
+    })
   })
   afterEach(() => {
     vi.resetModules()
@@ -327,5 +345,72 @@ describe('POST /api/sessions', () => {
     expect(res.status).toBe(200)
     const callArg = createSession.mock.calls[0]?.[1] as { model?: string }
     expect(callArg.model).toBe(DEFAULT_MODEL)
+  })
+
+  // Phase 27 wiring guard. The brief listed these two cases; shipped at
+  // a1ed0ef without them, surfaced by the /iterate audit at 2026-05-21.
+  it('omits client + threads keyOrigin=project when no user key is on file', async () => {
+    getRouteUser.mockResolvedValue({
+      user: { id: 'u-1' },
+      supabase: {} as never,
+    })
+    createSession.mockResolvedValue({ id: 'sid-byok-1' })
+    runConferringSpy.mockImplementation(() =>
+      emit([{ type: 'session.done' }])(),
+    )
+    // beforeEach already sets resolveSessionClient → project; assert anyway
+    // for documentation.
+    resolveSessionClient.mockResolvedValue({
+      client: null,
+      keyOrigin: 'project',
+    })
+    const { POST } = await import('@/app/api/sessions/route')
+    await POST(
+      jsonRequest({
+        pitch: 'short pitch',
+        personaSlugs: ['product-lead', 'skeptical-engineer'],
+        templateSlug: 'pitch-to-spec',
+      }) as never,
+    )
+    const conferringInput = runConferringSpy.mock.calls[0]?.[0] as {
+      client?: unknown
+    }
+    expect(conferringInput).not.toHaveProperty('client')
+    const createArg = createSession.mock.calls[0]?.[1] as {
+      keyOrigin?: 'user' | 'project'
+    }
+    expect(createArg.keyOrigin).toBe('project')
+  })
+
+  it('injects the resolved user-key client + threads keyOrigin=user when a user key is on file', async () => {
+    const userClientStub = { streamCompletion: vi.fn() }
+    getRouteUser.mockResolvedValue({
+      user: { id: 'u-1' },
+      supabase: {} as never,
+    })
+    createSession.mockResolvedValue({ id: 'sid-byok-2' })
+    runConferringSpy.mockImplementation(() =>
+      emit([{ type: 'session.done' }])(),
+    )
+    resolveSessionClient.mockResolvedValue({
+      client: userClientStub,
+      keyOrigin: 'user',
+    })
+    const { POST } = await import('@/app/api/sessions/route')
+    await POST(
+      jsonRequest({
+        pitch: 'short pitch',
+        personaSlugs: ['product-lead', 'skeptical-engineer'],
+        templateSlug: 'pitch-to-spec',
+      }) as never,
+    )
+    const conferringInput = runConferringSpy.mock.calls[0]?.[0] as {
+      client?: unknown
+    }
+    expect(conferringInput.client).toBe(userClientStub)
+    const createArg = createSession.mock.calls[0]?.[1] as {
+      keyOrigin?: 'user' | 'project'
+    }
+    expect(createArg.keyOrigin).toBe('user')
   })
 })
