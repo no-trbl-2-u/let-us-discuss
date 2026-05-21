@@ -68,28 +68,14 @@
   since they articulate the metaphor rather than brand it
   for a user.
 
-### [LOW] /about/personas — Secretary card sits in the same visual grid as the four conferring personas
+### [x] [LOW] /about/personas — Secretary partitioned into a Log-keeper section — addressed at `3fb5fad`
 
-- **pass:** 13 (commit `83c595c`)
-- **viewport:** desktop
-- **auth state:** anonymous
-- **category:** comprehension
-- **observation:** The lede reframed at `baa28ea` says "four
-  conferring personas plus a Secretary who keeps the log."
-  The "four plus one" framing isn't reinforced visually —
-  the Secretary card (now monogram `SC`) renders in the same
-  uniform grid as PL/SE/EP/GV. A first-time visitor reading
-  the lede then scanning the grid still has to read the SC
-  card's body to confirm Secretary is structurally different.
-- **evidence:** Lede phrasing on /about/personas; rendered
-  card grid: PL, SE, EP, GV, SC — uniform visual treatment.
-  SC card's summary is the only one without a quoted
-  directive; only structural cue otherwise is the body prose.
-- **suggested fix:** Either visually separate the Secretary
-  card (divider, subheading "Log-keeper", or muted styling)
-  or add a one-line tag on the SC card like
-  "log-keeper, non-conferring" to mirror the lede's grouping.
-- **source:** web-fetch
+- **Pass:** 13 (commit `83c595c`)
+- **Resolved 2026-05-21 at `3fb5fad`** (issue #50). Card list
+  partitioned by role: conferring personas in the first list,
+  then a level-2 "Log-keeper" heading + one-line helper note,
+  then the secretary card(s). Page layout now reinforces the
+  lede's "four plus one" framing directly.
 
 ### [x] [MED] /about — "one-word questions" canonical mismatch — addressed at `91090dd`
 
